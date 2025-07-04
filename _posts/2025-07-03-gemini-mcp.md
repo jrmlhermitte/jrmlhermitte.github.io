@@ -16,6 +16,11 @@ Lots of these posts exist, but I didn't see one that actually demonstrates how S
 
 Most of this has also been put in the readme [here](https://github.com/jrmlhermitte/gemini-mcp-example).
 
+### What this will not be about
+
+This is geared towards home projects where one agent connected to a bunch of tools is helpful.
+This post will not go into setting up multiple agents. See Google's [Agent2Agent](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/) protocol for more information. See the [ADK Libary](https://google.github.io/adk-docs/) for some more details, or see this nice [Hugging Face Tutorial](https://huggingface.co/blog/tsadoq/agent2agent-and-mcp-tutorial) on that.
+
 
 ## Quick Setup
 First of all, for this to work, you'll need to ensure you have the proper tools.
