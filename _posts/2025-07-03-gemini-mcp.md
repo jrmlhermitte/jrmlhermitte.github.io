@@ -27,7 +27,9 @@ First of all, for this to work, you'll need to ensure you have the proper tools.
 I'll recommend some that I believe has the least amount of friction (`uv`), but
 feel free to mix and match which whatever python toolset you prefer:
 
-1. [Install UV](https://docs.astral.sh/uv/getting-started/installation/#installing-uv)
+### 1. Install UV
+
+[Install UV](https://docs.astral.sh/uv/getting-started/installation/#installing-uv)
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -35,7 +37,8 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 (linux and mac)
 
-2. Clone project and initialize virtualenv
+### 2. Initialize
+Clone project and initialize virtualenv
 
 ```bash
 git clone https://github.com/jrmlhermitte/gemini-mcp-example.git 
@@ -53,7 +56,8 @@ Roughly, we'll follow this (where we'll be "Gemini CLI"):
 
 ![sequence diagram](/images/2025_07_04_gemini_sequence.png)
 
-1. The file we'll run is in `gemini-mcp-example/main.py` and already defined.
+### 1. Example File
+The file we'll run is in `gemini-mcp-example/main.py` and already defined.
 Take a look at it. The main components are 
 
 ```python
@@ -76,7 +80,7 @@ This will start a server that will receive commands from stdin and output them
 through stdout. The alternative is http but given we're running this locally,
 this is simpler.
 
-2. Run file
+### 2. Run file
 
 To better understand how this works, let's give this server a test run:
 (**Don't** forget to activate your virtual env `source .venv/bin/activate`)
@@ -85,7 +89,7 @@ To better understand how this works, let's give this server a test run:
 python gemini-mcp-example/main.py
 ```
 
-3. Init communication
+### 3. Init communication
 
 We're going to initialize the [2024-11-05](https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle) protocol version using stdin/stdout (the `stdio` protocol which we setup our fast MCP server to use).
 
@@ -157,14 +161,19 @@ Integrating with Gemini CLI.
 
 You'll need to install some more tools: node and Gemini CLI itself.
 
-1. [Install node](https://nodejs.org/en/download)
-2. [Install Gemini CLI](https://github.com/google-gemini/gemini-cli?tab=readme-ov-file):
+### 1. Install Node
+[Install node](https://nodejs.org/en/download)
+
+### 2. Install Gemini CLI
+[Install Gemini CLI](https://github.com/google-gemini/gemini-cli?tab=readme-ov-file):
 
 ```
 npm install -g @google/gemini-cli
 ```
 
-3. Now add the Gemini extension from here ([docs](https://github.com/google-gemini/gemini-cli/blob/main/docs/extension.md)):
+### 3. Gemini Extension
+
+Now add the Gemini extension from here ([docs](https://github.com/google-gemini/gemini-cli/blob/main/docs/extension.md)):
 
 (**NOTE**: This should be run from the root of this github repo)
 
@@ -173,7 +182,9 @@ mkdir -p ~/gemini/extensions
 ln -s $PWD/gemini-mcp-example ~/.gemini/extensions
 ```
 
-4. Start gemini and list mcp servers
+### 4. Start Everything
+
+Start gemini and list mcp servers
 
 ```
 gemini
@@ -192,7 +203,8 @@ You should see this:
 extension runs `python ./gemini-mcp-example/main.py`. If you want to make this runnable from everywhere, you'll need to make sure your base python environment contains the `fastmcp` library and that the `gemini-extension.json` refers to an absolute path.
 **NOTE**: If this is your first time setting up Gemini CLI, you will also see some easy to follow setup steps.
 
-5. Give it your name. It will likely try to call your tools.
+### 5. Test Run
+Give it your name. It will likely try to call your tools.
 
 Input something like:
 ```
