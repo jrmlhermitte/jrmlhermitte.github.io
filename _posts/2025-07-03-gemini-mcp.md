@@ -1,7 +1,7 @@
 ## MCP With Gemini
 
 MCP is a powerful protocol that enables your LLM's to run tools. As seen among
-numerous literature, LLM's scale once they're able to not only read from
+numerous literature, LLMs scale once they're able to not only read from
 their environment, but [change it](https://arxiv.org/pdf/2505.10361).
 
 There are two modes MCP can run in: [stdio](https://modelcontextprotocol.io/docs/concepts/transports#standard-input%2Foutput-stdio), or [HTTP](https://modelcontextprotocol.io/docs/concepts/transports#streamable-http). The latter is just a standard HTTP server. The former is interesting as it uses stdin/stdout.
@@ -83,7 +83,7 @@ this is simpler.
 ### 2. Run file
 
 To better understand how this works, let's give this server a test run:
-(**Don't** forget to activate your virtual env `source .venv/bin/activate`)
+(**Don't forget** to activate your virtual env `source .venv/bin/activate`)
 
 ```bash
 python gemini-mcp-example/main.py
