@@ -1,1 +1,1 @@
-AI-focused blog.
+Leveraging AI so we can think again. Because it is [the order of things](https://memory-alpha.fandom.com/wiki/Rocks_and_Shoals_(episode)).
