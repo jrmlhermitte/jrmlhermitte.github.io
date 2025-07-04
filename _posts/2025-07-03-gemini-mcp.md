@@ -155,7 +155,7 @@ Then type:
 ```
 
 You should see this:
-![mcp](/_posts/images/gemini_mcp_command.png)
+![mcp](/images/gemini_mcp_command.png)
 
 
 **NOTE**: You **must** start gemini from the code folder. The reason is that the
@@ -170,10 +170,10 @@ My name is Teal'c
 ```
 
 Gemini should figure that it might want to call the greeting tool, given you've introduced yourself. You should get a request to call the tool:
-![confirmation](/_posts/images/greet_request.png)
+![confirmation](/images/greet_request.png)
 
 And it should hopefully have called the tool.
-![tool_called](/_posts/images/greet_tool_called.png)
+![tool_called](/images/greet_tool_called.png)
 
 
 ## Troubleshooting
