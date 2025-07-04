@@ -1,6 +1,6 @@
 ## MCP With Gemini
 
-MCP is a powerful protocol that enables your LLM's to run tools. As seen among
+MCP is a powerful protocol that enables your LLMs to run tools. As seen among
 numerous literature, LLMs scale once they're able to not only read from
 their environment, but [change it](https://arxiv.org/pdf/2505.10361).
 
