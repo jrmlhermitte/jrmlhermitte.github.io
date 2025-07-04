@@ -11,23 +11,7 @@ This post will demonstrate how to leverage the full power of MCP through Gemini 
 by adding your custom MCP server to [Gemini CLI](https://blog.google/technology/developers/introducing-gemini-cli-open-source-ai-agent/).
 Lots of these posts exist, but I didn't see one that actually demonstrates how Stdio works with real calls into it. This post attempts to fill that gap. 
 
-```mermaid
-graph TD
-  G[Gemini];
-  M[MCP Binary];
-
-  G -->|Spawns 
-        child process| M;
-  G -->|JSON-RPC 
-        request 
-        over stdin| M;
-  M -->|JSON-RPC
-        response
-        over stdout| G;
-  G<-.->|More requests
-         and responses|M;
-
-```
+![sequence diagram](/images/2025_07_04_gemini_graph.png)
 
 
 Most of this has also been put in the readme [here](https://github.com/jrmlhermitte/gemini-mcp-example).
@@ -62,19 +46,7 @@ via stdin directly into the terminal, watching the responses via stdout.
 
 Roughly, we'll follow this (where we'll be "Gemini CLI"):
 
-```mermaid
-sequenceDiagram
-    participant G as Gemini CLI;
-    participant M as MCP;
-
-    G->>M: Init (JSON RPC);
-    M->>G: Init Response;
-    G->>M: Initialized;
-    G->>M: Tools/list;
-    M->>G: Tools list response;
-    G->>M: Tool call (greet);
-    M->>G: Tool call response ("Hello Teal'c");
-```
+![sequence diagram](/images/2025_07_04_gemini_sequence.png)
 
 1. The file we'll run is in `gemini-mcp-example/main.py` and already defined.
 Take a look at it. The main components are 
