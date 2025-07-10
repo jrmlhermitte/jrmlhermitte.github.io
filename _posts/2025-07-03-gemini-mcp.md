@@ -57,7 +57,7 @@ Roughly, we'll follow this (where we'll be "Gemini CLI"):
 ![sequence diagram](/images/2025_07_04_gemini_sequence.png)
 
 ### 1. Example File
-The file we'll run is in `gemini-mcp-example/main.py` and already defined.
+The file we'll run is in [gemini-mcp-example/main.py](https://github.com/jrmlhermitte/gemini-mcp-example/blob/main/gemini-mcp-example/main.py) and already defined.
 Take a look at it. The main components are 
 
 ```python
@@ -173,14 +173,15 @@ npm install -g @google/gemini-cli
 
 ### 3. Gemini Extension
 
-Now add the Gemini extension from here ([docs](https://github.com/google-gemini/gemini-cli/blob/main/docs/extension.md)):
-
-(**NOTE**: This should be run from the root of this github repo)
+Now add the Gemini extension (see instructions [here](https://github.com/google-gemini/gemini-cli/blob/main/docs/extension.md)):
 
 ```
-mkdir -p ~/gemini/extensions
+git clone https://github.com/jrmlhermitte/gemini-mcp-example.git
+mkdir -p $PWD/gemini/extensions
 ln -s $PWD/gemini-mcp-example ~/.gemini/extensions
 ```
+
+This will clone the github repo containing the extension and soft link it into the extensions directory.
 
 ### 4. Start Everything
 
