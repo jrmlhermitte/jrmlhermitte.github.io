@@ -13,8 +13,10 @@ layout: default
       </time>
       {% assign author = page.author | default: site.author %}
       {%- if author -%}
-        • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">{{ author }}</span></span>
-      {%- endif -%}</p>
+      • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card"
+          itemprop="name">{{ author }}</span></span>
+      {%- endif -%}
+    </p>
   </header>
 
   <div class="share-links">
@@ -24,6 +26,7 @@ layout: default
   <div class="post-content e-content" itemprop="articleBody">
     {{ content }}
     {% include navlinks.html %}
+    <p>Comments/suggestions can be left [here](https://github.com/jrmlhermitte/jrmlhermitte.github.io/discussions)</p>
   </div>
 
   <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
