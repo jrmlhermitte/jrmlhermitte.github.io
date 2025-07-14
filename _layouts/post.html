@@ -37,7 +37,7 @@ layout: default
       class="likebtn-wrapper" 
       data-ef_voting="grow"
       data-rich_snippet="true"
-      data-identifier="{{ page.title | append: page.date | base64_url_safe_encode }}"
+      data-identifier="{{ page.title | append: ', ' | append: page.date }}"
     ></span>
     <script>(function(d,e,s){if(d.getElementById("likebtn_wjs"))return;a=d.createElement(e);m=d.getElementsByTagName(e)[0];a.async=1;a.id="likebtn_wjs";a.src=s;m.parentNode.insertBefore(a, m)})(document,"script","//w.likebtn.com/js/w/widget.js");</script>
     <!-- LikeBtn.com END -->
