@@ -15,6 +15,9 @@ linkedin_username: "julien-lhermitte-6374b77"
 #youtube_username: username
 #googleplus_username: +username
 
+# https://morotsman.github.io/blog,/google/analytics,/jekyll,/github/pages/2020/07/07/add-google-analytics.html
+google_analytics: "G-VB52D7HBZK"
+
 #########################################################################################
 ######### Nothing below needs to be changed (unless you know what you're doing) #########
 #########################################################################################
@@ -25,7 +28,7 @@ rss: rss
 kramdown:
   syntax_highlighter_opts:
     disable: true
-    
+
 plugins:
   - jekyll-feed
   - jekyll-sitemap
