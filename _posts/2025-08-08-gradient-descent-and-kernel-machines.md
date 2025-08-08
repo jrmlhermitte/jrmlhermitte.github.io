@@ -7,12 +7,11 @@ data-cites="domingos2020modellearnedgradientdescent"><a href="#ref-domingos2020m
 <p>Assuming a model <span class="math inline">\(f(x; \omega)\)</span>,
 parametrized by weights <span class="math inline">\(\omega\)</span> and
 taking input <span class="math inline">\(x\)</span>, they arrive at the
-following interesting result <a href="#fn1" class="footnote-ref"
-id="fnref1" role="doc-noteref"><sup>1</sup></a>: <span
+following interesting result: <span
 class="math display">\[\lim_{\epsilon \rightarrow 0} y = y_0 -
 \int_{c(t)}\sum\limits_{i=1}^{m}L&#39;(y_i^*, y_i)
-    \vec{\nabla}_\omega f(x; \omega(t)) \cdot \vec{\nabla}_\omega f(x_i;
-\omega(t)) dt
+    \vec{\nabla}_\omega f(\vec{x}; \vec{\omega}(t)) \cdot
+\vec{\nabla}_\omega f(\vec{x}_i; \vec{\omega}(t)) dt
     \tag{1}\]</span></p>
 <figure id="pathcontinuous">
 <div class="center">
@@ -26,10 +25,10 @@ data-cites="domingos2020modellearnedgradientdescent"><a href="#ref-domingos2020m
 class="math inline">\(y_0\)</span>), the movement towards the trained
 model can be approximated as a sum of terms weighted by the similarity
 between the gradient of the inference point <span
-class="math inline">\(x\)</span> and the training data point. This
+class="math inline">\(\vec{x}\)</span> and the training data point. This
 suggests that for a smooth enough parameter space, that the strongest
 contributing terms in the sum are the ones where the vector <span
-class="math inline">\(x\)</span> are closest. Intuitively, this is
+class="math inline">\(\vec{x}\)</span> are closest. Intuitively, this is
 because we can assume some correlation of gradients for neighboring
 points but no correlation (i.e. random) for other points.</p>
 <h1 id="the-open-question">The Open Question</h1>
@@ -62,19 +61,19 @@ a higher likelihood better answer than without.</p>
 this regime. How is this approximation affected? To what extent does it
 still hold?</p>
 <h1 id="discrete-proof">Discrete Proof</h1>
-<p>Before we may discuss the limits, we must move the derive a discrete
-version of the original proof <span class="citation"
+<p>Before we may discuss the limits, we must derive a discrete version
+of the original proof <span class="citation"
 data-cites="domingos2020modellearnedgradientdescent"><a href="#ref-domingos2020modellearnedgradientdescent">[1]</a></span>.
 We will also find that the key insight that is needed to prove this is
 that we assume the model can be approximated by a hyperplane (i.e. can
 be Taylor expanded keeping up to first order derviative terms).</p>
 <p>When we undergo gradient descent, we are more or less updating our
 weights according to a rule: <span
-class="math display">\[\vec{\omega}_{n+1} = \vec{\omega}_{n} - \alpha
-\vec{\nabla}L(\vec{\omega}_n)\]</span></p>
-<p>where <span class="math inline">\(\alpha\)</span> is the learning
-rate, <span class="math inline">\(\vec{\omega}_n\)</span> the weights at
-timestep <span class="math inline">\(n\)</span> and <span
+class="math display">\[\vec{\omega}_{n+1} = \vec{\omega}_{n} -
+\alpha_{n+1} \vec{\nabla}L(\vec{\omega}_n)\]</span></p>
+<p>where <span class="math inline">\(\alpha_{n+1}\)</span> is the
+learning rate, <span class="math inline">\(\vec{\omega}_n\)</span> the
+weights at timestep <span class="math inline">\(n\)</span> and <span
 class="math inline">\(L\)</span> the loss. Note that the loss is
 implicity dependent upon the training samples <span
 class="math inline">\((x_i, y_i^*)\)</span>.</p>
@@ -113,43 +112,42 @@ class="math inline">\(O(|\omega|^2)\)</span> terms.</p>
 <p><span class="math display">\[\begin{aligned}
     \Delta f &amp; = &amp; f(\vec{x}; \vec{\omega}_{n+1}) - f(\vec{x};
 \vec{\omega}_n) \\
-    &amp; = &amp; f(\vec{x}; \vec{\omega}_{n}) -  \alpha
+    &amp; = &amp; f(\vec{x}; \vec{\omega}_{n}) -  \alpha_{n+1}
 \vec{\nabla}_\omega f \cdot \left
     (\vec{\omega}_{n+1} - \vec{\omega}_n \right ) - f(\vec{x};
 \vec{\omega}_n) \\
-    &amp; = &amp; -  \alpha \vec{\nabla}_\omega f \cdot \left
+    &amp; = &amp; -  \alpha_{n+1} \vec{\nabla}_\omega f \cdot \left
     (\vec{\omega}_{n+1} - \vec{\omega}_n \right )
 \end{aligned}\]</span></p>
 <p>If we then replace <span class="math inline">\(\vec{\omega}_{n+1} -
 \vec{\omega}_n\)</span> with Equation 2, we get:</p>
 <p><span class="math display">\[\begin{aligned}
-    \Delta f &amp; = &amp; -  \alpha \vec{\nabla}_\omega f(\vec{x})
-\cdot
+    \Delta f &amp; = &amp; -  \alpha_{n+1} \vec{\nabla}_\omega
+f(\vec{x}) \cdot
      \sum\limits_m \frac{\partial L}{\partial y_m} \vec{\nabla}_{\omega}
 f(\vec{x}_m; \vec{\omega}_n)\\
-      &amp; = &amp; - \alpha \sum \limits_m  \frac{\partial L}{\partial
-y_m}
+      &amp; = &amp; - \alpha_{n+1} \sum \limits_m  \frac{\partial
+L}{\partial y_m}
       \vec{\nabla}_\omega f(\vec{x}; \vec{\omega}_n) \cdot
 \vec{\nabla}_{\omega} f(\vec{x}_m;
       \vec{\omega}_n)
 \end{aligned}\]</span></p>
 <p>Finally, the final model will just be the sum of the <span
 class="math inline">\(\Delta\)</span>s plus the initial model:</p>
-<p><span class="math display">\[\begin{aligned}
-    f(\vec{x}; \vec{\omega_N}) &amp; = &amp; f(\vec{x}; \vec{\omega_0})
-+ \sum \limits_{k=0}^{N-1} -\alpha(\vec{\omega}_{N}) \sum
+<p><span class="math display">\[f(\vec{x}; \vec{\omega_N}) = f(\vec{x};
+\vec{\omega_0}) + \sum \limits_{k=0}^{N-1} -\alpha_{k+1} \sum
 \limits_m  \frac{\partial L}{\partial y_m}
       \vec{\nabla}_\omega f(\vec{x}; \vec{\omega}_k) \cdot
 \vec{\nabla}_{\omega} f(\vec{x}_m;
-      \vec{\omega}_k) \\
-&amp; = &amp; f(\vec{x}; \vec{\omega_0}) + \nonumber
-\end{aligned}\]</span></p>
-<p>and we end with: <span class="math display">\[f(\vec{x};
-\vec{\omega_N}) = \sum \limits_{k=0}^{N-1} -\alpha(\vec{\omega}_{N})
-\sum \limits_m L&#39;(y_i^*, y_i)
+      \vec{\omega}_k)\]</span></p>
+<p>and we end with: <span class="math display">\[\begin{split}
+f(\vec{x}; \vec{\omega_N}) = &amp; f(\vec{x}; \vec{\omega_0}) + \\
+&amp; \sum \limits_{k=0}^{N-1} -\alpha_{k+1} \sum \limits_m
+L&#39;(y_i^*, y_i)
       \vec{\nabla}_\omega f(\vec{x}; \vec{\omega}_k) \cdot
 \vec{\nabla}_{\omega} f(\vec{x}_m;
-      \vec{\omega}_k) \tag{3}\]</span></p>
+      \vec{\omega}_k) \tag{3}
+\end{split}\]</span></p>
 <p>which is the discrete version of Equation 1. Note that this is a
 similar result, except that we find that the learning rate can be
 variable so long as the function can locally be approximated by a
@@ -185,12 +183,12 @@ class="math inline">\(T_c\)</span>. We see we have a sum like:</p>
 <p><span class="math display">\[\begin{aligned}
     f(\vec{x}; \vec{\omega_N}) &amp; = &amp; f(\vec{x}; \vec{\omega_0})
 + \nonumber \\
-&amp; &amp; \sum \limits_{k=0}^{N-1} -\alpha(\vec{\omega}_{N}) \sum
-\limits_m L&#39;(y_i^*, y_i)
+&amp; &amp; \sum \limits_{k=0}^{N-1} -\alpha_{k+1} \sum \limits_m
+L&#39;(y_i^*, y_i)
       \vec{\nabla}_\omega f(\vec{x}; \vec{\omega}_k) \cdot
 \vec{\nabla}_{\omega} f(\vec{x}_m;
       \vec{\omega}_k) \nonumber \\
-&amp; &amp; + \sum \limits_{\omega_k \in T_c} - \alpha(\vec{\omega}_{N})
+&amp; &amp; + \sum \limits_{\omega_k \in T_c} - \alpha_{k+1}
 O(|\omega_{k+1} - \omega_k|^2)
 \end{aligned}\]</span></p>
 <p>Whether this terms contributes or not is an open question, and
@@ -231,15 +229,3 @@ href="http://www.deeplearningbook.org">Deep Learning</a></em> (MIT
 Press, 2016).</div>
 </div>
 </div>
-<aside id="footnotes" class="footnotes footnotes-end-of-document"
-role="doc-endnotes">
-<hr />
-<ol>
-<li id="fn1"><p><span class="math inline">\(\omega\)</span> and <span
-class="math inline">\(x\)</span> are truly vectors but for ease of
-notation we will drop the vector notation, i.e. <span
-class="math inline">\(\vec{x} \rightarrow x\)</span>, <span
-class="math inline">\(\vec{\omega} \rightarrow \omega\)</span><a
-href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</aside>
