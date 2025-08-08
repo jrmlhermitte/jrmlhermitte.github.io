@@ -140,14 +140,14 @@ class="math inline">\(\Delta\)</span>s plus the initial model:</p>
       \vec{\nabla}_\omega f(\vec{x}; \vec{\omega}_k) \cdot
 \vec{\nabla}_{\omega} f(\vec{x}_m;
       \vec{\omega}_k)\]</span></p>
-<p>and we end with: <span class="math display">\[\begin{split}
-f(\vec{x}; \vec{\omega_N}) = &amp; f(\vec{x}; \vec{\omega_0}) + \\
-&amp; \sum \limits_{k=0}^{N-1} -\alpha_{k+1} \sum \limits_m
+<p>and we end with: <span class="math display">\[\begin{array}{rcl}
+f(\vec{x}; \vec{\omega_N}) &amp; = &amp; f(\vec{x}; \vec{\omega_0}) + \\
+&amp; &amp; \sum \limits_{k=0}^{N-1} -\alpha_{k+1} \sum \limits_m
 L&#39;(y_i^*, y_i)
       \vec{\nabla}_\omega f(\vec{x}; \vec{\omega}_k) \cdot
 \vec{\nabla}_{\omega} f(\vec{x}_m;
       \vec{\omega}_k) \tag{3}
-\end{split}\]</span></p>
+\end{array}\]</span></p>
 <p>which is the discrete version of Equation 1. Note that this is a
 similar result, except that we find that the learning rate can be
 variable so long as the function can locally be approximated by a
