@@ -155,6 +155,8 @@ similar result, except that we find that the learning rate can be
 variable so long as the function can locally be approximated by a
 hyperplane.</p>
 <h1 id="discussion">Discussion</h1>
+<p><strong>Not Quite Kernel Machine With Local Minima (But Still
+Approximate?)</strong></p>
 <p>Equation 3 demonstrates to us that we need simply assume the method
 is locally approximated by a hyperplane at each time step.</p>
 <p>We can quickly see this breaks down when this is not true. When can
@@ -197,6 +199,11 @@ it’s likely related to ratio of local minima encountered to total steps.
 Training usually involves some sort of regularization which attempts to
 smooth the space. I would expect this ratio to be small, and likely
 there to be little contribution.</p>
+<p><strong>Kernel Machine When Initialized</strong></p>
+<p>Note that a simple solution to this problem would be to simply
+initialize parameters close to the global minimum. However, this weakens
+the kernel machines argument. Gradient descent is only a kernel machine
+if we started near the solution.</p>
 <h1 id="follow-up">Follow Up</h1>
 <p><a
 href="https://nbviewer.org/github/Janko-dev/path_kernel_machine/blob/main/path_kernel_machine.ipynb">Janko-dev’s
