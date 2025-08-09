@@ -1,4 +1,4 @@
-<h1 id="introduction">Introduction</h1><a href="/pdfs/kernel_machines.pdf">(pdf version)</a>
+<h1 id="introduction">Introduction</h1><a href="/pdfs/gradient-descent-and-kernel-machines.pdf">(pdf version)</a>
 <p>Domingos et. al demonstrates a relation between the similarity of
 training data samples and the inference point over the history of the
 changes of parameters for any model learned by gradient descent<span
@@ -93,8 +93,8 @@ gradient losses with respect to the input:</p>
 data points with <span class="math inline">\(y_m = f(\vec{x}_m;
 \vec{\omega}_n)\)</span>. Finally, we have:</p>
 <p><span class="math display">\[\vec{\omega}_{n+1} - \vec{\omega}_{n} =
-\sum\limits_m \frac{\partial L}{\partial y_m} \vec{\nabla}_{\omega}
-f(\vec{x}_m; \vec{\omega}_n) \tag{2}\]</span></p>
+-\alpha_{n+1} \sum\limits_m \frac{\partial L}{\partial y_m}
+\vec{\nabla}_{\omega} f(\vec{x}_m; \vec{\omega}_n) \tag{2}\]</span></p>
 <p>The change of the model at each timestep is: <span
 class="math display">\[\Delta f = f(\vec{x}; \vec{\omega}_{n+1}) -
 f(\vec{x}; \vec{\omega}_n)\]</span></p>
@@ -112,11 +112,11 @@ class="math inline">\(O(|\omega|^2)\)</span> terms.</p>
 <p><span class="math display">\[\begin{aligned}
     \Delta f &amp; = &amp; f(\vec{x}; \vec{\omega}_{n+1}) - f(\vec{x};
 \vec{\omega}_n) \\
-    &amp; = &amp; f(\vec{x}; \vec{\omega}_{n}) -  \alpha_{n+1}
-\vec{\nabla}_\omega f \cdot \left
+    &amp; = &amp; f(\vec{x}; \vec{\omega}_{n}) - \vec{\nabla}_\omega f
+\cdot \left
     (\vec{\omega}_{n+1} - \vec{\omega}_n \right ) - f(\vec{x};
 \vec{\omega}_n) \\
-    &amp; = &amp; -  \alpha_{n+1} \vec{\nabla}_\omega f \cdot \left
+    &amp; = &amp; \vec{\nabla}_\omega f \cdot \left
     (\vec{\omega}_{n+1} - \vec{\omega}_n \right )
 \end{aligned}\]</span></p>
 <p>If we then replace <span class="math inline">\(\vec{\omega}_{n+1} -
