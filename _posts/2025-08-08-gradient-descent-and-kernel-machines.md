@@ -188,8 +188,8 @@ L&#39;(y_i^*, y_i)
       \vec{\nabla}_\omega f(\vec{x}; \vec{\omega}_k) \cdot
 \vec{\nabla}_{\omega} f(\vec{x}_m;
       \vec{\omega}_k) \nonumber \\
-&amp; &amp; + \sum \limits_{\omega_k \in T_c} - \alpha_{k+1}
-O(|\omega_{k+1} - \omega_k|^2)
+&amp; &amp; + \sum \limits_{\omega_k \in T_c} + O(|\omega_{k+1} -
+\omega_k|^2)
 \end{aligned}\]</span></p>
 <p>Whether this terms contributes or not is an open question, and
 something that will have to be empirically determined. Roughly, I think
