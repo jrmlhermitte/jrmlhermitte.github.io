@@ -13,6 +13,8 @@ naively explore when it might be worth considering an agent.  Although today
 most uses of agents are quite complex involving multiple agents, it will assume
 a very simple one agent setup.
 
+![Agent And Verifier](/images/2025-08-12-agent-and-verifier.png)
+
 I hope to in the future elaborate on a more complex setup.
 
 ### Formalizing The Problem
