@@ -1,5 +1,10 @@
 ## When Are Agents Worth It?
 
+**TL;DR** Agents are only worth it if the probability of their success, $$P_s$$, 
+is greater than the time it takes to verify the task over the total time it
+would have taken to complete the task without an agent, $$\frac{\mathrm{Verification Time}}{\mathrm{Actual Task Time}}$$ , so $$P_s >
+\frac{\mathrm{Verification Time}}{\mathrm{Actual Task Time}}$$.
+
 ### Introduction
 
 Agents are so prevalent today that I don't believe they need any introduction.
@@ -13,9 +18,15 @@ naively explore when it might be worth considering an agent.  Although today
 most uses of agents are quite complex involving multiple agents, it will assume
 a very simple one agent setup.
 
-![Agent And Verifier](/images/2025-08-12-agent-and-verifier.png)
-
 I hope to in the future elaborate on a more complex setup.
+
+<figure class="image">
+  <img src="/images/2025-08-12-agent-and-verifier.png" alt="Agent And Verifier">
+  <figcaption>Gemini prompt: Draw me a picture of an agent as a robot alongside
+  a human verifying a document the agent handed it. The agent also has as
+  wristwatch and is checking the time.
+  </figcaption>
+</figure>
 
 ### Formalizing The Problem
 
@@ -23,7 +34,11 @@ Let's say we have an agent $$A$$ that is tasked to solve problems. When is it us
 
 - $$T$$ $$\rightarrow$$ The total time a task takes
 - $$P_s$$ $$\rightarrow$$ The probability of an agent being successful
-- $$V_r$$ $$\rightarrow$$ The percentage of the total task time it takes to verify the result of an agent. For simplicity, this will include the time spent fixing/tweaking the result if it is almost correct.
+- $$V_r := \frac{\mathrm{Verification Time}}{\mathrm{Actual Task Time}}$$
+$$\rightarrow$$ The fraction of the time it takes to verify the task over the total
+time it would have taken to complete the task without an agent. For simplicity,
+this will include the time spent fixing/tweaking the result if it is almost
+correct.
 
 Now, in reality, longer tasks tend to be harder for an agent as they're
 generally more complex problems, so $$P_s$$ should not be constant over that. The verification ratio can sometimes change as well. So let's assume $$P_s \rightarrow P_s(T)$$ and $$V_r \rightarrow V_r(T)$$. Effectively, what we're assuming here is that tasks of the same length have the same difficulty. This isn't quite right (task time is not one-to-one with its complexity), but let's just start with this to get an idea of the limits of our agents. From now on, we'll just assume that the tasks here have the same complexity (example complexity categories: doc writing, code migrations etc).
