@@ -17,44 +17,44 @@ I hope to in the future elaborate on a more complex setup.
 
 ### Formalizing The Problem
 
-Let's say we have an agent $A$ that is tasked to solve problems. When is it useful, and when might we be better off taking a manual approach? We can reduce this question down to a few simple variables:
+Let's say we have an agent $$A$$ that is tasked to solve problems. When is it useful, and when might we be better off taking a manual approach? We can reduce this question down to a few simple variables:
 
-- $T$ $\rightarrow$ The total time a task takes
-- $P_s$ $\rightarrow$ The probability of an agent being successful
-- $V_r$ $\rightarrow$ The percentage of the total task time it takes to verify the result of an agent. For simplicity, this will include the time spent fixing/tweaking the result if it is almost correct.
+- $$T$$ $$\rightarrow$$ The total time a task takes
+- $$P_s$$ $$\rightarrow$$ The probability of an agent being successful
+- $$V_r$$ $$\rightarrow$$ The percentage of the total task time it takes to verify the result of an agent. For simplicity, this will include the time spent fixing/tweaking the result if it is almost correct.
 
 Now, in reality, longer tasks tend to be harder for an agent as they're
-generally more complex problems, so $P_s$ should not be constant over that. The verification ratio can sometimes change as well. So let's assume $P_s \rightarrow P_s(T)$ and $V_r \rightarrow V_r(T)$. Effectively, what we're assuming here is that tasks of the same length have the same difficulty. This isn't quite right (task time is not one-to-one with its complexity), but let's just start with this to get an idea of the limits of our agents. From now on, we'll just assume that the tasks here have the same complexity (example complexity categories: doc writing, code migrations etc).
+generally more complex problems, so $$P_s$$ should not be constant over that. The verification ratio can sometimes change as well. So let's assume $$P_s \rightarrow P_s(T)$$ and $$V_r \rightarrow V_r(T)$$. Effectively, what we're assuming here is that tasks of the same length have the same difficulty. This isn't quite right (task time is not one-to-one with its complexity), but let's just start with this to get an idea of the limits of our agents. From now on, we'll just assume that the tasks here have the same complexity (example complexity categories: doc writing, code migrations etc).
 
 ### Fire And Forget
 
 One way agents could be used is a fire and forget type approach. Say you have 100 tasks (100 bugs), and they're all about the same complexity.
-You have a $P_s$ chance of succeeding, and thus $(1 - P_s)$ of failing.
-When you succeed, you spend the verification time, $V_r T$ on the problem.
+You have a $$P_s$$ chance of succeeding, and thus $$(1 - P_s)$$ of failing.
+When you succeed, you spend the verification time, $$V_r T$$ on the problem.
 When they fail, you suffer the verification plus total time (since you actually
-have to work on the problem yourself: $T(1 + V_r)$.
+have to work on the problem yourself: $$T(1 + V_r)$$.
 
-Let's say the time you take for one task is $\tau$, which is a random variable.
+Let's say the time you take for one task is $$\tau$$, which is a random variable.
 The expectation is the the sum of these two cases:
 
-```math
+$$
 \begin{align*}
 \langle \tau \rangle & = & P_s V_r T + (1 - P_s) T (1 + V_r) \\
 & = & T \left ( P_s V_r + (1 - P_s) (1 + V_r) \right )\\
 & = & T \left ( P_s V_r + 1 - P_s + V_r - P_s V_r \right )\\
 & = & T \left ( 1 + V_r - P_s \right )\\
 \end{align*}
-```
+$$
 
 Subtracting the time we would have taken for the task, we get:
 
-```math
+$$
 \begin{align*}
 \frac{\Delta \langle \tau \rangle}{T} & = & V_r - P_s
 \end{align*}
-```
+$$
 
-This $\Delta \langle \tau \rangle$ is the additional time gained/lost.
+This $$\Delta \langle \tau \rangle$$ is the additional time gained/lost.
 We want this to be negative so that we **reduce** the total time we spend
 on tasks. We quickly see that to reduce this, we just need the probability of success to be less than the verification ratio.
 
@@ -65,46 +65,46 @@ retry and randomize until they succeed. What happens in the best case?
 
 The cases are simple:
 
-- $P_s$ chance of success, spent $V_rT$ time
-- $(1-P_s)$ chance to fail first time, $P_s$ after to succeed, spent $2V_rT$ time
+- $$P_s$$ chance of success, spent $$V_rT$$ time
+- $$(1-P_s)$$ chance to fail first time, $$P_s$$ after to succeed, spent $$2V_rT$$ time
 - etc
 
 The expectated time is the sum of the time spent in each of these cases times
 their probability:
 
-```math
+$$
 \begin{align*}
 \langle \tau \rangle & = & \sum \limits_{i=0}^{\infty} P_s (1 - P_s)^{i-1} i V_r T \\
 & = & V_r T \sum \limits_{i=0}^{\infty} P_s (1 - P_s)^{i-1} i
 \end{align*}
-```
+$$
 
 This is a well known formula which can be derived by simply taking
-$f = (1 - P_s)$, the sum $S = \sum \limits_{i=0}^{\infty} f^{i-1} i$ and
-subtracing these two quantities: $S - f S$. I will not go through the
+$$f = (1 - P_s)$$, the sum $$S = \sum \limits_{i=0}^{\infty} f^{i-1} i$$ and
+subtracing these two quantities: $$S - f S$$. I will not go through the
 derivation and leave it as an exercise.
 
 The result is then:
 
-```math
+$$
 \begin{align*}
 \langle \tau \rangle & = & V_r T \sum \limits_{i=0}^{\infty} P_s (1 - P_s)^{i-1} i \\
 & = & V_r T \frac{1}{P_s} = T \frac{V_r}{P_s}
 \end{align*}
-```
+$$
 
-or, in terms of $\frac{\langle \Delta \tau \rangle}{T}$:
+or, in terms of $$\frac{\langle \Delta \tau \rangle}{T}$$:
 
-```math
+$$
 \begin{align*}
 \frac{\langle \Delta \tau \rangle}{T} & = & \frac{V_r}{P_s} - 1
 & = & \frac{1}{P_s} \left ( V_r - P_s \right )
 \end{align*}
-```
+$$
 
 We can see in this case, if we keep trying, assuming the model will be right
-$P_s$ (so the prob of success doesn't change knowing the model previously failed
-for example), we will have saved time if $P_s > V_r$. This is the same result as
+$$P_s$$ (so the prob of success doesn't change knowing the model previously failed
+for example), we will have saved time if $$P_s > V_r$$. This is the same result as
 for the fire and forget case.
 
 ### Which Is Better?
@@ -113,14 +113,14 @@ This brings an interesting question. As we develop more agents, which case is be
 
 If we take the ratio:
 
-```math
+$$
 \begin{align*}
 \frac{\mathrm{FireAndForget}}{\mathrm{TryForever}} & = & \frac{V_r - P_s}{\frac{1}{P_s} \left ( V_r - P_s \right) } \\
 & = & P_s
 \end{align*}
-```
+$$
 
-we see that it just depends on $P_s$. Since we know that $0 \le P_s \le 1$, we quickly see that this ratio is less than 1, suggesting that the try forever approach has a larger gain $\langle \Delta \tau \rangle$.
+we see that it just depends on $$P_s$$. Since we know that $$0 \le P_s \le 1$$, we quickly see that this ratio is less than 1, suggesting that the try forever approach has a larger gain $$\langle \Delta \tau \rangle$$.
 
 This brings in an interesting question. We are trending towards the direction of having a multitude of agents with different strengths. At some point, the diversity of agents will likely make the try forever approach eventually succeed in most cases and be worth the effort. This is an interesting avenue of innovation and possibility.
 
@@ -145,7 +145,7 @@ would produce enough variety.
 
 #### Document Writing
 
-The verification overhead $V_r$ for these problems tends to be pretty high.
+The verification overhead $$V_r$$ for these problems tends to be pretty high.
 In my opintion, I feel likely better off writing the documents myself unless
 the writing is a very basic information retrieval task (ex: take this bug and
 add it to the troubleshooting page or FAQ).
