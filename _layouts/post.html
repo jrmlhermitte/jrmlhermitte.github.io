@@ -66,21 +66,6 @@ layout: default
         async>
       </script>
     </p>
-    <p>
-    <!-- LikeBtn.com BEGIN -->
-    <!-- The data identifier will be a base 64 encoded string of the title and date. This is more portable.-->
-    <span 
-      class="likebtn-wrapper" 
-      name="{{ page.title }}"
-      data-ef_voting="grow"
-      data-rich_snippet="true"
-      data-identifier="{{ page.title | append: ', ' | append: page.date }}"
-      data-item_title="{{ page.title }}"
-      data-item_date="{{ page.date }}"
-    ></span>
-    <script>(function(d,e,s){if(d.getElementById("likebtn_wjs"))return;a=d.createElement(e);m=d.getElementsByTagName(e)[0];a.async=1;a.id="likebtn_wjs";a.src=s;m.parentNode.insertBefore(a, m)})(document,"script","//w.likebtn.com/js/w/widget.js");</script>
-    <!-- LikeBtn.com END -->
-    </p>
     {% include navlinks.html %}
   </div>
 
