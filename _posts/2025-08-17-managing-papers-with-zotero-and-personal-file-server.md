@@ -4,14 +4,29 @@
 capabilities. 99% of this post shows you how to link your own **secure** storage
 server to store the pdfs and annotations.
 
-<img src="/images/2025-08-17-random-scribbles.png" alt="random-scribbles" width="300"/>
+<figure>
+<img src="/images/2025-08-17-zotero-example.png" alt="zotero-example" width="300"/>
+<figcaption>Example annotations using Zotero of <a href="https://dl.acm.org/doi/10.1145/279227.279229">The Part-time Parliament</a>. Note these annotations are as serious as Leslie Lamport showing up in an <a href="https://lamport.azurewebsites.net/pubs/pubs.html">Indiana Jones outfit</a>.</figcaption>
+</figure>
+
 
 ## Motivation
-I read a lot of papers like anyone interested in the ML space would. Often, when
-reading papers, I'm on the go and rarely have my laptop with me. I'll have
-either a tablet if I'm lucky, or likely simply my phone in a crowded subway. I
-need a solution that lets me keep track of what I'm reading and switch between
-devices easily.
+I try read a lot of papers to try to stay up to date on recent work and also as
+a potential source of new ideas. Reading papers is a nice low-overhead way to
+have a challenging dialogue with the authors, which can often lead to gaining a
+new perspective, and sometimes coming up with a new idea you or the authors
+would not have imagined. Often, when reading papers, I'm on the go and rarely
+have my laptop with me. I'll have either a tablet if I'm lucky, or likely simply
+my phone in a crowded subway. I need a solution that lets me keep track of what
+I'm reading and switch between devices easily.
+
+<figure>
+<img src="/images/2025-08-17-random-scribbles.png" alt="random-scribbles" width="300"/>
+<figcaption>Sample annotation of <a href="https://lamport.azurewebsites.net/pubs/time-clocks.pdf">
+Time, Clocks, and the Ordering of Events in a Distributed System
+</a> through Apple Books.
+</figcaption>
+</figure>
 
 I have been keeping it embarrassingly simple and using Apple Books as my viewer
 and annotator, and icloud as my storage. However, I have grown to the point where I
