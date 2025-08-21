@@ -1,4 +1,4 @@
-# PDF Store With Gemini
+# Writing PDF Store App With Gemini
 
 ## Motivation
 
