@@ -114,7 +114,6 @@ plugin](https://react-pdf-viewer.dev/plugins/highlight/).  I then insisted that
 it try to use it and it [eventually
 did](https://github.com/jrmlhermitte/pdf_reader/blob/56c5296860ccaf8aa68dd87402ba1b47153e49ee/frontend/src/PdfViewer.tsx#L5)
 (phew, because UI's are not my forte).
- 
 <figure>
 <img src="/images/2025-08-20-engineer-engifar.jpeg" alt="engineer-engifar" width="200">
 <figcaption>
