@@ -106,20 +106,20 @@ I have noticed a few other things I believe worth highlighting. Here are some
 other takeaways:
 
 1. **Gemini is a software overengineer**: Gemini will sometimes choose solution more complex
-than needed. For example, at first when I asked for Gemini to add highlighting,
-it wrote its own custom tool. It also kept making mistakes, getting the
-coordinate conversions wrong, and calling methods for converting them that don't
-exist. Surprised nothing existed, I did a simple search and found [this
-plugin](https://react-pdf-viewer.dev/plugins/highlight/).  I then insisted that
-it try to use it and it [eventually
-did](https://github.com/jrmlhermitte/pdf_reader/blob/56c5296860ccaf8aa68dd87402ba1b47153e49ee/frontend/src/PdfViewer.tsx#L5)
-(phew, because UI's are not my forte).
-<figure>
-<img src="/images/2025-08-20-engineer-engifar.jpeg" alt="engineer-engifar" width="200">
-<figcaption>
-Credit: <a href="https://github.com/google-gemini/gemini-cli">https://imgur.com/gallery/before-lock-yK9GRw8</a>
-</figcaption>
-</figure>
+    than needed. For example, at first when I asked for Gemini to add highlighting,
+    it wrote its own custom tool. It also kept making mistakes, getting the
+    coordinate conversions wrong, and calling methods for converting them that don't
+    exist. Surprised nothing existed, I did a simple search and found [this
+    plugin](https://react-pdf-viewer.dev/plugins/highlight/).  I then insisted that
+    it try to use it and it [eventually
+    did](https://github.com/jrmlhermitte/pdf_reader/blob/56c5296860ccaf8aa68dd87402ba1b47153e49ee/frontend/src/PdfViewer.tsx#L5)
+    (phew, because UI's are not my forte).
+    <figure>
+    <img src="/images/2025-08-20-engineer-engifar.jpeg" alt="engineer-engifar" width="200">
+    <figcaption>
+    Credit: <a href="https://github.com/google-gemini/gemini-cli">https://imgur.com/gallery/before-lock-yK9GRw8</a>
+    </figcaption>
+    </figure>
 2. **Do not give Gemini git access**: Gemini sometimes made a bad change and
 wanted to commit it over an uncommitted working change. I never allowed access
 and simply committed when I felt the change was ready (and working).
