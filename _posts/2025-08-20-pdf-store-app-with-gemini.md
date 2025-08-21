@@ -135,7 +135,7 @@ option which seemed good to me.
 4. **Run the server and test it yourself** During prototyping, you don't really
 know what you want. I advise against letting gemini try to run the server. Run
 it yourself, see what errors Gemini runs into. Often, Gemini can get stuck
-trying to run the server and examinig more output than it needs and this can
+trying to run the server and examining more output than it needs and this can
 waste valuable tokens.
 5. **Loops happen, ensure you have manual validation checkpoints**:
 I had Gemini always ask me when it wanted to run the server. Most of the time I
@@ -145,7 +145,7 @@ bad change to fix it, see the server fail, undo it, see the warning again, then
 attempt to introduce the bad change again etc etc.
 6. **Eventually do add unit tests**. This will allow gemini to partially validate its changes,
 and avoid you from having to copy paste errors you see back at it. Gemini makes mistakes
-like we all do. Unfortuantely, I did not do this here (1-2 hours is not much
+like we all do. Unfortunately, I did not do this here (1-2 hours is not much
 time). I mainly write it because I did see Gemini run into simple errors that
 resulted in the server no longer working that a unit test could have caught
 earlier.
