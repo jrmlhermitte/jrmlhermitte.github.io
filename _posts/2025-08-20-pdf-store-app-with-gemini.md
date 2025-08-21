@@ -1,5 +1,9 @@
 # Writing PDF Store App With Gemini
 
+TL;DR: Wrote pdf store app with Gemini. Try it out here: <a
+href="https://pdf-reader-app-latest.onrender.com/">https://pdf-reader-app-latest.onrender.com/</a>,
+or scroll down to see screenshots.
+
 ## Motivation
 
 I have been searching for an app that allows me to aggregate pdfs and annotate
