@@ -1,14 +1,15 @@
 # Managing Papers With Zotero For Free Using Caddy And Tailscale
 
-**TL;DR**: I've chosen Zotero for papers as it has very nice annotation
-capabilities. 99% of this post shows you how to link your own **secure** storage
-server to store the pdfs and annotations.
+**TL;DR**: I show you how to setup your own **secure** remote storage for Zotero
+without needing to rely on cloud storage.
 
 <figure>
-<img src="/images/2025-08-17-zotero-example.png" alt="zotero-example" width="300"/>
-<figcaption>Example annotations using Zotero of <a href="https://dl.acm.org/doi/10.1145/279227.279229">The Part-time Parliament</a>. Note these annotations are as serious as Leslie Lamport showing up in an <a href="https://lamport.azurewebsites.net/pubs/pubs.html">Indiana Jones outfit</a>.</figcaption>
+<img src="/images/2025-08-17-tailscale-diagram.png">
+<figcaption>
+Overview of setup. You will setup a server hosting pdfs and annotations that
+only accepts requests through a free private VPN (tailscale).
+</figcaption>
 </figure>
-
 
 ## Motivation
 I try read a lot of papers to try to stay up to date on recent work and also as
@@ -41,8 +42,14 @@ I'm currently at 432 pdfs totalling at 2.4GB with this file size distribution (n
 ![file sizes](/images/2025-08-17-file-sizes.png)
 
 This led to the need for a better solution. After doing some reading, I have
-found that [Zotero](https://www.zotero.org/) meets all my needs. However, you
-still have to [pay for storage](https://www.zotero.org/storage). I'm not sure
+found that [Zotero](https://www.zotero.org/) meets all of my needs.
+
+<figure>
+<img src="/images/2025-08-17-zotero-example.png" alt="zotero-example" width="300"/>
+<figcaption>Example annotations using Zotero of <a href="https://dl.acm.org/doi/10.1145/279227.279229">The Part-time Parliament</a>. Note these annotations are as serious as Leslie Lamport showing up in an <a href="https://lamport.azurewebsites.net/pubs/pubs.html">Indiana Jones outfit</a>.</figcaption>
+</figure>
+
+However, you still have to [pay for storage](https://www.zotero.org/storage). I'm not sure
 I'm ready to do that yet as I'm not sure how much I want to commit to Zotero yet
 so I wanted to find a better alternative. I found Zotero does allow for using an
 alternate storage option so long as it supports the
@@ -52,11 +59,12 @@ they list free providers
 options are still a bit small for me, especially since I'm already at 2.4GB of
 mostly papers. Some are also not in the US, which I would hesitate.
 
-Given it's pretty easy to switch storage servers with Zotero (so I can change my
-mind later), I decided instead to run this out of my home server for now.
-However, doing so poses great risk and most of the work in getting this done
-right has nothing to do with the webserver itself but the security around it.
-This blog post will show you how to accomplish this.
+Given it's pretty easy to switch storage servers with Zotero, I decided instead
+to run this out of my home server for now.  However, doing so poses great risk
+and most of the work in getting this done right has nothing to do with the
+webserver itself but the security around it.  This blog post will show you how
+to accomplish this in a secure way.
+
 
 [^1]: Yes, there are large pdfs, for example, [Nymeria: A Massive Collection of Multimodal Egocentric Daily Motion in the Wild](https://arxiv.org/abs/2406.09905) is a 50MB pdf, or one of my favorites, this 29MB pdf [Generating Physically Stable and Buildable Brick Structures from Text](https://arxiv.org/abs/2505.05469). The top 4 are actually textbooks, with the largest at 152MB.
 
@@ -79,7 +87,12 @@ as this information will appear in a public ledger of https certificates (see
 
 ### Step 3: Get an HTTPS certificate for your server
 
-This only needs to be run on the server that will host the webdav service.
+Ipads (and possibly other devices) only allow https connections. This means your
+web server will need to provide a certificate that was issued by a certificate
+authority that your IPad already trusts[^2]. Fortunately, tailscale allows you to
+generate certificates through [Let's
+Encrypt](https://tailscale.com/kb/1153/enabling-https) This only needs to be run
+on the server that will host the webdav service.
 1. Enable https certificates for your tailnet
 [here](https://tailscale.com/kb/1153/enabling-https).
 
@@ -101,6 +114,10 @@ NOTE: This will only create a cert once, which at the time of this writing, are
 valid for 90 days. When the cert expires, you can either call the `tailscale
 cert` command again or optionally, you can install [this extension](https://github.com/tailscale/caddy-tailscale).
 
+[^2]: It's possible to install a self-signed certificate on an ipad. However,
+it's a slightly involved manual process and not to mention risky. I recommend
+against building your own security unless you absolutely know what you're doing,
+and you're willing to pay the upfront cost of proper monitoring and alerting.
 
 ### Step 4: Lock Down Your Server
 **DO NOT SKIP THIS STEP**
@@ -162,7 +179,11 @@ In the configuration file `/etc/default/tailscaled` for the tailscale daemon, ad
 TS_PERMIT_CERT_UID=caddy
 ```
 
-This will give the `caddy` user (which caddy should run as) permission to access the certificates from tailscale. Interestingly, caddy out of the box knows to try to do this when it sees domains that end in `*.ts.net`, so nothing else needs to be done.
+This will give the `caddy` user (which caddy should run as) permission to access
+the certificates from tailscale. Interestingly, caddy out of the box knows to
+try to do this when it sees domains that end in `*.ts.net`, so nothing else
+needs to be done (see
+[here](https://github.com/caddyserver/caddy/blob/b9710c6af4f764b463a8e0c080783f2b7fb15ce0/modules/caddyhttp/autohttps.go#L296-L302)).
 
 After this edit, make sure to restart the daemon. For example, if using `systemd` you would run:
 
