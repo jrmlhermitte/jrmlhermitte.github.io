@@ -66,7 +66,12 @@ webserver itself but the security around it.  This blog post will show you how
 to accomplish this in a secure way.
 
 
-[^1]: Yes, there are large pdfs, for example, [Nymeria: A Massive Collection of Multimodal Egocentric Daily Motion in the Wild](https://arxiv.org/abs/2406.09905) is a 50MB pdf, or one of my favorites, this 29MB pdf [Generating Physically Stable and Buildable Brick Structures from Text](https://arxiv.org/abs/2505.05469). The top 4 are actually textbooks, with the largest at 152MB.
+[^1]: Yes, there are large pdfs, for example, [Nymeria: A Massive Collection of
+    Multimodal Egocentric Daily Motion in the
+    Wild](https://arxiv.org/abs/2406.09905) is a 50MB pdf, or one of my favorites,
+    this 29MB pdf [Generating Physically Stable and Buildable Brick Structures from
+    Text](https://arxiv.org/abs/2505.05469). The top 4 are actually textbooks, with
+    the largest at 152MB.
 
 ### Step 1: Choose Your Server
 
@@ -115,9 +120,9 @@ valid for 90 days. When the cert expires, you can either call the `tailscale
 cert` command again or optionally, you can install [this extension](https://github.com/tailscale/caddy-tailscale).
 
 [^2]: It's possible to install a self-signed certificate on an ipad. However,
-it's a slightly involved manual process and not to mention risky. I recommend
-against building your own security unless you absolutely know what you're doing,
-and you're willing to pay the upfront cost of proper monitoring and alerting.
+    it's a slightly involved manual process and not to mention risky. I recommend
+    against building your own security unless you absolutely know what you're doing,
+    and you're willing to pay the upfront cost of proper monitoring and alerting.
 
 ### Step 4: Lock Down Your Server
 **DO NOT SKIP THIS STEP**
