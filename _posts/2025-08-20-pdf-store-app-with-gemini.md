@@ -23,7 +23,7 @@ $ gemini
 
 Here are the highlights of my 1-2 hour interaction spread over 3 days:
 
-### Day 1: From Scratch
+### Day 1: From Scratch (~30 min)
 - Write me a pdf uploader and viewer app. It created one that allows me to
 provide pdf links, and lists the ones I have previously uploaded. Clicking on
 them opens up a pdf viewer.
@@ -50,20 +50,41 @@ Very promising.
     larger project much quicker). As a matter of fact, I'm jealous because their
     careers will actually accelerate way faster!  :)
 
-### Day 2: Add a feature to Existing App
+### Day 2: Add a feature to Existing App (~15-20 min)
 - Add the ability to add scribble annotations to the pdf as a drawing overlaid on top of the pdf
 
 Took a few tries and the feature isn't great (scribbles don't follow page), but
 serves as a good MVP for future iteration.
 
-### Day 3: Prepare for Deployment
-- Add a dockerfile to allow me to deploy this app.
+### Day 3: Prepare for Deployment (~5min)
+- Add a dockerfile to allow me to deploy this app. This was just a one liner and
+  then I had to go.
 
 Gemini both wrote a Dockerfile and had the backend serve the frontend to make it easier to deploy.
 
-### Day 4 (No Gemini): Manually Deploy to Render
-I did some quick searches for places to manually deploy these days. Render
-seemed like a good choice.
+### Day 4 (No Gemini): Manually Deploy to Render (~30 min)
+I did some quick searches for places to manually deploy these days.
+[Render](http://render.com) seemed like a good choice. I tagged and uploaded my
+docker image to
+[dockerhub](https://hub.docker.com/repository/docker/jrmlhermitte/pdf_reader_app/tags/latest/sha256-70cab5ec2e5895416652ab79958a311ca4dcb3104cc3f5ec5df48fc192acdb0f).
+Deploying the image failed on Render because Gemini had hard-coded some urls
+which worked locally but did not work in docker. I just updated them.
+
+These were more or less trivial path updates, for example, the path to the compiled frontend files was:
+```
+app.mount("/static", StaticFiles(directory="/dist"), name="static")
+```
+
+but should have been:
+```
+app.mount("/static", StaticFiles(directory="/app/frontend/dist"), name="static")
+```
+
+as the Dockerfile was copying it there:
+```
+COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
+```
+
 
 ## The outcome
 
@@ -71,6 +92,7 @@ I deployed the app live at <a
 href="https://pdf-reader-app-latest.onrender.com/">https://pdf-reader-app-latest.onrender.com/</a>.
 Try it out. It's still barebones, but for very little time commitment, I think
 it's off to a pretty good start.
+
 
 **NOTE**: It will take about a minute to load and may not work if
 there is high traffic; I'm using freebie quota.
@@ -120,7 +142,7 @@ other takeaways:
     Credit: <a href="https://github.com/google-gemini/gemini-cli">https://imgur.com/gallery/before-lock-yK9GRw8</a>
     </figcaption>
     </figure>
-2. **Do not give Gemini git access**: Gemini sometimes made a bad change and
+2. **Do not give Gemini git access (or access to anything that is not backed up, really)**: Gemini sometimes made a bad change and
 wanted to commit it over an uncommitted working change. I never allowed access
 and simply committed when I felt the change was ready (and working).
 3. **Be specific on the product goal, but loose on the implementation details**: This is
