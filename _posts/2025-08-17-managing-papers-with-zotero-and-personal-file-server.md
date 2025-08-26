@@ -2,6 +2,8 @@
 
 **TL;DR**: I show you how to setup your own **secure** remote storage for Zotero
 without needing to rely on cloud storage.
+Jump to the [how to setup your own secure storage](#how-to-setup-your-own-secure-storage)
+section for how to do this.
 
 <figure>
 <img src="/images/2025-08-17-tailscale-diagram.png">
@@ -37,30 +39,68 @@ with [arXiv for example](https://arxiv.org/stats/monthly_submissions) almost
 doubling in 2020 (at about 14000) to 24000 in 2025:
 ![arvxiv graph](/images/2025-08-17-arxiv-graph.png).
 
-I'm currently at 432 pdfs totalling at 2.4GB with this file size distribution (note the x-axis is logarithmic, in powers of two) [^1]:
+I'm currently at 432 pdfs and Apple Books + paper note taking is no longer
+cutting it for me.
 
-![file sizes](/images/2025-08-17-file-sizes.png)
 
+## The New Setup
 This led to the need for a better solution. After doing some reading, I have
-found that [Zotero](https://www.zotero.org/) meets all of my needs.
+found that [Zotero](https://www.zotero.org/) meets all of my needs. For
+additional note taking and tracking of papers, I have found
+[Notion](https://www.notion.so/), with the combination of a [Notero Plugin](https://github.com/dvanoni/notero)
+to sync Zotero files into Notion meets my needs there.
+See [this nice blog post](https://medium.com/@anna-everett/how-i-read-annotate-organize-research-papers-using-zotero-notion-33057054f57a)
+on how to get the two setup together.
+Perfect, I can annotate in Zotero:
 
 <figure>
 <img src="/images/2025-08-17-zotero-example.png" alt="zotero-example" width="300"/>
 <figcaption>Example annotations using Zotero of <a href="https://dl.acm.org/doi/10.1145/279227.279229">The Part-time Parliament</a>. Note these annotations are as serious as Leslie Lamport showing up in an <a href="https://lamport.azurewebsites.net/pubs/pubs.html">Indiana Jones outfit</a>.</figcaption>
 </figure>
 
-However, you still have to [pay for storage](https://www.zotero.org/storage). I'm not sure
-I'm ready to do that yet as I'm not sure how much I want to commit to Zotero yet
-so I wanted to find a better alternative. I found Zotero does allow for using an
-alternate storage option so long as it supports the
+And adding a pdf to Zotero automatically adds it to Notion:
+<figure>
+<img src="/images/2025-08-17-notion-example.png">
+<figcaption>
+Example using Notion.
+</figcaption>
+</figure>
+
+With Page view:
+<figure>
+<img src="/images/2025-08-17-notion-page-view.png">
+<figcaption>
+Page view example.
+</figcaption>
+</figure>
+
+And a notes section I can add to:
+<figure>
+<img src="/images/2025-08-17-notion-page-view-notes.png">
+<figcaption>
+Notes in page view.
+</figcaption>
+</figure>
+
+## The Problem
+Unfortunately, after getting these setup, I ran into an additional problem.
+My 432 pdfs are totalling at 2.4GB with this file size distribution (note the
+x-axis is logarithmic, in powers of two) [^1]:
+
+![file sizes](/images/2025-08-17-file-sizes.png)
+
+The storage is a problem with Zotero as you have to [pay for storage](https://www.zotero.org/storage) past 300MB.
+I'm not sure I'm ready to do that yet as I'm not sure how much I want to commit
+to Zotero yet so I wanted to find a better alternative. I found Zotero does
+allow for using an alternate storage option so long as it supports the
 [WebDAV](https://en.wikipedia.org/wiki/WebDAV) protocol. As a matter of fact,
 they list free providers
 [here](https://www.zotero.org/support/kb/webdav_services). However, the storage
 options are still a bit small for me, especially since I'm already at 2.4GB of
-mostly papers. Some are also not in the US, which I would hesitate.
+mostly papers.
 
 Given it's pretty easy to switch storage servers with Zotero, I decided instead
-to run this out of my home server for now.  However, doing so poses great risk
+to run this out of my home server for now. However, doing so poses great risk
 and most of the work in getting this done right has nothing to do with the
 webserver itself but the security around it.  This blog post will show you how
 to accomplish this in a secure way.
@@ -72,6 +112,8 @@ to accomplish this in a secure way.
     this 29MB pdf [Generating Physically Stable and Buildable Brick Structures from
     Text](https://arxiv.org/abs/2505.05469). The top 4 are actually textbooks, with
     the largest at 152MB.
+
+## How to Setup Your Own Secure Storage
 
 ### Step 1: Choose Your Server
 
