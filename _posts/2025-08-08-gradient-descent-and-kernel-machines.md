@@ -209,6 +209,14 @@ notebook</a> demonstrates this empirically. It is possible by tweaking
 the paths and ensuring we’re in a local minimum, we may see if we have
 agreement or not, and how big the <span
 class="math inline">\(O(|\omega|^2)\)</span> terms are.</p>
+<h1 id="citation">Citation</h1>
+<p>If you find this useful, you can use this BibTex entry:</p>
+<pre><code>@misc{jlhermitte2025kernelmachine,
+  title={Gradien Descent And Kernel Machines},
+  author={Julien R. Lhermitte},
+  year={2025},
+  howpublished={\url{https://jrmlhermitte.github.io/2025/08/08/gradient-descent-and-kernel-machines.html}}
+}</code></pre>
 <div id="refs" class="references csl-bib-body" role="list">
 <div id="ref-domingos2020modellearnedgradientdescent" class="csl-entry"
 role="listitem">
