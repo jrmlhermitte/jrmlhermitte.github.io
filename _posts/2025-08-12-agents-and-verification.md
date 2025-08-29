@@ -179,3 +179,14 @@ Here are some estimates (again, not quantitative!):
 
 What do you think? What is your experience with agents?
 What has saved you the most time? Any interesting links to share?
+
+## Citation
+
+```
+@misc{jlhermitte2025agentsverifiers,
+  title={When Are Agents Worth It?},
+  author={Julien R. Lhermitte},
+  year={2025},
+  howpublished={\url{https://jrmlhermitte.github.io/2025/08/12/agents-and-verification.html}}
+}
+```

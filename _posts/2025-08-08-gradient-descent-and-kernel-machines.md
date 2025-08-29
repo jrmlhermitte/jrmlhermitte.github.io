@@ -212,7 +212,7 @@ class="math inline">\(O(|\omega|^2)\)</span> terms are.</p>
 <h1 id="citation">Citation</h1>
 <p>If you find this useful, you can use this BibTex entry:</p>
 <pre><code>@misc{jlhermitte2025kernelmachine,
-  title={Gradien Descent And Kernel Machines},
+  title={Gradient Descent And Kernel Machines},
   author={Julien R. Lhermitte},
   year={2025},
   howpublished={\url{https://jrmlhermitte.github.io/2025/08/08/gradient-descent-and-kernel-machines.html}}

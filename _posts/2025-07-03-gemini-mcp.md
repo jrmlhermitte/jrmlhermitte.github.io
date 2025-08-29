@@ -234,3 +234,13 @@ python gemini-extension/main.py
 
 This demonstrates how easy it is to setup an MCP server and integrate it with Gemini. You should be able to have a basic enough understanding to integrate it with your own tools now!
 
+## Citation
+
+```
+@misc{jlhermitte2025geminimcp,
+  title={MCP With Gemini},
+  author={Julien R. Lhermitte},
+  year={2025},
+  howpublished={\url{https://jrmlhermitte.github.io/2025/07/03/gemini-mcp.html}}
+}
+```

@@ -362,3 +362,14 @@ have popped up, one that seems to be the very promising is
 [readeck](https://readeck.org/en/). It looks like someone requested [zotero
 integration](https://codeberg.org/readeck/readeck/issues/268). Perhaps in the
 future this might be a nice way to integrate a generalized reading queue.
+
+## Citation
+
+```
+@misc{jlhermitte2025zoterostorage,
+  title={Managing Papers With Zotero For Free Using Caddy And Tailscale},
+  author={Julien R. Lhermitte},
+  year={2025},
+  howpublished={\url{https://jrmlhermitte.github.io/2025/08/17/managing-papers-with-zotero-and-personal-file-server.html}}
+}
+```

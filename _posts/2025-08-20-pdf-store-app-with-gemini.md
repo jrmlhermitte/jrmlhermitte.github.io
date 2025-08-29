@@ -187,4 +187,17 @@ career that would enable you to create more value than you are doing so now?
 Gemini can probably help make it happen.
 
 
+
+## Citation
+
+```
+@misc{jlhermitte2025pdfstoreapp,
+  title={Writing PDF Store App With Gemini},
+  author={Julien R. Lhermitte},
+  year={2025},
+  howpublished={\url{https://jrmlhermitte.github.io/2025/08/20/pdf-store-app-with-gemini.html}}
+}
+```
+
+
 ## Footnotes
