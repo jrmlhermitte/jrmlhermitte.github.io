@@ -1,8 +1,12 @@
 source "https://rubygems.org"
 
 gem "jekyll"
-gem "jekyll-mermaid"
 gem "minimal-mistakes-jekyll"
-gem "jekyll-feed"
-gem "jekyll-seo-tag"
-gem "jekyll-sitemap"
+
+group :jekyll_plugins do
+  gem "jekyll-feed"
+  gem "jekyll-sitemap"
+  gem "jekyll-seo-tag"
+  gem "jekyll-include-cache"
+  gem "jekyll-spaceship"
+end
