@@ -1,3 +1,8 @@
+---
+layout: home
+title: The Order Of Things
+---
+
 This is a personal blog focused on AI-related topics. It is more like a set of
 personal notes. Take everything with a grain of salt :). Discussions welcome,
 always open to connect with more people!

@@ -22,6 +22,8 @@ google_analytics: "G-VB52D7HBZK"
 ######### Nothing below needs to be changed (unless you know what you're doing) #########
 #########################################################################################
 theme: "minima"
+url: "https://jrmlhermitte.github.io"
+baseurl: ""
 
 rss: rss
 
@@ -32,6 +34,8 @@ kramdown:
 plugins:
   - jekyll-feed
   - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-mermaid
 
 titles_from_headings:
   strip_title: true
@@ -40,6 +44,7 @@ titles_from_headings:
 defaults:
   - scope:
       path: ""
-      type: post
+      type: posts
     values:
-      tags: Other
+      tags: [Other]
+      layout: default   # good place to add this too

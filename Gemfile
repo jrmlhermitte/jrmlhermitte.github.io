@@ -1,4 +1,8 @@
 source "https://rubygems.org"
 
 gem "jekyll"
-gem "github-pages"
+gem "jekyll-mermaid"
+gem "minima"
+gem "jekyll-feed"
+gem "jekyll-seo-tag"
+gem "jekyll-sitemap"
