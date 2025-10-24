@@ -210,7 +210,6 @@ the paths and ensuring we’re in a local minimum, we may see if we have
 agreement or not, and how big the <span
 class="math inline">\(O(|\omega|^2)\)</span> terms are.</p>
 <h1 id="citation">Citation</h1>
-<p>If you find this useful, you can use this BibTex entry:</p>
 <pre><code>@misc{jlhermitte2025kernelmachine,
   title={Gradient Descent And Kernel Machines},
   author={Julien R. Lhermitte},
