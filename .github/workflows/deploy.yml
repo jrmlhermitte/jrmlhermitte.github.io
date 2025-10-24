@@ -1,0 +1,38 @@
+name: Build and Deploy Jekyll Site
+
+on:
+  push:
+    branches: ["main"]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Use the latest version of Ubuntu
+
+    steps:
+      # 1. Checks out your repository's code so the job can access it
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Sets up the Ruby environment
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1' # Specify the Ruby version
+          bundler-cache: true # Automatically caches gems to speed up future builds
+
+      # 3. Builds the Jekyll site
+      - name: Build Jekyll site
+        run: bundle exec jekyll build
+
+      # 4. Prepares the built site for deployment
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './_site' # The folder Jekyll builds to
+
+      # 5. Deploys the site to GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
