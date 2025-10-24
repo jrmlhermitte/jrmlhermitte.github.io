@@ -1,50 +1,53 @@
 title: "The Order Of Things"
-author: "Julien"
-description: "Leveraging AI so we can think again. Because it is the order of things." # This will show up in places like twitter, linkedin, etc, if you share your sites url as a post.
-
-# Email / Social media user names used by the minima theme:
-# All of these are optional and can be removed or commented out
-# email: "example@mail.com"
-# twitter_username: "twitteruser"
-github_username: "jrmlhermitte"
-linkedin_username: "julien-lhermitte-6374b77"
-#facebook_username: username
-#flickr_username: username
-#instagram_username: username
-#pinterest_username: username
-#youtube_username: username
-#googleplus_username: +username
-
-# https://morotsman.github.io/blog,/google/analytics,/jekyll,/github/pages/2020/07/07/add-google-analytics.html
-google_analytics: "G-VB52D7HBZK"
-
-#########################################################################################
-######### Nothing below needs to be changed (unless you know what you're doing) #########
-#########################################################################################
-theme: "minima"
+subtitle: "Leveraging AI so we can think again."
+description: "AI, machine learning, and the philosophy of intelligence."
 url: "https://jrmlhermitte.github.io"
-baseurl: ""
+baseurl: ""  # keep empty for user.github.io sites
 
-rss: rss
+theme: minimal-mistakes-jekyll
+minimal_mistakes_skin: "dark"
 
+author:
+  name: "Julien Lhermitte"
+  avatar: "/images/profile.jpeg"
+  bio: "Exploring AI systems, agents, and learning theory."
+  links:
+    - label: "GitHub"
+      icon: "fab fa-github"
+      url: "https://github.com/jrmlhermitte"
+    - label: "LinkedIn"
+      icon: "fab fa-linkedin"
+      url: "https://linkedin.com/in/julien-lhermitte-6374b77"
+
+markdown: kramdown
 kramdown:
+  math_engine: mathjax
   syntax_highlighter_opts:
-    disable: true
+    block:
+      line_numbers: false
 
 plugins:
   - jekyll-feed
   - jekyll-sitemap
   - jekyll-seo-tag
+  - jekyll-include-cache
   - jekyll-mermaid
 
-titles_from_headings:
-  strip_title: true
-  collections: true
+include:
+  - _pages
+
+paginate: 5
+paginate_path: "/page:num/"
 
 defaults:
+  # All posts
   - scope:
       path: ""
       type: posts
     values:
-      tags: [Other]
-      layout: default   # good place to add this too
+      layout: single
+      author_profile: true
+      read_time: true
+      comments: false
+      share: true
+      related: true

@@ -1,0 +1,11 @@
+main:
+  - title: "Home"
+    url: /
+  - title: "About"
+    url: /about/
+
+footer:
+  - title: "GitHub"
+    url: https://github.com/jrmlhermitte
+  - title: "LinkedIn"
+    url: https://linkedin.com/in/julien-lhermitte-6374b77
