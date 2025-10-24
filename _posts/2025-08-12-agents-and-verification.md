@@ -55,20 +55,20 @@ Let's say the time you take for one task is $\tau$, which is a random variable.
 The expectation is the the sum of these two cases:
 
 $$
-\begin{align*}
-\langle \tau \rangle & = & P_s V_r T + (1 - P_s) T (1 + V_r) \\
-& = & T \left ( P_s V_r + (1 - P_s) (1 + V_r) \right )\\
-& = & T \left ( P_s V_r + 1 - P_s + V_r - P_s V_r \right )\\
-& = & T \left ( 1 + V_r - P_s \right )\\
-\end{align*}
+\begin{aligned}
+\langle \tau \rangle &= P_s V_r T + (1 - P_s) T (1 + V_r) \cr
+&= T \left ( P_s V_r + (1 - P_s) (1 + V_r) \right )\cr
+&= T \left ( P_s V_r + 1 - P_s + V_r - P_s V_r \right )\cr
+&= T \left ( 1 + V_r - P_s \right )
+\end{aligned}
 $$
 
 Subtracting the time we would have taken for the task, we get:
 
 $$
-\begin{align*}
-\frac{\Delta \langle \tau \rangle}{T} & = & V_r - P_s
-\end{align*}
+\begin{aligned}
+\frac{\Delta \langle \tau \rangle}{T} &= V_r - P_s
+\end{aligned}
 $$
 
 This $\Delta \langle \tau \rangle$ is the additional time gained/lost.
@@ -90,10 +90,10 @@ The expectated time is the sum of the time spent in each of these cases times
 their probability:
 
 $$
-\begin{align*}
-\langle \tau \rangle & = & \sum \limits_{i=0}^{\infty} P_s (1 - P_s)^{i-1} i V_r T \\
-& = & V_r T \sum \limits_{i=0}^{\infty} P_s (1 - P_s)^{i-1} i
-\end{align*}
+\begin{aligned}
+\langle \tau \rangle &= \sum \limits_{i=0}^{\infty} P_s (1 - P_s)^{i-1} i V_r T \cr
+&= V_r T \sum \limits_{i=0}^{\infty} P_s (1 - P_s)^{i-1} i
+\end{aligned}
 $$
 
 This is a well known formula which can be derived by simply taking
@@ -104,19 +104,19 @@ derivation and leave it as an exercise.
 The result is then:
 
 $$
-\begin{align*}
-\langle \tau \rangle & = & V_r T \sum \limits_{i=0}^{\infty} P_s (1 - P_s)^{i-1} i \\
-& = & V_r T \frac{1}{P_s} = T \frac{V_r}{P_s}
-\end{align*}
+\begin{aligned}
+\langle \tau \rangle &= V_r T \sum \limits_{i=0}^{\infty} P_s (1 - P_s)^{i-1} i \cr
+&= V_r T \frac{1}{P_s} = T \frac{V_r}{P_s}
+\end{aligned}
 $$
 
 or, in terms of $\frac{\langle \Delta \tau \rangle}{T}$:
 
 $$
-\begin{align*}
-\frac{\langle \Delta \tau \rangle}{T} & = & \frac{V_r}{P_s} - 1
-& = & \frac{1}{P_s} \left ( V_r - P_s \right )
-\end{align*}
+\begin{aligned}
+\frac{\langle \Delta \tau \rangle}{T} &= \frac{V_r}{P_s} - 1 \cr
+&= \frac{1}{P_s} \left ( V_r - P_s \right )
+\end{aligned}
 $$
 
 We can see in this case, if we keep trying, assuming the model will be right
@@ -131,10 +131,10 @@ This brings an interesting question. As we develop more agents, which case is be
 If we take the ratio:
 
 $$
-\begin{align*}
-\frac{\mathrm{FireAndForget}}{\mathrm{TryForever}} & = & \frac{V_r - P_s}{\frac{1}{P_s} \left ( V_r - P_s \right) } \\
-& = & P_s
-\end{align*}
+\begin{aligned}
+\frac{\mathrm{FireAndForget}}{\mathrm{TryForever}} &= \frac{V_r - P_s}{\frac{1}{P_s} \left ( V_r - P_s \right) } \cr
+&= P_s
+\end{aligned}
 $$
 
 we see that it just depends on $P_s$. Since we know that $0 \le P_s \le 1$, we quickly see that this ratio is less than 1, suggesting that the try forever approach has a larger gain $\langle \Delta \tau \rangle$.
