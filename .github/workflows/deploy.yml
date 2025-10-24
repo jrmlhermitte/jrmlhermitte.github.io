@@ -3,17 +3,24 @@ name: Build and Deploy Jekyll Site
 on:
   push:
     branches: ["main"]
-
   workflow_dispatch:
 
+# Required permissions for GitHub Pages deployments
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: read        # to read the repo contents
+  pages: write          # to publish to GitHub Pages
+  id-token: write       # to authenticate via OIDC
+
+# Recommended concurrency: only one Pages deploy at a time
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Use the latest version of Ubuntu
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages     # associate build with Pages environment
 
     steps:
       # 1. Checks out your repository's code so the job can access it
@@ -29,14 +36,24 @@ jobs:
 
       # 3. Builds the Jekyll site
       - name: Build Jekyll site
-        run: bundle exec jekyll build
+        env:
+          JEKYLL_ENV: production
+        run: bundle exec jekyll build --trace
 
       # 4. Prepares the built site for deployment
-      - name: Upload artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './_site' # The folder Jekyll builds to
+          path: ./_site
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
       # 5. Deploys the site to GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
