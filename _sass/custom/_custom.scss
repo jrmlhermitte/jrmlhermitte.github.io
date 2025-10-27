@@ -1,0 +1,34 @@
+// _sass/custom/_custom.scss
+
+
+.page__content {
+  font-size: 18px;
+}
+
+// --- Typography polish for IBM Plex Sans headings ---
+h1, h2, h3, h4, h5, h6 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 600; // strong but not chunky
+  letter-spacing: -0.015em; // tighten large titles slightly
+  line-height: 1.2;
+  color: var(--text-color, #111);
+}
+
+// Subtle distinction for smaller headings
+h4, h5, h6 {
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+// Optional: enhance contrast on dark themes
+body.dark-mode h1, body.dark-mode h2 {
+  color: #f0f0f0;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  line-height: 1.45;
+}
