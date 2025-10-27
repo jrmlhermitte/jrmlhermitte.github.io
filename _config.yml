@@ -4,7 +4,7 @@ url: "https://jrmlhermitte.github.io"
 baseurl: ""  # keep empty for user.github.io sites
 
 theme: minimal-mistakes-jekyll
-minimal_mistakes_skin: "dark"
+minimal_mistakes_skin: "mint"
 
 author:
   name: "Julien Lhermitte"
