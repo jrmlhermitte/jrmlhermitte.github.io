@@ -30,10 +30,10 @@ To see if Claude could self‑correct, I ran the workflow again, watched the
 product owner make the same mistake[^1] and asked it:
 
 > "Can you reason carefully through trade‑offs of these ambiguitied
-and present your preferred choice with pros and cons?"
+> and present your preferred choice with pros and cons?"
 
-That was it. Same task, same environment. The only change was *asking for
-explicit reasoning*. Since Claude was pretty decent at scoring the differences
+That was it. Same task, same environment. The only change was _asking for
+explicit reasoning_. Since Claude was pretty decent at scoring the differences
 between the code given the more or less good agreement with my rubric and
 Claude's, in this case I let Claude score it for me. The following results are
 scores determined by Claude, but peer reviewed and accepted by me.
@@ -68,11 +68,11 @@ scores determined by Claude, but peer reviewed and accepted by me.
 Claude v2 reasoned through the conflict explicitly:
 
 > “Option A: Store protobuf in MinIO - aligns with Story 2.3, scalable,
-consistent schema. Option B: Add BYTEA column - simpler but heavier DB.
-**Recommendation: Option A.**”
+> consistent schema. Option B: Add BYTEA column - simpler but heavier DB.
+> **Recommendation: Option A.**”
 
-This small deliberation step unlocked better architectural alignment *without
-any new context*. It simply took time to think.
+This small deliberation step unlocked better architectural alignment _without
+any new context_. It simply took time to think.
 
 ## Takeaways
 
@@ -91,13 +91,12 @@ greater returns, and that advantage compounds as models improve.
 In the end, progress came not from switching tools, but from refining how I
 worked with them.
 
-> “Always assume today's AI is the worst you'll ever use.”  - Ethan Mollick [^cointelligence]
+> “Always assume today's AI is the worst you'll ever use.” - Ethan Mollick [^cointelligence]
 
 This concludes the **AI Agent Comparison series**:
 
 - [**Part 1**](/2025/11/01/ai-agent-comparison-part-1.html): Setup and methodology
 - [**Part 2**](/2025/11/01/ai-agent-comparison-part-2.html): Results and analysis
-- [**Part 3 (this post)**](/2025/11/01/ai-agent-comparison-part-3.html): Why asking the model to *reason* changed everything
+- [**Part 3 (this post)**](/2025/11/01/ai-agent-comparison-part-3.html): Why asking the model to _reason_ changed everything
 
-
-[^cointelligence]: Mollick, E. (2024). *Co-intelligence: living and working with AI.* Portfolio/Penguin. [link](https://www.goodreads.com/book/show/198678736-co-intelligence)
+[^cointelligence]: Mollick, E. (2024). _Co-intelligence: living and working with AI._ Portfolio/Penguin. [link](https://www.goodreads.com/book/show/198678736-co-intelligence)

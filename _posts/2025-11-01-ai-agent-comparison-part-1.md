@@ -47,6 +47,7 @@ how each model behaves with the same project structure.
 🏃 Bob - Scrum Master Activated
 Ready to assist! What would you like me to do?
 ```
+
 </details>
 
 ## The Test Project
@@ -68,6 +69,7 @@ and integration tests.
 clean content using newspaper4k, so that users can read articles offline.
 
 **Acceptance Criteria** (abridged):
+
 1. Fetch article with metadata.
 2. Parse content via `newspaper4k`.
 3. Store extracted data in PostgreSQL.
@@ -107,7 +109,7 @@ lines of code each added, where they excelled, and which one I'd actually use
 day‑to‑day.
 
 If you'd like to follow the full series:
-- [**Part 1 (this post)**](/2025/11/01/ai-agent-comparison-part-1.html): Setup and methodology  
-- [**Part 2**](/2025/11/01/ai-agent-comparison-part-2.html): Results and analysis  
-- [**Part 3**](/2025/11/01/ai-agent-comparison-part-3.html): Why asking the model to *reason* changed everything
 
+- [**Part 1 (this post)**](/2025/11/01/ai-agent-comparison-part-1.html): Setup and methodology
+- [**Part 2**](/2025/11/01/ai-agent-comparison-part-2.html): Results and analysis
+- [**Part 3**](/2025/11/01/ai-agent-comparison-part-3.html): Why asking the model to _reason_ changed everything
