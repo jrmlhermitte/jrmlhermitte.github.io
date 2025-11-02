@@ -6,6 +6,8 @@ baseurl: ""  # keep empty for user.github.io sites
 theme: minimal-mistakes-jekyll
 minimal_mistakes_skin: "mint"
 
+enable_copy_code_button: true
+
 author:
   name: "Julien Lhermitte"
   avatar: "/images/profile.jpeg"
