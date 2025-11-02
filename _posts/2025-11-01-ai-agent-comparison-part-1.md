@@ -24,7 +24,7 @@ to make them succeed.
 
 ## The BMAD Method
 
-I used my open-source [BMAD method](https://github.com/bmad-code-org/BMAD-METHOD),
+I used the open-source [BMAD method](https://github.com/bmad-code-org/BMAD-METHOD),
 which defines repeatable "agent personas" (Product Owner, Scrum Master,
 Architect, Developer, QA, and so on) that can be used inside different AI CLIs.
 Each persona has its own prompt context and tasks. BMAD can install directly
