@@ -10,7 +10,7 @@ enable_copy_code_button: true
 
 author:
   name: "Julien Lhermitte"
-  avatar: "/images/profile.jpeg"
+  avatar: "/images/profile.png"
   bio: "Exploring AI systems, agents, and learning theory."
   links:
     - label: "GitHub"
