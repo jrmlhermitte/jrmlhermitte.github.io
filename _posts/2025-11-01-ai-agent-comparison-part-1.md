@@ -10,6 +10,15 @@ series_order: 1
 same development workflow. This post covers how I set up the experiment and
 what I was trying to learn.
 
+---
+**NOTE**: This is part of a 3 part series:
+
+- [**Part 1 (this post)**](/2025/11/01/ai-agent-comparison-part-1.html): Setup and methodology
+- [**Part 2**](/2025/11/01/ai-agent-comparison-part-2.html): Results and analysis
+- [**Part 3**](/2025/11/01/ai-agent-comparison-part-3.html): Why asking the model to _reason_ changed everything
+
+---
+
 ## The Goal
 
 AI agents can dramatically accelerate software development. But with several

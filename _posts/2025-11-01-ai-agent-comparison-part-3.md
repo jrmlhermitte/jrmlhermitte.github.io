@@ -10,6 +10,15 @@ series_order: 3
 conflicting documentation, its architecture and code quality jumped by 19%.
 Small prompt changes can have big architectural consequences.
 
+---
+**NOTE**: This is part of a 3 part series:
+
+- [**Part 1**](/2025/11/01/ai-agent-comparison-part-1.html): Setup and methodology
+- [**Part 2**](/2025/11/01/ai-agent-comparison-part-2.html): Results and analysis
+- [**Part 3 (this post)**](/2025/11/01/ai-agent-comparison-part-3.html): Why asking the model to _reason_ changed everything
+
+---
+
 ## The Turning Point
 
 During the first test, Claude stored extracted HTML directly in PostgreSQL. My
