@@ -4,20 +4,19 @@ title: "How I Compared Claude, Codex, and Gemini for Software Development"
 excerpt: "Part 1 of 3: Setup and methodology for my AI agent comparison using the BMAD method."
 series: "AI Agent Comparison"
 series_order: 1
+excerpt_separator: <!--more-->
 ---
 
-**TL;DR:** I compared Claude Sonnet 4.5, Codex, and Gemini 2.5 Pro/Flash on the
-same development workflow. This post covers how I set up the experiment and
-what I was trying to learn.
+**Part 1 of 3: Setup and methodology for my AI agent comparison using the BMAD method.**
 
----
-**NOTE**: This is part of a 3 part series:
-
+<!--more-->
 - [**Part 1 (this post)**](/2025/11/01/ai-agent-comparison-part-1.html): Setup and methodology
 - [**Part 2**](/2025/11/01/ai-agent-comparison-part-2.html): Results and analysis
 - [**Part 3**](/2025/11/01/ai-agent-comparison-part-3.html): Why asking the model to _reason_ changed everything
 
----
+**TL;DR:** I compared Claude Sonnet 4.5, Codex, and Gemini 2.5 Pro/Flash on the
+same development workflow. This post covers how I set up the experiment and
+what I was trying to learn.
 
 ## The Goal
 

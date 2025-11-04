@@ -4,20 +4,19 @@ title: "How Asking the Model to Reason Changed Everything"
 excerpt: "Part 3 of 3: How adding a reasoning step improved Claude's architecture by 19%."
 series: "AI Agent Comparison"
 series_order: 3
+excerpt_separator: <!--more-->
 ---
 
-**TL;DR:** When I asked Claude's Product Owner persona to reason through
-conflicting documentation, its architecture and code quality jumped by 19%.
-Small prompt changes can have big architectural consequences.
-
----
-**NOTE**: This is part of a 3 part series:
+**Part 3 of 3: How adding a reasoning step improved Claude's architecture by 19%.**
+<!--more-->
 
 - [**Part 1**](/2025/11/01/ai-agent-comparison-part-1.html): Setup and methodology
 - [**Part 2**](/2025/11/01/ai-agent-comparison-part-2.html): Results and analysis
 - [**Part 3 (this post)**](/2025/11/01/ai-agent-comparison-part-3.html): Why asking the model to _reason_ changed everything
 
----
+**TL;DR:** When I asked Claude's Product Owner persona to reason through
+conflicting documentation, its architecture and code quality jumped by 19%.
+Small prompt changes can have big architectural consequences.
 
 ## The Turning Point
 

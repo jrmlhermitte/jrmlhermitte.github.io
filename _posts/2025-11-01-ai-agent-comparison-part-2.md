@@ -4,21 +4,19 @@ title: "Claude vs Codex vs Gemini: Results and Analysis"
 excerpt: "Part 2 of 3: Quantitative and qualitative results from comparing the three AI agents."
 series: "AI Agent Comparison"
 series_order: 2
+excerpt_separator: <!--more-->
 ---
 
+**Part 2 of 3: Quantitative and qualitative results from comparing the three AI agents.**
+
+<!--more-->
 **TL;DR:** Codex delivered the cleanest, most maintainable code; Claude came
 close with superior documentation; Gemini lagged in depth but won on user
 experience. Below are the results, metrics, and my hands‑on impressions.
 
----
-**NOTE**: This is part of a 3 part series:
-
 - [**Part 1**](/2025/11/01/ai-agent-comparison-part-1.html): Setup and methodology
 - [**Part 2 (this post)**](/2025/11/01/ai-agent-comparison-part-2.html): Results and analysis
 - [**Part 3**](/2025/11/01/ai-agent-comparison-part-3.html): Why asking the model to _reason_ changed everything
-
----
-
 
 ## Results
 
