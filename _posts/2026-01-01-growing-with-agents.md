@@ -1,7 +1,7 @@
 ---
 layout: single
 title: "Growing With Agents"
-permalink: /preview/4f8b2c91-a7e5-4d33-b912-680f76e5341c.html
+permalink: /preview/4f8b2c91-a7e5-4d33-b912-680f76e5341c/
 ---
 
 
@@ -244,7 +244,7 @@ to practice with a project but don't have any ideas? Ask the AI. Moved on and
 want to plan and build your very first large scale design? Have an AI help you.
 
 The key here is the AI is **here to help you**. We are all still growing in
-difference ways at different stages of our lives, and we now have a tailored
+different ways at different stages of our lives, and we now have a tailored
 coach to help us with it. On the flip side, it could be used incorrectly. You
 could use AI to finish your homework. You could use AI to write up your
 entry-level engineering project. Use it to write a larger scale design for a
