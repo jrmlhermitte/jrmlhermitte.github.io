@@ -101,6 +101,13 @@ Agents don't "remember" well across massive contexts [^2], so writing things dow
 
 ## Always Use a Verifier Agent
 
+<figure>
+<img src="/images/2025-12-23-verifier-agent.jpg" alt="Two agents, a primary
+agent (left) and verifier agent (right) separated by a context wall.">
+<figcaption>Two agents, a primary agent (left) and a verifier agent (right),
+separated by a context wall.</figcaption>
+</figure>
+
 For every agent performing a task, use a **Verifier Agent** to check the work. To avoid "sunk cost bias" or the agent simply agreeing with itself, the Verifier must follow three rules:
 
 1. Must start from a **fresh context** (a new chat).
