@@ -170,4 +170,20 @@ If you start on a rung you haven't mastered, you have no footing, and the agent 
 Don't let the agent be your replacement. Let it be the floor you stand on while
 you reach for something higher.
 
+---
+
+## References and Further Reading
+
+If you want to dive deeper into the patterns and studies mentioned in this post, I highly recommend the following resources:
+
+- **Frameworks & Patterns:**
+  - [The BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD) by Brian Madison — The core system used for the prompts in this post.
+  - [Agentic Patterns](https://agentic-patterns.com/) — A comprehensive catalog of common agent behaviors.
+- **Research & Theory:**
+  - [The MIT ChatGPT Study](https://www.media.mit.edu/projects/your-brain-on-chatgpt/overview/) — On the metacognitive effects of AI assistance.
+  - [The Bitter Lesson](http://www.incompleteideas.net/IncIdeas/BitterLesson.html) by Rich Sutton — A fundamental read on why general methods eventually win in AI.
+  - [Context Window Anxiety](https://cognition.ai/blog/devin-sonnet-4-5-lessons-and-challenges#the-model-is-aware-of-its-context-window) — Observations on model performance and context awareness.
+- **Community Learnings:**
+  - [Sourcegraph Team Learnings](https://www.nibzard.com/ampcode) — Real-world insights from engineering teams building with agents.
+
 [^2]: Newer models are sometimes suspected of being [aware of their own context window](https://cognition.ai/blog/devin-sonnet-4-5-lessons-and-challenges#the-model-is-aware-of-its-context-window), which can hurt their performance. This is a phenomenon currently called "[context anxiety](https://agentic-patterns.com/patterns/context-window-anxiety-management/)". This is another reason why separating by scale is vital: smaller, focused contexts keep the agent (and the human) from feeling overwhelmed.
