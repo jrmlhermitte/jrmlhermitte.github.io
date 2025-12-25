@@ -32,7 +32,9 @@ I found myself asking one constant question:
 
 These are some tips I’ve learned to put the emphasis on self-growth rather than
 just raw productivity. Our brain has an impressive capacity to learn. By
-offloading the "thinking" without a strategy, we waste that capacity.
+offloading the "thinking" without a strategy, we waste that capacity. Learning
+provides benefits beyond just your career, including improved mental health
+[^2].
 
 To keep this engaging, I've added suggestions you can try yourself. You can
 follow along by just opening a few free [Gemini](https://gemini.google.com/) or
@@ -44,8 +46,6 @@ follow along by just opening a few free [Gemini](https://gemini.google.com/) or
 > software development lifecycle (SDLC) more closely than any other framework I’ve
 > found. If you use these prompts, please attribute them to the author, Brian
 > Madison.
-
-[^1]: This was taken from [GeeksforGeeks](https://www.geeksforgeeks.org/artificial-intelligence/agents-artificial-intelligence/).
 
 ---
 
@@ -89,7 +89,7 @@ Master](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/sm
 and final execution (The
 [Developer](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/dev.txt)).
 
-Agents don't "remember" well across massive contexts [^2], so writing things down at each scale and passing those documents to the next stage is critical.
+Agents don't "remember" well across massive contexts [^3], so writing things down at each scale and passing those documents to the next stage is critical.
 
 > **Try this**: Copy and paste these prompts in different sessions in order. At the end of each session, have the previous agent write a "handover doc" for the next one.
 > [Analyst](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/analyst.txt) → [Product Manager](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/pm.txt) → [Architect](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/architect.txt)
@@ -148,7 +148,7 @@ The agent that does the work. Junior developers should use this sparingly, mostl
 
 ## Keep It Simple
 
-Unless you’re shipping a product, cap your "workflow improvement" time to **10%**. The [Bitter Lesson](http://www.incompleteideas.net/IncIdeas/BitterLesson.html) teaches us that general methods usually win over complex, hand-tuned workflows.
+Unless you’re shipping a product, cap your "workflow improvement" time to 10%. The [Bitter Lesson](http://www.incompleteideas.net/IncIdeas/BitterLesson.html) and the [Wait Calculation](https://www.oneusefulthing.org/p/the-lazy-tyranny-of-the-wait-calculation) have taught me that general methods usually win over complex, hand-tuned workflows.
 
 If you spend all your time developing a grand workflow, you risk:
 
@@ -159,9 +159,20 @@ If you spend all your time developing a grand workflow, you risk:
 
 ## Closing Thoughts
 
-We are at a pivotal moment. We have tools that can think on scales that handle the mundane, enabling us to maximize our learning. But if used incorrectly, simply to "finish the work," our cognitive skills will decline.
+As we develop more and more complex agentic systems, I believe we must remember
+what drove us here: the desire to learn. Learning and thinking are such integral
+parts of human behavior that they will be here to stay while humans exist, even
+if it means we eventually merge with machines [^4].
 
-A [recent study](https://www.media.mit.edu/projects/your-brain-on-chatgpt/overview/) found that users who used ChatGPT to write essays became "metacognitively lazy." However, the group that practiced **without** AI first, and then used AI, performed significantly better.
+We are at a pivotal moment. We have tools that can think on scales that handle
+the mundane, enabling us to maximize our learning. But if used incorrectly,
+simply to "finish the work," our cognitive skills will decline.
+
+A [recent
+study](https://www.media.mit.edu/projects/your-brain-on-chatgpt/overview/) found
+that users who used ChatGPT to write essays became "metacognitively lazy."
+However, the group that practiced **without** AI first, and then used AI,
+performed significantly better.
 
 This leads to what I call **The Agentic Ladder**:
 
@@ -169,9 +180,26 @@ This leads to what I call **The Agentic Ladder**:
 2. **Use the agent to launch you** to the next rung of complexity.
 3. **Repeat.**
 
-If you start on a rung you haven't mastered, you have no footing, and the agent is carrying you. The goal isn't to build a better agent: it's to use the agent to build a better version of yourself.
+If you start on a rung you haven't mastered, you have no footing, and the agent
+is carrying you. The goal isn't to build a better agent: it's to use the agent
+to build a better version of yourself.
 
 Don't let the agent be your replacement. Let it be the floor you stand on while
 you reach for something higher.
 
-[^2]: Newer models are sometimes suspected of being [aware of their own context window](https://cognition.ai/blog/devin-sonnet-4-5-lessons-and-challenges#the-model-is-aware-of-its-context-window), which can hurt their performance. This is a phenomenon currently called "[context anxiety](https://agentic-patterns.com/patterns/context-window-anxiety-management/)". This is another reason why separating by scale is vital: smaller, focused contexts keep the agent (and the human) from feeling overwhelmed.
+---
+
+## Interesting Reading
+
+- [The BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD) by Brian Madison: The core system used for the prompts in this post.
+- [Agentic Patterns](https://agentic-patterns.com/): A comprehensive catalog of common agent behaviors.
+- [The MIT ChatGPT Study](https://www.media.mit.edu/projects/your-brain-on-chatgpt/overview/): On the metacognitive effects of AI assistance.
+- [The Bitter Lesson](http://www.incompleteideas.net/IncIdeas/BitterLesson.html) by Rich Sutton: A fundamental read on why general methods eventually win in AI.
+- [The Lazy Tyranny of the Wait Calculation](https://www.oneusefulthing.org/p/the-lazy-tyranny-of-the-wait-calculation) by Ethan Mollick: Why waiting for better AI is often smarter than building complex tools now.
+- [Context Window Anxiety](https://cognition.ai/blog/devin-sonnet-4-5-lessons-and-challenges#the-model-is-aware-of-its-context-window): Observations on model performance and context awareness.
+- [Sourcegraph Team Learnings](https://www.nibzard.com/ampcode): Real-world insights from engineering teams building with agents.
+
+[^1]: This was taken from [GeeksforGeeks](https://www.geeksforgeeks.org/artificial-intelligence/agents-artificial-intelligence/).
+[^2]: See [The Mental Health Benefits of Learning a New Skill](https://www.grandrisingbehavioralhealth.com/blog/the-mental-health-benefits-of-learning-a-new-skill)
+[^3]: Newer models are sometimes suspected of being [aware of their own context window](https://cognition.ai/blog/devin-sonnet-4-5-lessons-and-challenges#the-model-is-aware-of-its-context-window), which can hurt their performance. This is a phenomenon currently called "[context anxiety](https://agentic-patterns.com/patterns/context-window-anxiety-management/)". This is another reason why separating by scale is vital: smaller, focused contexts keep the agent (and the human) from feeling overwhelmed.
+[^4]: A reference to this [intriguing prediction](https://www.youtube.com/shorts/n4nOOXC7yg0)
