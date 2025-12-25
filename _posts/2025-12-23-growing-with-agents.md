@@ -75,9 +75,9 @@ these constraints? This would be equivalent to a senior engineer drafting a
 design (the [architect
 agent](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/architect.txt)).
 Here, technologies and high level structure are documented, but the nitty gritty
-details, unless relevant to this scale is avoided. Finally, when we have this
+details, unless relevant to this scale are avoided. Finally, when we have this
 high level picture, we start funneling down into creating specific tasks. In
-BMAD, the associated agent it the [scrum master
+BMAD, the associated agent is the [scrum master
 agent](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/sm.txt).
 Finally, you have the [developer
 agent](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/dev.txt)
@@ -110,15 +110,16 @@ below in different chatGPT/Gemini/etc sessions and have them work with you on a
 project idea in order. At the end of each session, have the earlier one write
 you a doc to give the next one. Agents:
 >
->[Analyst](https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/refs/tags/v4.44.3/dist/agents/analyst.txt)
+>[Analyst](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/analyst.txt).
+
 → [Product
-Manager](https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/refs/tags/v4.44.3/dist/agents/pm.txt)
+Manager](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/pm.txt)
 →
-[Architect](https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/refs/tags/v4.44.3/dist/agents/architect.txt)
+[Architect](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/architect.txt)
 →
-[Scrum Master](https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/refs/tags/v4.44.3/dist/agents/sm.txt)
+[Scrum Master](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/sm.txt)
 →
-[Developer](https://raw.githubusercontent.com/bmad-code-org/BMAD-METHOD/refs/tags/v4.44.3/dist/agents/dev.txt)
+[Developer](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/dev.txt)
 
 ## Always Use a Verifier Agent
 
@@ -128,9 +129,9 @@ verifier agent to verify your tasks. This is similar to when one creates work
 
 Critical properties of this complement agent:
 
-- Must start from a fresh context
-- Must not have access to any private artifacts for the other agent
-- Must have a prompt with focus on verification
+- Must start from a fresh context.
+- Must not have access to any private artifacts for the other agent.
+- Must have a separate prompt with focus on verification.
 
 Conceptually, you want the agent to proof-read what was done with a fresh pair of eyes as you would do with your own work. This will often save a lot of time.
 
@@ -159,7 +160,7 @@ be a facilitator or force multiplier. It should:
 - Teach you about new concepts you may not have known.
 - Execute tasks that are more or less routine.
 
-Over time, as you gain experience, where this line is drawn will change for you. It is critical that this line meets your level of expertise, or you will find yourself quickly lost with the work your agents provide.
+Over time, as you gain experience, where this line is drawn will change for you. It is critical that this line meets your level of expertise, or you will find yourself quickly lost in the work your agents provide.
 
 The best way I found is have three categories of agents:
 
@@ -180,7 +181,9 @@ extension agent, or anything else that suits your needs.
 today. Some starters: is there something you’ve used you would like to
 understand deeper? (random examples: how a database works, how transmission
 fluid works, why stars twinkle and planets don’t etc). When you receive and
-answer, try to come up with a few follow up questions (the
+answer, try to come up with a few follow up questions (don't skip this step, as
+this is the true power of agents: an interactive wikipedia that can answer what
+if questions for you).
 
 ### 2. Facilitator Agent
 
@@ -188,6 +191,7 @@ Agents that will brainstorm and ask you questions iteratively. Most modern
 prompts (chatGPT, Gemini) already do this for you by asking follow up questions.
 If you want something more sophisticated, the BMAD method has a good set of
 agent prompts in this category [here](https://github.com/bmad-code-org/BMAD-METHOD).
+This is powerful as it helps bring the best in you at every step.
 
 > **Try this**: Try copy pasting one of [this analyst agent](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/analyst.txt)
 into Gemini/ChatGPT and see what you come up with.
@@ -199,7 +203,8 @@ and your expertise. For example, a junior software developer might benefit from
 no agents and conservative code completion. More experienced developers will
 benefit from agents of different scales. The line will also be drawn depending
 on expertise (backend/fullstack etc). Although it can be the most fun type of
-agent, I have found that I spend a very small fraction of my time with it.
+agent and I use it **a lot**, I have found that I spend a very small fraction of
+my time with it.
 
 > **Try this**: Ask gemini to draw you a unicorn maze in python.
 
@@ -247,16 +252,23 @@ want to plan and build your very first large scale design? Have an AI help you.
 
 The key here is the AI is **here to help you**. We are all still growing in
 different ways at different stages of our lives, and we now have a tailored
-coach to help us with it. On the flip side, it could be used incorrectly. You
+coach to help us with it.
+
+On the flip side, it could be used incorrectly. You
 could use AI to finish your homework. You could use AI to write up your
 entry-level engineering project. Use it to write a larger scale design for a
-project, review someone else's code. However, use it that way, and you'll
+project, review someone else's code.
+
+However, use it that way, and you'll
 quickly find that your cognitive skills will decline. Remember that [chat GPT
 study](https://www.media.mit.edu/projects/your-brain-on-chatgpt/overview/) where
 they found users tasked to write an essay with the aid of ChatGPT were found to
 be more "metacognitively lazy?" This is a pretty obvious finding and wasn't the
-key finding of this paper. What was more important, is they found the group that did not use chatGPT to write essays actually performed **a lot better** when allowed to use chatGPT to write essays after having **practiced 4 in sessions without it**.
-In other words, if you want to optimize your learning, you have three choices:
+key finding of this paper. What was more important, is they found the group that
+did not use chatGPT to write essays actually performed **a lot better** when
+allowed to use chatGPT to write essays after having **practiced 4 in sessions
+without it**.  In other words, if you want to optimize your learning, you have
+three choices:
 
 1. Don't use AI: You will have in shape critical thinking skills.
 2. Use AI: Declined critical thinking
