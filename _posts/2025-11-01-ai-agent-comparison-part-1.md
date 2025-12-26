@@ -1,22 +1,23 @@
 ---
 layout: single
 title: "Comparing Claude, Codex, and Gemini for Software Development"
-excerpt: "Part 1 of 3: Setup and methodology for my AI agent comparison using the BMAD method."
+excerpt: "Part 1 of 3: Setup and methodology for this AI agent comparison using the BMAD method."
 series: "AI Agent Comparison"
 series_order: 1
 excerpt_separator: <!--more-->
 ---
 
-**Part 1 of 3: Setup and methodology for my AI agent comparison using the BMAD method.**
+**Part 1 of 3: Setup and methodology for this AI agent comparison using the BMAD method.**
 
 <!--more-->
+
 - [**Part 1 (this post)**](/2025/11/01/ai-agent-comparison-part-1.html): Setup and methodology
 - [**Part 2**](/2025/11/01/ai-agent-comparison-part-2.html): Results and analysis
 - [**Part 3**](/2025/11/01/ai-agent-comparison-part-3.html): Why asking the model to _reason_ changed everything
 
-**TL;DR:** I compared Claude Sonnet 4.5, Codex, and Gemini 2.5 Pro/Flash on the
-same development workflow. This post covers how I set up the experiment and
-what I was trying to learn.
+**TL;DR:** This study compares Claude Sonnet 4.5, Codex, and Gemini 2.5
+Pro/Flash on the same development workflow. This post covers the experimental
+setup and the core learning objectives.
 
 ## The Goal
 
@@ -27,12 +28,12 @@ was conducted comparing **Claude Sonnet 4.5**, **Codex (gpt‑5‑codex)**, and
 **Gemini 2.5 Pro/Flash** under the same conditions.
 
 The goal was not merely to see who 'wins,' but to understand how to optimize
-their performance: what makes one model stumble, and how to structure my work to
-make them succeed.
+their performance: what makes one model stumble, and how to structure the work
+to make them succeed.
 
 ## The BMAD Method
 
-I used the open-source [BMAD method](https://github.com/bmad-code-org/BMAD-METHOD),
+The experiment utilized the open-source [BMAD method](https://github.com/bmad-code-org/BMAD-METHOD),
 which defines repeatable "agent personas" (Product Owner, Scrum Master,
 Architect, Developer, QA, and so on) that can be used inside different AI CLIs.
 Each persona has its own prompt context and tasks. BMAD can install directly
@@ -73,7 +74,7 @@ and integration tests.
 <details markdown="1">
 <summary>Story 2.2 PRD Summary</summary>
 
-**As a system**, I want the Python worker to fetch web article URLs and extract
+**System Goal**: The Python worker must fetch web article URLs and extract
 clean content using newspaper4k, so that users can read articles offline.
 
 **Acceptance Criteria** (abridged):
@@ -102,18 +103,18 @@ flowchart LR
 Each phase was triggered manually, letting the agent hand off to the next.
 Minimal hints were provided to maintain parity across models.
 
-To keep the playing field level, I **disabled all external MCP servers and
-plugins**. Each agent relied purely on its internal reasoning and the provided
-project files.
+To maintain a level playing field, **all external MCP servers and plugins were disabled**.
+Each agent relied purely on its internal reasoning and the provided project
+files.
 
 This setup ensured that each model faced identical constraints. No hidden
 context, no external tools; just reasoning and code.
 
 ## What's Next
 
-In **Part 2**, I'll share the quantitative and qualitative results: how many
-lines of code each added, where they excelled, and which one I'd actually use
-day‑to‑day.
+**Part 2** details the quantitative and qualitative results: how many
+lines of code each added, where they excelled, and which model proved practical
+for day-to-day use.
 
 If you'd like to follow the full series:
 
