@@ -4,7 +4,7 @@ title: "Growing With Agents"
 ---
 
 <figure>
-<img src="/images/2025-12-23-growing-with-agents.png" alt="A digital human climbing a glowing ladder towards a brain icon, representing AI-assisted growth">
+<img src="/images/2025-12-23-agentic-ladder.png" alt="A digital human climbing a glowing ladder towards a brain icon, representing AI-assisted growth">
 <figcaption>Use agents not just as a coworker, but a ladder.</figcaption>
 </figure>
 
