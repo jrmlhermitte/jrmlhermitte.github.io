@@ -52,10 +52,10 @@ follow along by just opening a few free [Gemini](https://gemini.google.com/) or
 
 ## Separate By Scale And Stage, Not Expertise
 
-I’ve found that trying to separate agents by expertise (e.g., "The Python
-Expert") tends to limit them. If you think about it, it doesn’t make sense. If
-you ask an astrobiologist a question, asking them to "pretend they only know
-astronomy" doesn't help you. It just restricts the resources they can draw upon.
+Trying to separate agents by expertise (e.g., 'The Python Expert') tends to
+limit them. If you think about it, it doesn’t make sense. If you ask an
+astrobiologist a question, asking them to "pretend they only know astronomy"
+doesn't help you. It just restricts the resources they can draw upon.
 
 Conversely, allowing an agent to traverse _scale_ is counter to how we think. We
 don't try to understand how a car works by thinking about the molecular
@@ -141,7 +141,10 @@ This mimics the real-world "fresh pair of eyes" effect.
 
 When starting, it’s tempting to let agents run wild. This is almost always a mistake. You will quickly lose understanding of the product being built. Instead, think of the agent as a **facilitator**.
 
-The line of automation should meet your level of expertise. If you let an agent write code you don't understand, you aren't growing. You are just accumulating technical debt you can't pay off. I categorize agents into three levels:
+The line of automation should meet your level of expertise. If you let an agent
+write code you don't understand, you aren't growing. You are just accumulating
+technical debt you can't pay off. A useful framework is to categorize agents
+into three levels:
 
 ### 1. Q&A Helper Agent
 
@@ -165,7 +168,10 @@ The agent that does the work. Junior developers should use this sparingly, mostl
 
 ## Keep It Simple
 
-Unless you’re shipping a product, cap your "workflow improvement" time to 10%. The [Bitter Lesson](http://www.incompleteideas.net/IncIdeas/BitterLesson.html) and the [Wait Calculation](https://www.oneusefulthing.org/p/the-lazy-tyranny-of-the-wait-calculation) have taught me that general methods usually win over complex, hand-tuned workflows.
+Unless you’re shipping a product, cap your "workflow improvement" time to 10%.
+The [Bitter Lesson](http://www.incompleteideas.net/IncIdeas/BitterLesson.html)
+and the [Wait Calculation](https://www.oneusefulthing.org/p/the-lazy-tyranny-of-the-wait-calculation)
+suggest that general methods usually win over complex, hand-tuned workflows.
 
 If you spend all your time developing a grand workflow, you risk:
 
@@ -176,10 +182,10 @@ If you spend all your time developing a grand workflow, you risk:
 
 ## Closing Thoughts
 
-As we develop more and more complex agentic systems, I believe we must remember
-what drove us here: the desire to learn. Learning and thinking are such integral
-parts of human behavior that they will be here to stay while humans exist, even
-if it means we eventually merge with machines [^4].
+As we develop more and more complex agentic systems, we must remember what drove
+us here: the desire to learn. Learning and thinking are such integral parts of
+human behavior that they will be here to stay while humans exist, even if it
+means we eventually merge with machines [^4].
 
 We are at a pivotal moment. We have tools that can think on scales that handle
 the mundane, enabling us to maximize our learning. But if used incorrectly,
@@ -191,7 +197,7 @@ that users who used ChatGPT to write essays became "metacognitively lazy."
 However, the group that practiced **without** AI first, and then used AI,
 performed significantly better.
 
-This leads to what I call **The Agentic Ladder**:
+This leads to the concept of the **The Agentic Ladder**:
 
 1. **Master the skill manually** so you have a solid footing.
 2. **Use the agent to launch you** to the next rung of complexity.
