@@ -25,28 +25,27 @@ more efficient our agents become at "doing," the more passive we become as
 observers. If we aren't careful, we risk becoming passive observers and losing
 the very skills that made us capable of directing the agents in the first place.
 
-I found myself asking one constant question:
+The challenge narrows down to one constant question:
 
-> **_How can I use agents so that I, as the operator, also grow?_**
+> **_How can the operator use agents to foster their own growth?_**
 
-These are some tips I’ve learned to put the emphasis on self-growth rather than
-just raw productivity. Our brain has an impressive capacity to learn. By
-offloading the "thinking" without a strategy, we waste that capacity. Learning
-provides benefits beyond just your career, including improved mental health
-[^2].
+The following strategies prioritize self-growth over raw productivity. Our brain
+has an impressive capacity to learn. By offloading the "thinking" without a
+strategy, we waste that capacity. Learning provides benefits beyond just your
+career, including improved mental health [^2].
 
-To keep this engaging, I've added suggestions you can try yourself. You can
+To make this practical, actionable suggestions are included below. You can
 follow along by just opening a few free [Gemini](https://gemini.google.com/) or
 [ChatGPT](https://chatgpt.com/) sessions.
 
-> **NOTE**: I have intentionally kept this guide simple. While agentic workflows
-> can get technically complex, the patterns below are designed to be "copy-paste"
-> friendly so you can use them immediately without any special software.
-> I am using prompts from the
-> [BMAD method](https://github.com/bmad-code-org/BMAD-METHOD), named after its
-> creator Brian Madison. I use BMAD because it mirrors a professional software
-> development lifecycle (SDLC) more closely than any other framework I’ve found.
-> If you use these prompts, please attribute them to the author, Brian Madison.
+> **Note:** This guide is intentionally kept simple. While agentic workflows can
+> get technically complex, the patterns below are designed to be "copy-paste"
+> friendly so they can be used immediately without any special software. The
+> prompts below are sourced from the [BMAD
+> method](https://github.com/bmad-code-org/BMAD-METHOD), named after its creator
+> Brian Madison. BMAD is selected here because it mirrors a professional software
+> development lifecycle (SDLC) more closely than other frameworks. If you use
+> these prompts, please attribute them to the author.
 
 ---
 
