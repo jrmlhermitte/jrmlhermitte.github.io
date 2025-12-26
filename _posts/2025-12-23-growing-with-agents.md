@@ -19,12 +19,14 @@ What is an agent? More or less, it’s defined as [^1]:
 > specific goal, and then take actions to complete it, often with little to no
 > human intervention.
 
-This isn't just an LLM that responds with text. It is a model with access to
-tools like web search or code execution. However, as I’ve experimented with
-these frameworks, I've realized we are facing **The Operator’s Dilemma**: the
-more efficient our agents become at "doing," the more passive we become as
-observers. If we aren't careful, we risk becoming mere button-pushers and losing
-the very skills that made us capable of directing the agents in the first place.
+As we all know, this isn't just an LLM that responds with text. It is a model
+with access to tools like web search or code execution. However, as I’ve
+experimented with these frameworks, I've realized we are facing
+**The Operator’s Dilemma**: the more efficient our agents become at "doing," the
+*more passive we
+become as observers. If we aren't careful, we risk becoming mere button-pushers
+and losing the very skills that made us capable of directing the agents in the
+first place.
 
 I found myself asking one constant question:
 
@@ -60,11 +62,16 @@ Conversely, allowing an agent to traverse _scale_ is counter to how we think. We
 don't try to understand how a car works by thinking about the molecular
 structure of rubber tires at the same time we're thinking about the steering
 rack. We want the agent to be as knowledgeable as possible, but focused on the
-right **scale**.
+right level of abstraction.
 
-### The Multi-Stage Flow
+These two concepts have specific names in the literature:
 
-In software, we handle this by moving through specific stages. This prevents the
+- **Scale:** [Hierarchical Task Decomposition](https://www.emergentmind.com/topics/hierarchical-task-decomposition)
+- **Stage:** [Discrete Phase Separation](https://agentic-patterns.com/patterns/discrete-phase-separation/)
+
+### Scale Example: Hierarchical Task Decomposition
+
+In software, we handle scale by moving down a hierarchy. This prevents the
 "Developer" agent from getting bogged down in "Product" questions.
 
 ```mermaid!
@@ -78,18 +85,25 @@ graph LR
 
 ```
 
-**BMAD Scale Example:**
-When working on a product, we start with the overall goal (The [Product
-Manager](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/pm.txt)
-writing a PRD). We then move to high-level structure and constraints (The
-[Architect](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/architect.txt)).
-Only after the high-level picture is clear do we funnel down into specific tasks
-(The [Scrum
-Master](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/sm.txt))
-and final execution (The
-[Developer](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/dev.txt)).
+In the BMAD method, this looks like this:
 
-Agents don't "remember" well across massive contexts [^3], so writing things down at each scale and passing those documents to the next stage is critical.
+- **Goal:** The [Product Manager](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/pm.txt) writes a PRD.
+- **System:** The [Architect](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/architect.txt) defines the high-level constraints.
+- **Task:** The [Scrum Master](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/sm.txt) breaks it down.
+- **Execution:** The [Developer](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/dev.txt) writes the code.
+
+### Stage Example: Discrete Phase Separation
+
+Interleaved with Scale is the concept of operating in **Stages**. Early on, we aren't sure what we want, so we follow a pattern of **Research → Plan → Execute**.
+
+In BMAD, this separates the work into distinct phases so you don't start coding
+before you know what you are building:
+
+- **Research:** The [Analyst](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/analyst.txt) helps you create a brief.
+- **Plan:** The PM, Architect, and Scrum Master help you break it down into tasks.
+- **Execute:** The Developer executes the work.
+
+Agents don't "remember" well across massive contexts [^2], so writing things down at each scale and stage—and passing those documents to the next agent—is critical.
 
 > **Try this**: Copy and paste these prompts in different sessions in order. At the end of each session, have the previous agent write a "handover doc" for the next one.
 > [Analyst](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/analyst.txt) → [Product Manager](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/pm.txt) → [Architect](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/architect.txt)
