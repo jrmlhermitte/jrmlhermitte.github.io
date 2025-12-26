@@ -23,10 +23,9 @@ As we all know, this isn't just an LLM that responds with text. It is a model
 with access to tools like web search or code execution. However, as I’ve
 experimented with these frameworks, I've realized we are facing
 **The Operator’s Dilemma**: the more efficient our agents become at "doing," the
-*more passive we
-become as observers. If we aren't careful, we risk becoming mere button-pushers
-and losing the very skills that made us capable of directing the agents in the
-first place.
+more passive we become as observers. If we aren't careful, we risk becoming mere
+passive observers and losing the very skills that made us capable of directing
+the agents in the first place.
 
 I found myself asking one constant question:
 
