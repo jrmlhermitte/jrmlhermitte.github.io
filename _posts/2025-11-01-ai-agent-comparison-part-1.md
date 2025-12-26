@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "How I Compared Claude, Codex, and Gemini for Software Development"
+title: "Comparing Claude, Codex, and Gemini for Software Development"
 excerpt: "Part 1 of 3: Setup and methodology for my AI agent comparison using the BMAD method."
 series: "AI Agent Comparison"
 series_order: 1
@@ -22,13 +22,13 @@ what I was trying to learn.
 
 AI agents can dramatically accelerate software development. But with several
 models now offering "coding assistant" modes, which one should you trust to run
-an actual Agile workflow? To avoid switching tools daily, I ran a controlled
-test comparing **Claude Sonnet 4.5**, **Codex (gpt‑5‑codex)**, and
+an actual Agile workflow? To determine the best daily driver, a controlled test
+was conducted comparing **Claude Sonnet 4.5**, **Codex (gpt‑5‑codex)**, and
 **Gemini 2.5 Pro/Flash** under the same conditions.
 
-I didn't just want to see who "wins." I wanted to understand how to **get the
-best out of them**: what makes one model stumble, and how to structure my work
-to make them succeed.
+The goal was not merely to see who 'wins,' but to understand how to optimize
+their performance: what makes one model stumble, and how to structure my work to
+make them succeed.
 
 ## The BMAD Method
 
@@ -60,8 +60,8 @@ Ready to assist! What would you like me to do?
 
 ## The Test Project
 
-To keep things realistic, I used my in-progress project **Squirrel**, a
-"production‑ready" rewrite of a [previous toy
+To keep things realistic, the test utilized **Squirrel**, an in-progress
+'production-ready' rewrite of a [previous toy
 app](/2025/08/20/pdf-store-app-with-gemini.html) that stores PDFs. Unlike the
 earlier version, which had a single endpoint and simple data flow, this story
 spans multiple services (Rust API, Python worker, and integration tests) making
@@ -99,9 +99,8 @@ flowchart LR
     QA -->|fail| DEV
 ```
 
-I triggered each phase manually, letting the agent hand off to the next. When it
-got stuck (usually in tests), I gave minimal hints: just enough to keep parity
-across models.
+Each phase was triggered manually, letting the agent hand off to the next.
+Minimal hints were provided to maintain parity across models.
 
 To keep the playing field level, I **disabled all external MCP servers and
 plugins**. Each agent relied purely on its internal reasoning and the provided
