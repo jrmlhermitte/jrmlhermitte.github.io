@@ -8,24 +8,22 @@ title: "Beyond Automation: Using Agents to Level Up Your Mind"
 <figcaption>The Agentic Ladder: Using scale, stage, and verification to reach higher levels of complexity.</figcaption>
 </figure>
 
-I’ve been playing with a lot of agentic frameworks at home and at work. There
-are lots of pages with feedback on agents (example: [learnings from the
-sourcegraph team](https://www.nibzard.com/ampcode)) and plenty of tried and true
-[agentic patterns](https://agentic-patterns.com/) out there.
+Agentic workflows are rapidly moving from theory to practice. We now have access
+to comprehensive libraries of [agentic patterns](https://agentic-patterns.com/)
+and real-world feedback from engineering teams (like these
+[learnings from Sourcegraph](https://www.nibzard.com/ampcode)).
 
-What is an agent? More or less, it’s defined as [^1]:
+But first, what exactly is an agent? It is generally defined as [^1]:
 
-> A system designed to perceive its environment, reason about how to achieve a
-> specific goal, and then take actions to complete it, often with little to no
-> human intervention.
+> A system designed to perceive its environment, reason about how to achieve a specific goal, and then take actions to complete it, often with little to no human intervention.
 
-As we all know, this isn't just an LLM that responds with text. It is a model
-with access to tools like web search or code execution. However, as I’ve
-experimented with these frameworks, I've realized we are facing
-**The Operator’s Dilemma**: the more efficient our agents become at "doing," the
-more passive we become as observers. If we aren't careful, we risk becoming mere
-passive observers and losing the very skills that made us capable of directing
-the agents in the first place.
+As we all know, this isn't just an LLM that responds with text; it is a model
+with access to tools like web search or code execution.
+
+However, this autonomy creates a hidden risk: **The Operator’s Dilemma**. The
+more efficient our agents become at "doing," the more passive we become as
+observers. If we aren't careful, we risk becoming passive observers and losing
+the very skills that made us capable of directing the agents in the first place.
 
 I found myself asking one constant question:
 
@@ -41,12 +39,14 @@ To keep this engaging, I've added suggestions you can try yourself. You can
 follow along by just opening a few free [Gemini](https://gemini.google.com/) or
 [ChatGPT](https://chatgpt.com/) sessions.
 
-> **NOTE**: I have decided to stick to one set of prompts throughout this post
-> from the [BMAD method](https://github.com/bmad-code-org/BMAD-METHOD), named
-> after its creator Brian Madison. I use BMAD because it mirrors a professional
-> software development lifecycle (SDLC) more closely than any other framework I’ve
-> found. If you use these prompts, please attribute them to the author, Brian
-> Madison.
+> **NOTE**: I have intentionally kept this guide simple. While agentic workflows
+> can get technically complex, the patterns below are designed to be "copy-paste"
+> friendly so you can use them immediately without any special software.
+> I am using prompts from the
+> [BMAD method](https://github.com/bmad-code-org/BMAD-METHOD), named after its
+> creator Brian Madison. I use BMAD because it mirrors a professional software
+> development lifecycle (SDLC) more closely than any other framework I’ve found.
+> If you use these prompts, please attribute them to the author, Brian Madison.
 
 ---
 
