@@ -225,12 +225,12 @@ sudo service ssh restart
 **NOTE**: Please do not skip this step unless the process is fully
 understood. The web is dangerous.
 
-### Step 4: Install caddy
+### Step 5: Install caddy
 
 Instructions can be found [here](https://caddyserver.com/docs/install).
 For example for ubuntu: `sudo apt install caddy`.
 
-### Step 5: Allow Caddy access to tailscale certificates
+### Step 6: Allow Caddy access to tailscale certificates
 
 In the configuration file `/etc/default/tailscaled` for the tailscale daemon, add this line:
 
@@ -250,7 +250,7 @@ After this edit, ensure the daemon is restarted. For example, using `systemd`:
 sudo systemctl restart tailscaled
 ```
 
-### Step 6: Add webdav plugin to caddy
+### Step 7: Add webdav plugin to caddy
 
 ```
 sudo caddy add-package github.com/mholt/caddy-webdav
@@ -258,7 +258,7 @@ sudo caddy add-package github.com/mholt/caddy-webdav
 
 (From instructions [here](https://marko.euptera.com/posts/caddy-webdav.html)).
 
-### Step 7: Edit the Caddyfile
+### Step 8: Edit the Caddyfile
 
 Caddy's configuration file is located in `/etc/caddy/Caddyfile`.
 Add these lines to it:
@@ -316,13 +316,13 @@ https://machine-name.tailnet-name.ts.net. This is done because the https server
 points to multiple servers (webdav is one, but
 [code-server](https://github.com/coder/code-server) is another).
 
-### Step 8: Restart Caddy
+### Step 9: Restart Caddy
 
 ```
 sudo systemctl restart caddy
 ```
 
-### Step 9: Test the webdav connection
+### Step 10: Test the webdav connection
 
 Just listing should be fine:
 
@@ -332,7 +332,7 @@ $ curl -X PROPFIND -u "user:pass" https://my-machine.tailnet-name.ts.net/webdav/
 
 (or remove the `webdav/` suffix if the `handle_path` directive wasn't used).
 
-### Step 10: Add this to Zotero
+### Step 11: Add this to Zotero
 
 For example:
 
