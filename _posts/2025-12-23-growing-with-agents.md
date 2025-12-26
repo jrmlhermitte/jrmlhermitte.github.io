@@ -100,8 +100,12 @@ In BMAD, this separates the work into distinct phases so you don't start coding
 before you know what you are building:
 
 - **Research:** The [Analyst](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/analyst.txt) helps you create a brief.
-- **Plan:** The PM, Architect, and Scrum Master help you break it down into tasks.
-- **Execute:** The Developer executes the work.
+- **Plan:** The [Product Manager](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/pm.txt),
+  [Architect](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/architect.txt)
+  and [Scrum Master](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/sm.txt)
+  help you break it down into tasks.
+- **Execute:** The [Developer](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/dev.txt)
+  executes the work.
 
 Agents don't "remember" well across massive contexts [^2], so writing things down at each scale and stage—and passing those documents to the next agent—is critical.
 
