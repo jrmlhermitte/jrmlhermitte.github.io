@@ -5,7 +5,7 @@ title: "Growing With Agents"
 
 <figure>
 <img src="/images/2025-12-23-agentic-ladder.png" alt="A digital human climbing a glowing ladder towards a brain icon, representing AI-assisted growth">
-<figcaption>Use agents not just as a coworker, but a ladder.</figcaption>
+<figcaption>The Agentic Ladder: Using scale, stage, and verification to reach higher levels of complexity.</figcaption>
 </figure>
 
 I’ve been playing with a lot of agentic frameworks at home and at work. There
