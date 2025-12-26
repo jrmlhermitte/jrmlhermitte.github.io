@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "Growing With Agents"
+title: "Beyond Automation: Using Agents to Level Up Your Mind"
 ---
 
 <figure>
