@@ -8,19 +8,20 @@ excerpt_separator: <!--more-->
 ---
 
 **Part 3 of 3: How adding a reasoning step improved Claude's architecture by 19%.**
+
 <!--more-->
 
 - [**Part 1**](/2025/11/01/ai-agent-comparison-part-1.html): Setup and methodology
 - [**Part 2**](/2025/11/01/ai-agent-comparison-part-2.html): Results and analysis
 - [**Part 3 (this post)**](/2025/11/01/ai-agent-comparison-part-3.html): Why asking the model to _reason_ changed everything
 
-**TL;DR:** When I asked Claude's Product Owner persona to reason through
+**TL;DR:** When the Claude Product Owner persona was asked to reason through
 conflicting documentation, its architecture and code quality jumped by 19%.
 Small prompt changes can have big architectural consequences.
 
 ## The Turning Point
 
-During the first test, Claude stored extracted HTML directly in PostgreSQL. My
+During the first test, Claude stored extracted HTML directly in PostgreSQL. The
 intended design stored it in **MinIO**, an object store used elsewhere in the
 system. The discrepancy came from a conflict between the PRD and architecture
 documents.
@@ -34,17 +35,17 @@ schema bloat and tighter coupling between services.
 
 ## The Experiment
 
-To see if Claude could self‑correct, I ran the workflow again, watched the
-product owner make the same mistake[^1] and asked it:
+To test if Claude could self‑correct, the workflow was re-run. When the Product
+Owner made the same initial mistake[^1], the following prompt was issued:
 
 > "Can you reason carefully through trade‑offs of these ambiguitied
 > and present your preferred choice with pros and cons?"
 
 That was it. Same task, same environment. The only change was _asking for
-explicit reasoning_. Since Claude was pretty decent at scoring the differences
-between the code given the more or less good agreement with my rubric and
-Claude's, in this case I let Claude score it for me. The following results are
-scores determined by Claude, but peer reviewed and accepted by me.
+explicit reasoning_. Given the strong correlation observed in previous tests
+between the model's self-evaluation and human assessment, Claude was tasked with
+scoring the iteration. The following results were determined by Claude and
+subsequently peer-reviewed and verified by a human developer.
 
 [^1]: Of course with slightly different wording and structure, given the stochastic nature of these models.
 
@@ -80,13 +81,13 @@ Claude v2 reasoned through the conflict explicitly:
 > **Recommendation: Option A.**”
 
 This small deliberation step unlocked better architectural alignment _without
-any new context_. It simply took time to think.
+the addition of any new context_. It simply took time to think.
 
 ## Takeaways
 
 1. **Ask for reasoning, not just answers.** Explicit reflection yields better structure.
 2. **Document the decision process.** When models articulate trade‑offs, it's easier to audit or adjust them later.
-3. **Keep humans in the loop.** BMAD's layered agent roles (PO -> Architect -> Dev) make these checks natural.
+3. **Maintain human oversight.** BMAD's layered agent roles (PO -> Architect -> Dev) make these checks natural.
 
 > Claude's improvement didn't come from a model upgrade. It came from giving it permission to think.
 
@@ -96,8 +97,8 @@ It's tempting to chase the most powerful model of the moment. But this
 experiment shows that learning to get the most out of any model delivers far
 greater returns, and that advantage compounds as models improve.
 
-In the end, progress came not from switching tools, but from refining how I
-worked with them.
+In the end, progress came not from switching tools, but from refining how the
+tools are utilized.
 
 > “Always assume today's AI is the worst you'll ever use.” - Ethan Mollick [^cointelligence]
 
