@@ -103,44 +103,13 @@ This works by basically send json strings back and forth. To test, paste the
 following exactly into the shell:
 
 ```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "initialize",
-  "params": {
-    "protocolVersion": "2024-11-05",
-    "capabilities": {
-      "roots": { "listChanged": true },
-      "tools": { "listChanged": true },
-      "sampling": {},
-      "elicitation": {}
-    },
-    "clientInfo": {
-      "name": "ExampleClient",
-      "title": "ExampleClientDisplayName",
-      "version": "1.0.0"
-    }
-  }
-}
+{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{"roots":{"listChanged":true},"tools":{"listChanged":true},"sampling":{},"elicitation":{}},"clientInfo":{"name":"ExampleClient","title":"ExampleClientDisplayName","version":"1.0.0"}}}
 ```
 
 Output similar to the following should appear:
 
 ```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {
-    "protocolVersion": "2024-11-05",
-    "capabilities": {
-      "experimental": {},
-      "prompts": { "listChanged": false },
-      "resources": { "subscribe": false, "listChanged": false },
-      "tools": { "listChanged": false }
-    },
-    "serverInfo": { "name": "greeter", "version": "1.10.1" }
-  }
-}
+{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2024-11-05","capabilities":{"experimental":{},"prompts":{"listChanged":false},"resources":{"subscribe":false,"listChanged":false},"tools":{"listChanged":false}},"serverInfo":{"name":"greeter","version":"1.10.1"}}}
 ```
 
 **NOTE**: The json commands here and below must be pasted **as is**. You cannot
@@ -150,7 +119,7 @@ ignore your requests.
 Subsequently, paste this to start the connection:
 
 ```json
-{ "jsonrpc": "2.0", "method": "notifications/initialized" }
+{"jsonrpc":"2.0","method":"notifications/initialized"}
 ```
 
 This command **must** follow. Otherwise, the server will not finish the
@@ -159,63 +128,29 @@ connection initialization (it's a requirement of the protocol).
 Next, input the following to list available tools:
 
 ```json
-{ "jsonrpc": "2.0", "method": "tools/list", "id": 1 }
+{"jsonrpc":"2.0","method":"tools/list","id":1}
 ```
 
 you should see something like this (you may see additional logging):
 
 ```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {
-    "tools": [
-      {
-        "name": "greet",
-        "description": "",
-        "inputSchema": {
-          "properties": { "name": { "title": "Name", "type": "string" } },
-          "required": ["name"],
-          "title": "greetArguments",
-          "type": "object"
-        },
-        "outputSchema": {
-          "properties": { "result": { "title": "Result", "type": "string" } },
-          "required": ["result"],
-          "title": "greetOutput",
-          "type": "object"
-        }
-      }
-    ]
-  }
-}
+{"jsonrpc":"2.0","id":1,"result":{"tools":[{"name":"greet","description":"","inputSchema":{"properties":{"name":{"title":"Name","t
+ype":"string"}},"required":["name"],"title":"greetArguments","type":"object"},"outputSchema":{"properties":{"result":{"title":"Resu
+lt","type":"string"}},"required":["result"],"title":"greetOutput","type":"object"}}]}}
 ```
 
 A Stdio connection with an MCP server has been successfully established!
 To test calling the tool:
 
 ```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "tools/call",
-  "params": { "name": "greet", "arguments": { "name": "Teal'c" } }
-}
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"greet","arguments":{"name":"Teal'c"}}}
 ```
 
 you should then see:
 
 ```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {
-    "content": [{ "type": "text", "text": "Hello Teal'c!" }],
-    "structuredContent": { "result": "Hello Teal'c!" },
-    "isError": false
-  }
-}
-```
+{"jsonrpc":"2.0","id":1,"result":{"content":[{"type":"text","text":"Hello Teal'c!"}],"structuredContent":{"result":"Hello Teal'c!"
+},"isError":false}}
 
 This demonstrates the setup of an MCP server with Gemini.
 
