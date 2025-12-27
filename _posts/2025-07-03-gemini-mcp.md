@@ -8,8 +8,8 @@ There are two modes MCP can run in: [stdio](https://modelcontextprotocol.io/docs
 
 This post will demonstrate how to leverage the full power of MCP through Gemini series LLMs
 by adding a custom MCP server to [Gemini CLI](https://blog.google/technology/developers/introducing-gemini-cli-open-source-ai-agent/).
-Lots of these posts exist, but demonstractions on how Stdio works with real
-calls into it appear to be lacking. This guide addresses that gap.
+Many such posts exist, but demonstrations on how Stdio works with real calls
+into it appear to be lacking. This guide addresses that gap.
 
 ![sequence diagram](/images/2025_07_04_gemini_graph.png)
 
@@ -18,11 +18,11 @@ Most of this has also been put in the readme [here](https://github.com/jrmlhermi
 ### What this will not be about
 
 This is geared towards home projects where one agent connected to a bunch of tools is helpful.
-This post will not go into setting up multiple agents. See Google's [Agent2Agent](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/) protocol for more information. See the [ADK Libary](https://google.github.io/adk-docs/) for some more details, or see this nice [Hugging Face Tutorial](https://huggingface.co/blog/tsadoq/agent2agent-and-mcp-tutorial) on that.
+This post will not go into setting up multiple agents. See Google's [Agent2Agent](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/) protocol for more information. See the [ADK Library](https://google.github.io/adk-docs/) for some more details, or see this nice [Hugging Face Tutorial](https://huggingface.co/blog/tsadoq/agent2agent-and-mcp-tutorial) on that.
 
 ## Quick Setup
 
-First of all, for this to work, ensure the proper tools are installed.
+To begin with, ensure the proper tools are installed.
 Recommendations include tools with minimal friction (e.g., `uv`), though any
 preferred Python toolset is suitable.
 
@@ -49,7 +49,7 @@ source .venv/bin/activate
 
 ## Write MCP Server And Test
 
-Here, the MCP server is started and requests sent to it sent via stdin directly
+Here, the MCP server is started and requests are sent via stdin directly
 into the terminal, with responses received via stdout.
 
 The process follows this structure (acting as "Gemini CLI"):
@@ -59,7 +59,7 @@ The process follows this structure (acting as "Gemini CLI"):
 ### 1. Example File
 
 The file to run is in [gemini-mcp-example/main.py](https://github.com/jrmlhermitte/gemini-mcp-example/blob/main/gemini-mcp-example/main.py) and already defined.
-The main components are
+The main components are:
 
 ```python
 # ...
@@ -75,7 +75,7 @@ if __name__ == "__main__":
 ```
 
 Crucially, the MCP server is initialized with `mcp = FastMCP("greeter")`, a tool
-defined and decorated with `@mcp.tool()`, and finally run with `mcp.run()` with
+defined and decorated with `@mcp.tool()`, and finally run via `mcp.run()` using
 the `stdio` protocol.
 
 This will start a server that will receive commands from stdin and output them
@@ -112,9 +112,9 @@ Output similar to the following should appear:
 {"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2024-11-05","capabilities":{"experimental":{},"prompts":{"listChanged":false},"resources":{"subscribe":false,"listChanged":false},"tools":{"listChanged":false}},"serverInfo":{"name":"greeter","version":"1.10.1"}}}
 ```
 
-**NOTE**: The json commands here and below must be pasted **as is**. You cannot
-have newlines in between. If the formatting is incorrect, the server will just
-ignore your requests.
+**NOTE**: The json commands here and below must be pasted **as is**. Newlines
+are not permitted. If the formatting is incorrect, the server will just
+ignore the requests.
 
 Subsequently, paste this to start the connection:
 
@@ -152,22 +152,20 @@ The following output should appear:
 
 This demonstrates the setup of an MCP server with Gemini.
 
-Gemini CLI will run your server as a child process
+Gemini CLI will run the server as a child process
 and send commands to stdin and receive responses from stdout using the stdio protocol.
 
 #### Additional Challenge: Two Terminals (Linux Only)
 
-Want to try this in separate terminals?
+To attempt this in separate terminals, run the command with:
 
-Just run the command with:
-
-```
-cat | python gemini-mcp-exampe/main.py
+```bash
+cat | python gemini-mcp-example/main.py
 ```
 
 locate the PID with `ps uxaw | grep gemini-mcp-example`, and
 send requests to `/proc/$PROC_PID/fd/0` and read responses from
-`/proc/$PROC_PID/fd/1`. There are other ways but this will be the simplest to setup.
+`/proc/$PROC_PID/fd/1`. Other methods exist, but this offers the simplest setup.
 
 ## Gemini CLI
 
@@ -231,11 +229,11 @@ Input something like:
 My name is Teal'c
 ```
 
-Gemini should figure that it might want to call the greeting tool, given the
+Gemini should determine that calling the greeting tool is appropriate, given the
 introduction. A request to call the tool should appear:
 ![confirmation](/images/greet_request.png)
 
-And it should hopefully have called the tool.
+The tool should successfully execute.
 ![tool_called](/images/greet_tool_called.png)
 
 ## Troubleshooting
