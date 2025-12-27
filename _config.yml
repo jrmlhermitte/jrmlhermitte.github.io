@@ -11,7 +11,7 @@ enable_copy_code_button: true
 author:
   name: "Julien Lhermitte"
   avatar: "/images/profile.png"
-  bio: "Experiments in co-intelligence and the expansion of human capability."
+  bio: "Leveraging AI to scale critical thinking and expand human capability."
   links:
     - label: "GitHub"
       icon: "fab fa-github"
