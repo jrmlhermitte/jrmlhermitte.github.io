@@ -5,12 +5,26 @@ permalink: /about/
 author_profile: true
 ---
 
-This is a personal blog focused on AI-related topics. It is more like a set of
-personal notes. Take everything with a grain of salt :). Discussions welcome,
-always open to connect with more people!
+Welcome. This is a personal log of my experiments with AI systems, agents, and
+learning theory.
 
-The title comes from the fact that I believe we should be leveraging AI so we
-can spend more time thinking, as it is
-[The Order Of
-Things](https://memory-alpha.fandom.com/wiki/Rocks_and_Shoals_(episode)). The
-posts attempt to follow this mantra.
+Consider these posts as **working notes** rather than finished tutorials. I am
+documenting my process, mistakes and pivots included, so take everything here
+with a grain of salt. Discussions are welcome, and I'm always open to
+connecting!
+
+### The Philosophy
+The ethos of this blog is inspired by *Stargate SG-1*, specifically the concept
+of **"The Fifth Race."**
+
+In the series, the Asgard entrust humanity with their "Core", a repository of
+vast knowledge and capability. They didn't do this to make humans dependent, but
+to give them the tools to evolve and take their place among the advanced
+civilizations.
+
+I view AI as our version of that Core. It is a co-intelligence that offers us
+the accumulated knowledge of the world. By partnering with it to handle
+computation and execution, we liberate ourselves to focus on what we actually
+enjoy: wisdom, strategy, and critical thinking.
+
+This blog is about learning how to use that Core to its full potential.
