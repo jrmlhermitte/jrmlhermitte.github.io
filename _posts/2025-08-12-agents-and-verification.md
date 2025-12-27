@@ -1,28 +1,28 @@
 ## When Are Agents Worth It?
 
-**TL;DR** Agents are only worth it if the probability of their success, $P_s$, 
+**TL;DR** Agents are only worth it if the probability of their success, $P_s$,
 is greater than the time it takes to verify the task over the total time it
 would have taken to complete the task without an agent, $\frac{\mathrm{Verification Time}}{\mathrm{Actual Task Time}}$ , so $P_s >
 \frac{\mathrm{Verification Time}}{\mathrm{Actual Task Time}}$.
 
 ### Introduction
 
-Agents are so prevalent today that I don't believe they need any introduction.
-You can find numerous success stories. My favorite one so far is this recent one
+Agents are so prevalent today that they hardly need any introduction.
+Numerous success stories exist. A notable example is this recent one
 [here](https://cameronwestland.com/it-s-not-10x-it-s-36x-this-is-what-it-looks-like-to-kill-a-usd30k-meeting-with-ai)
 involving oncall triage.
 
-As everyone else, I have been using agents successfully and unsuccessfully. At
-times, they were a time saver, and at times, a time sink.  This document aims to
-naively explore when it might be worth considering an agent.  Although today
+Following their wide spread use, agents have been used with varying degrees of success. At
+times, they were a time saver, and at times, a time sink. This document aims to
+naively explore when it might be worth considering an agent. Although today
 most uses of agents are quite complex involving multiple agents, it will assume
 a very simple one agent setup.
 
-I hope to in the future elaborate on a more complex setup.
+Future analysis may elaborate on a more complex setup.
 
 <figure class="image">
   <img src="/images/2025-08-12-agent-and-verifier.png" alt="Agent And Verifier">
-  <figcaption>Gemini prompt: Draw me a picture of an agent as a robot alongside
+  <figcaption>Gemini prompt: Draw a picture of an agent as a robot alongside
   a human verifying a document the agent handed it. The agent also has as
   wristwatch and is checking the time.
   </figcaption>
@@ -30,29 +30,39 @@ I hope to in the future elaborate on a more complex setup.
 
 ### Formalizing The Problem
 
-Let's say we have an agent $A$ that is tasked to solve problems. When is it useful, and when might we be better off taking a manual approach? We can reduce this question down to a few simple variables:
+Consider an agent $A$ that is tasked to solve problems. When is it useful, and
+when is a normal approach preferable? This question can be reduced down to a few
+simple variables:
 
 - $T$ $\rightarrow$ The total time a task takes
 - $P_s$ $\rightarrow$ The probability of an agent being successful
 - $V_r := \frac{\mathrm{Verification Time}}{\mathrm{Actual Task Time}}$
-$\rightarrow$ The fraction of the time it takes to verify the task over the total
-time it would have taken to complete the task without an agent. For simplicity,
-this will include the time spent fixing/tweaking the result if it is almost
-correct.
+  $\rightarrow$ The fraction of the time it takes to verify the task over the total
+  time it would have taken to complete the task without an agent. For simplicity,
+  this will include the time spent fixing/tweaking the result if it is almost
+  correct.
 
 Now, in reality, longer tasks tend to be harder for an agent as they're
-generally more complex problems, so $P_s$ should not be constant over that. The verification ratio can sometimes change as well. So let's assume $P_s \rightarrow P_s(T)$ and $V_r \rightarrow V_r(T)$. Effectively, what we're assuming here is that tasks of the same length have the same difficulty. This isn't quite right (task time is not one-to-one with its complexity), but let's just start with this to get an idea of the limits of our agents. From now on, we'll just assume that the tasks here have the same complexity (example complexity categories: doc writing, code migrations etc).
+generally more complex problems, so $P_s$ should not be constant over that. The
+verification ratio can sometimes change as well. Therefore assume $P_s
+\rightarrow P_s(T)$ and $V_r \rightarrow V_r(T)$. Effectively, this assumes that
+tasks of the same length have the same difficulty. This isn't quite right (task
+time is not one-to-one with its complexity), but this serves as a starting point
+to estimate the limits of agents. It is assumed that the tasks here have the
+same complexity (example complexity categories: doc writing, code migrations
+etc).
 
 ### Fire And Forget
 
-One way agents could be used is a fire and forget type approach. Say you have 100 tasks (100 bugs), and they're all about the same complexity.
-You have a $P_s$ chance of succeeding, and thus $(1 - P_s)$ of failing.
-When you succeed, you spend the verification time, $V_r T$ on the problem.
-When they fail, you suffer the verification plus total time (since you actually
-have to work on the problem yourself: $T(1 + V_r)$.
+One way agents could be used is a fire and forget type approach. Consider 100
+tasks (100 bugs), and they're all about the same complexity.
+There is a $P_s$ chance of succeeding, and thus $(1 - P_s)$ of failing.
+Upon success, the verification time spent is, $V_r T$ on the problem.
+Upon failure, the cost is verification plus total time. This is due to
+having to manually work on the problem: $T(1 + V_r)$.
 
-Let's say the time you take for one task is $\tau$, which is a random variable.
-The expectation is the the sum of these two cases:
+Assume the time taken for one task is $\tau$, which is a random variable. The
+expectation is the sum of these two cases:
 
 $$
 \begin{aligned}
@@ -63,7 +73,7 @@ $$
 \end{aligned}
 $$
 
-Subtracting the time we would have taken for the task, we get:
+Subtracting the manual task time gives:
 
 $$
 \begin{aligned}
@@ -71,14 +81,15 @@ $$
 \end{aligned}
 $$
 
-This $\Delta \langle \tau \rangle$ is the additional time gained/lost.
-We want this to be negative so that we **reduce** the total time we spend
-on tasks. We quickly see that to reduce this, we just need the probability of success to be less than the verification ratio.
+This $\Delta \langle \tau \rangle$ is the additional time gained/lost. This
+must be negative to **reduce** the total time spent on tasks. It is evident that
+to reduce this, the probability of success simply needs to be greater than the
+verification ratio.
 
-### Try Until You Give Up
+### Try Until Success
 
-One day, we'll have an abundance of models, and we may even be able to have them
-retry and randomize until they succeed. What happens in the best case?
+Eventually, an abundance of models with automated retries and randomization will
+be used to solve tasks. What happens in the best case?
 
 The cases are simple:
 
@@ -86,26 +97,26 @@ The cases are simple:
 - $(1-P_s)$ chance to fail first time, $P_s$ after to succeed, spent $2V_rT$ time
 - etc
 
-The expectated time is the sum of the time spent in each of these cases times
+The expected time is the sum of the time spent in each of these cases times
 their probability:
 
 $$
 \begin{aligned}
-\langle \tau \rangle &= \sum \limits_{i=0}^{\infty} P_s (1 - P_s)^{i-1} i V_r T \cr
-&= V_r T \sum \limits_{i=0}^{\infty} P_s (1 - P_s)^{i-1} i
+\langle \tau \rangle &= \sum \limits_{i=1}^{\infty} P_s (1 - P_s)^{i-1} i V_r T \cr
+&= V_r T \sum \limits_{i=1}^{\infty} P_s (1 - P_s)^{i-1} i
 \end{aligned}
 $$
 
 This is a well known formula which can be derived by simply taking
-$f = (1 - P_s)$, the sum $S = \sum \limits_{i=0}^{\infty} f^{i-1} i$ and
-subtracing these two quantities: $S - f S$. I will not go through the
-derivation and leave it as an exercise.
+$f = (1 - P_s)$, the sum $S = \sum \limits_{i=1}^{\infty} f^{i-1} i$ and
+subtracting these two quantities: $S - f S$. The derivation is omitted and left
+as an exercise.
 
 The result is then:
 
 $$
 \begin{aligned}
-\langle \tau \rangle &= V_r T \sum \limits_{i=0}^{\infty} P_s (1 - P_s)^{i-1} i \cr
+\langle \tau \rangle &= V_r T \sum \limits_{i=1}^{\infty} P_s (1 - P_s)^{i-1} i \cr
 &= V_r T \frac{1}{P_s} = T \frac{V_r}{P_s}
 \end{aligned}
 $$
@@ -119,16 +130,17 @@ $$
 \end{aligned}
 $$
 
-We can see in this case, if we keep trying, assuming the model will be right
-$P_s$ (so the prob of success doesn't change knowing the model previously failed
-for example), we will have saved time if $P_s > V_r$. This is the same result as
-for the fire and forget case.
+In this case, if attempts continue, assuming the model will be right $P_s$ (so
+the prob of success doesn't change knowing the model previously failed for
+example), time is saved if $P_s > V_r$. This is the same result as for the fire
+and forget case.
 
 ### Which Is Better?
 
-This brings an interesting question. As we develop more agents, which case is better to optimize for?
+This raises an interesting point. As agent development progresses, which case is
+better to optimize for?
 
-If we take the ratio:
+Taking the ratio:
 
 $$
 \begin{aligned}
@@ -137,19 +149,25 @@ $$
 \end{aligned}
 $$
 
-we see that it just depends on $P_s$. Since we know that $0 \le P_s \le 1$, we quickly see that this ratio is less than 1, suggesting that the try forever approach has a larger gain $\langle \Delta \tau \rangle$.
+it depends solely on $P_s$. Given that $0 \le P_s \le 1$, this ratio is less than 1, suggesting that the try forever approach has a larger gain $\langle \Delta \tau \rangle$.
 
-This brings in an interesting question. We are trending towards the direction of having a multitude of agents with different strengths. At some point, the diversity of agents will likely make the try forever approach eventually succeed in most cases and be worth the effort. This is an interesting avenue of innovation and possibility.
+This brings in an interesting question. This trend is moving towards the
+direction of having a multitude of agents with different strengths. At some
+point, the diversity of agents will likely make the try forever approach
+eventually succeed in most cases and be worth the effort. This is an interesting
+avenue of innovation and possibility.
 
 ### Some Examples
 
-When are some cases where this might be useful? Here are some tips from my personal experience. Please note this is no way quantitative (hope to try providing some quantitative results in a future post) and I'd love to hear opinions about these.
+When are some cases where this might be useful? Here are some tips from
+practical examples. Note that this is not quantitative (future posts may provide
+quantitative results) and feedback is welcome.
 
 #### Fixing Unit Tests
 
 These types of problems are very easy to verify. Tests can be verified in a
 semi-automated way by simply running them. They still need to be manually
-reviewed for correctness and sometimes tweaked. You can introduce variety
+reviewed for correctness and sometimes tweaked. Variety can be introduced
 by randomly picking some sample code changes with test cases, making the try
 forever case also more favorable.
 
@@ -163,22 +181,22 @@ would produce enough variety.
 #### Document Writing
 
 The verification overhead $V_r$ for these problems tends to be pretty high.
-In my opintion, I feel likely better off writing the documents myself unless
-the writing is a very basic information retrieval task (ex: take this bug and
-add it to the troubleshooting page or FAQ).
+Manual writing is likely preferable unless the writing is a very basic
+information retrieval task (ex: take this bug and add it to the troubleshooting
+page or FAQ).
 
 Here are some estimates (again, not quantitative!):
 
-| Task Type              | Verification Ratio | Probability of Success | Fire And Forget % Time saved | Try Until You Succeed % Time Saved |
-| ---------------------- | ------------------ | ---------------------- | ---------------------------- | ---------------------------------- |
-| Bug Fixing             | 5%                 | 80%                    | 75%                          | 93.75%                             |
-| Oncall Troubleshooting | 5%                 | 60%                    | 55%                          | 91.7%                              |
-| Document Writing       | 60%                | 75%                    | 15%                          | 20%                                |
+| Task Type              | Verification Ratio | Probability of Success | Fire And Forget % Time saved | Try Until Success % Time Saved |
+| ---------------------- | ------------------ | ---------------------- | ---------------------------- | ------------------------------ |
+| Bug Fixing             | 5%                 | 80%                    | 75%                          | 93.75%                         |
+| Oncall Troubleshooting | 5%                 | 60%                    | 55%                          | 91.7%                          |
+| Document Writing       | 60%                | 75%                    | 15%                          | 20%                            |
 
-### What do you think?
+### Conclusion
 
-What do you think? What is your experience with agents?
-What has saved you the most time? Any interesting links to share?
+How does this align with general experiences using agents? What strategies have
+yielded the most time savings? Any interesting links to share?
 
 ## Citation
 
