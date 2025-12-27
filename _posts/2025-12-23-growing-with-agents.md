@@ -105,7 +105,9 @@ before you know what you are building:
 - **Execute:** The [Developer](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/dev.txt)
   executes the work.
 
-Agents don't "remember" well across massive contexts [^3], so writing things down at each scale and stage—and passing those documents to the next agent—is critical.
+Agents don't "remember" well across massive contexts [^3], so writing things
+down at each scale and stage, and passing those documents to the next agent, is
+critical.
 
 > **Try this**: Copy and paste these prompts in different sessions in order. At the end of each session, have the previous agent write a "handover doc" for the next one.
 > [Analyst](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/analyst.txt) → [Product Manager](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/pm.txt) → [Architect](https://github.com/bmad-code-org/BMAD-METHOD/blob/v4.44.3/dist/agents/architect.txt)
