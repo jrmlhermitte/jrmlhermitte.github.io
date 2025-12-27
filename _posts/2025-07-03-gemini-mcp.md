@@ -49,7 +49,7 @@ source .venv/bin/activate
 
 ## Write MCP Server And Test
 
-Here, the MCP server is started requests sent to it sent via stdin directly
+Here, the MCP server is started and requests sent to it sent via stdin directly
 into the terminal, with responses received via stdout.
 
 The process follows this structure (acting as "Gemini CLI"):
@@ -99,7 +99,7 @@ The protocol is initialized with version
 [2024-11-05](https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle)
 using stdin/stdout (the `stdio` protocol configured for the fast MCP server).
 
-This works by basically send json strings back and forth. To test, paste the
+This functions by sending json strings back and forth. To test, paste the
 following exactly into the shell:
 
 ```json
@@ -131,7 +131,7 @@ Next, input the following to list available tools:
 {"jsonrpc":"2.0","method":"tools/list","id":1}
 ```
 
-you should see something like this (you may see additional logging):
+Output similar to the following should appear:
 
 ```json
 {"jsonrpc":"2.0","id":1,"result":{"tools":[{"name":"greet","description":"","inputSchema":{"properties":{"name":{"title":"Name","type":"string"}},"required":["name"],"title":"greetArguments","type":"object"},"outputSchema":{"properties":{"result":{"title":"Result","type":"string"}},"required":["result"],"title":"greetOutput","type":"object"}}]}}
@@ -144,7 +144,7 @@ To test calling the tool:
 {"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"greet","arguments":{"name":"Teal'c"}}}
 ```
 
-you should then see:
+The following output should appear:
 
 ```json
 {"jsonrpc":"2.0","id":1,"result":{"content":[{"type":"text","text":"Hello Teal'c!"}],"structuredContent":{"result":"Hello Teal'c!"},"isError":false}}
@@ -171,7 +171,7 @@ send requests to `/proc/$PROC_PID/fd/0` and read responses from
 
 ## Gemini CLI
 
-Integrating with Gemini CLI.
+Integration with Gemini CLI.
 
 Additional tools are required: node and Gemini CLI itself.
 
@@ -245,7 +245,7 @@ able to start up:
 
 ```
 source .venv/bin/activate
-python gemini-extension/main.py
+python gemini-mcp-example/main.py
 ```
 
 (Also ensure to run `source .venv/bin/activate` before starting `gemini`; This runs in a local virtual environment.)
