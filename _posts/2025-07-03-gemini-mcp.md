@@ -134,9 +134,7 @@ Next, input the following to list available tools:
 you should see something like this (you may see additional logging):
 
 ```json
-{"jsonrpc":"2.0","id":1,"result":{"tools":[{"name":"greet","description":"","inputSchema":{"properties":{"name":{"title":"Name","t
-ype":"string"}},"required":["name"],"title":"greetArguments","type":"object"},"outputSchema":{"properties":{"result":{"title":"Resu
-lt","type":"string"}},"required":["result"],"title":"greetOutput","type":"object"}}]}}
+{"jsonrpc":"2.0","id":1,"result":{"tools":[{"name":"greet","description":"","inputSchema":{"properties":{"name":{"title":"Name","type":"string"}},"required":["name"],"title":"greetArguments","type":"object"},"outputSchema":{"properties":{"result":{"title":"Result","type":"string"}},"required":["result"],"title":"greetOutput","type":"object"}}]}}
 ```
 
 A Stdio connection with an MCP server has been successfully established!
@@ -149,8 +147,8 @@ To test calling the tool:
 you should then see:
 
 ```json
-{"jsonrpc":"2.0","id":1,"result":{"content":[{"type":"text","text":"Hello Teal'c!"}],"structuredContent":{"result":"Hello Teal'c!"
-},"isError":false}}
+{"jsonrpc":"2.0","id":1,"result":{"content":[{"type":"text","text":"Hello Teal'c!"}],"structuredContent":{"result":"Hello Teal'c!"},"isError":false}}
+```
 
 This demonstrates the setup of an MCP server with Gemini.
 
