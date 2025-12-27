@@ -11,7 +11,7 @@ enable_copy_code_button: true
 author:
   name: "Julien Lhermitte"
   avatar: "/images/profile.png"
-  bio: "Exploring AI systems, agents, and learning theory."
+  bio: "Experiments in co-intelligence and the expansion of human capability."
   links:
     - label: "GitHub"
       icon: "fab fa-github"
