@@ -1,3 +1,9 @@
+--
+title: "Why Sunsets Plummet While Sunrises Stall"
+description: "You might notice that in September, the evenings get dark rapidly, but the mornings stay bright. This is because the sun isn't just spending less time in the sky; the entire schedule of the day is shifting earlier. This post explains the geometry behind this 'uneven' change."
+image: /images/2026.01.11.time_change_faster_slower.jpg
+--
+
 # Why Sunsets Plummet While Sunrises Stall
 
 **TL;DR:** You might notice that in September, the evenings get dark rapidly, but the mornings stay bright. This is because the sun isn't just spending less time in the sky; the entire schedule of the day is shifting earlier. This post explains the geometry behind this "uneven" change.
