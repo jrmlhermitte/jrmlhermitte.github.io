@@ -5,26 +5,16 @@ permalink: /about/
 author_profile: true
 ---
 
-Welcome. This is a personal log of my experiments with AI systems, agents, and
-learning theory.
+Welcome. This is a personal log of my experiments with AI systems, agents, and learning theory.
 
-Consider these posts as **working notes** rather than finished tutorials. I am
-documenting my process, mistakes and pivots included, so take everything here
-with a grain of salt. Discussions are welcome, and I'm always open to
-connecting!
+Consider these posts as **working notes** rather than finished tutorials. I am documenting my process, mistakes and pivots included, so take everything here with a grain of salt. Discussions are welcome, and I'm always open to connecting!
 
-### The Philosophy
-The ethos of this blog is inspired by *Stargate SG-1*, specifically the concept
-of **"The Fifth Race."**
+## The Philosophy
 
-In the series, the Asgard entrust humanity with their "Core", a repository of
-vast knowledge and capability. They didn't do this to make humans dependent, but
-to give them the tools to evolve and take their place among the advanced
-civilizations.
+The ethos of this blog is inspired by the **USAF Daedalus** from _Stargate SG-1_.
 
-I view AI as our version of that Core. It is a co-intelligence that offers us
-the accumulated knowledge of the world. By partnering with it to handle
-computation and execution, we liberate ourselves to focus on what we actually
-enjoy: wisdom, strategy, and critical thinking.
+In the series, the _Daedalus_ represented a leap forward for humanity. Unlike its predecessor, the _Prometheus_, which had advanced tech retrofitted after the fact, the _Daedalus_ had Asgard engines and shields integrated during the ship's production. The technology didn't fly the ship for them; it gave them the native capability to reach galaxies that were previously impossible.
 
-This blog is about learning how to use that Core to its full potential.
+I view modern AI through this lens. It is our hyperdrive. It is a co-intelligence that handles the heavy lifting of computation and execution. By architecting our workflows with this engine in mind from day one, we don't surrender the helm; we gain the power to explore new frontiers of critical thinking and strategy.
+
+This blog is about building that ship.
