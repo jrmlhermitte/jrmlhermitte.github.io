@@ -78,7 +78,12 @@ At **Stop Gate 1**, I reviewed the report and added four guardrails for Phase 2:
 
 Carbon built `scripts/evaluate.py` (1,121 lines, pure Python stdlib + NumPy) anchored so that evaluating the sharpest single raw frame (`IMG_6074.CR2`) against itself scores **exact `50.0`**:
 
-$$\text{Score} = 50 + 25\log_2\!\left(\frac{\sigma_{\text{bg}}^{\text{ref}}}{\sigma_{\text{bg}}^{\text{stack}}}\right) + 35\log_2\!\left(\frac{\text{FWHM}_{\text{eff}}^{\text{ref}}}{\text{FWHM}_{\text{eff}}^{\text{stack}}}\right) + 10\log_2\!\left(\frac{N_\star^{\text{stack}}}{N_\star^{\text{ref}}}\right) + 15\big(e_{\text{ref}} - e_{\text{stack}}\big) - 40\big(1 - \rho_{\text{ext}}\big)$$
+$$
+\begin{aligned}
+\text{Score} = 50 &+ 25\log_2\left(\frac{\sigma_{\text{bg}}^{\text{ref}}}{\sigma_{\text{bg}}^{\text{stack}}}\right) + 35\log_2\left(\frac{\text{FWHM}\_{\text{eff}}^{\text{ref}}}{\text{FWHM}\_{\text{eff}}^{\text{stack}}}\right) \cr
+&+ 10\log_2\left(\frac{N_\star^{\text{stack}}}{N_\star^{\text{ref}}}\right) + 15\big(e_{\text{ref}} - e_{\text{stack}}\big) - 40\big(1 - \rho_{\text{ext}}\big)
+\end{aligned}
+$$
 
 Two design choices made this objective hard to game:
 
