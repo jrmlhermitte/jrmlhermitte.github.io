@@ -169,6 +169,30 @@ And when I finally broke the quarantine *after* Phase 4 to inspect the stretched
 
 ---
 
+## Bonus Round: Estimating a Blind Synthetic Flat Field
+
+One thing I never shot back in 2020 was a set of physical **flat frames** (uniformly lit exposures used to divide out optical vignetting and sensor dust shadows). Even after stacking cleanly, M31 still carried a **`32.1%` radial vignetting drop** toward the corners and **`-6.7%` dark dust motes** locked to the sensor (you can spot a smudge near the bottom-left corner and upper-right of the unflattened stack).
+
+Using the same iterative hill-climbing workflow—6 iterations guided by a dedicated flat-field diagnostic evaluator (`scripts/evaluate_flat_motes.py`)—I had the AI build a **C++20 synthetic flat-field estimator** (`flat_field.cpp`):
+
+- **Blind session transfer:** Because Andromeda fills the entire frame, estimating a flat directly on M31 risks accidentally dividing out the galaxy itself. Instead, the solver estimates the optical transmission $V(\mathbf{x})$ strictly from the sparse `ring_set` frames (where M57 is tiny and stars drift across the sensor across exposures), then applies that *same* session flat blindly to `andromeda_set`.
+- **Two-component model:** A smooth per-channel radial vignetting profile combined with a **coupled-luminance, Wiener-regularized dust-mote map** (`mote_wiener_sigma = 0.003`) that isolates genuine optical shadows (`10–180 px` band-pass) while suppressing high-frequency sky noise.
+
+<figure>
+  <img src="/images/2026-11-25-astro-stacker-m31-flat-comparison.jpg" alt="Side-by-side comparison of the 21-frame Andromeda stack before and after applying the blind synthetic session flat, showing removal of the 32% radial vignetting bowl and sensor dust motes">
+  <figcaption>Andromeda (M31) before (left) and after (right) dividing by the blind synthetic session flat estimated solely from <code>ring_set</code>: the 32.1% vignetting bowl and sensor dust motes disappear, letting M31's elliptical disk and dust lanes stand out cleanly.</figcaption>
+</figure>
+
+The diagnostic numbers confirm what the eye immediately sees:
+
+- **Radial vignetting drop (`r = 0 → 0.9`):** `32.1% → 1.0%` on M31 (`32.0% → -1.5%` on M57).
+- **Quiet-sky uniformity (`rel_std`):** `8.71% → 2.00%` on M31 (`10.39% → 1.48%` on M57—a **7×** flatter sky).
+- **Sensor-locked dust-mote correlation** between `ring_set` and `andromeda_set`: dropped **15×** (`0.348 → 0.023`), proving real physical dust shadows were removed rather than astrophysical structure.
+
+*(Fun anti-Goodhart side note: when we fed the flattened stack back into the original locked `evaluate.py`, Gate 4 immediately flagged it—precisely because the locked single-frame reference `ref_andromeda.npy` still has the unflattened `32%` vignetting bowl! That's why flat-fielding needed its own separate diagnostic evaluator rather than unlocking the original referee.)*
+
+---
+
 ## Takeaways for Your Own Hill-Climbing Loops
 
 If you want to run a similar autonomous optimization loop with Carbon (or any agentic harness) on a hard engineering problem, five habits made all the difference:
