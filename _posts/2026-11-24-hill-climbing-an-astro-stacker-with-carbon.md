@@ -179,8 +179,8 @@ Using the same iterative hill-climbing workflow—6 iterations guided by a dedic
 - **Two-component model:** A smooth per-channel radial vignetting profile combined with a **coupled-luminance, Wiener-regularized dust-mote map** (`mote_wiener_sigma = 0.003`) that isolates genuine optical shadows (`10–180 px` band-pass) while suppressing high-frequency sky noise.
 
 <figure>
-  <img src="/images/2026-11-25-astro-stacker-m31-flat-comparison.jpg" alt="Side-by-side comparison of the 21-frame Andromeda stack before and after applying the blind synthetic session flat, showing removal of the 32% radial vignetting bowl and sensor dust motes">
-  <figcaption>Andromeda (M31) before (left) and after (right) dividing by the blind synthetic session flat estimated solely from <code>ring_set</code>: the 32.1% vignetting bowl and sensor dust motes disappear, letting M31's elliptical disk and dust lanes stand out cleanly.</figcaption>
+  <img src="/images/2026-11-25-astro-stacker-m31-4stage-progression.jpg" alt="2x2 progression grid of Andromeda (M31) across four stages: 1. Blind unaligned average showing star trails, 2. Iter-0 integer shift-and-add baseline with residual warm-pixel streaks, 3. Best pre-flat 4-DOF Lanczos-3 plus Winsorized stack (score 114.88), and 4. Final synthetic flat-field stack removing the 32% vignetting bowl and dust motes">
+  <figcaption>The full 4-stage progression on Andromeda (M31): (1) blind unaligned average (what happens when full-frame correlation locks onto zero lag), (2) Iter-0 integer shift-and-add baseline, (3) best pre-flat stack (4-DOF Lanczos-3 + Winsorized clipping, score 114.88), and (4) after dividing by the blind synthetic session flat estimated solely from <code>ring_set</code> (vignetting 32.1% → 1.0%, dust motes gone).</figcaption>
 </figure>
 
 The diagnostic numbers confirm what the eye immediately sees:
