@@ -34,6 +34,15 @@ plugins:
   - jekyll-include-cache
   - jekyll-spaceship
 
+jekyll-spaceship:
+  processors:
+    - table-processor
+    - plantuml-processor
+    - mermaid-processor
+    - media-processor
+    - emoji-processor
+    - element-processor
+
 include:
   - _pages
 

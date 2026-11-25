@@ -10,7 +10,9 @@ image: /images/2026-11-24-astro-stacker-m57-comparison.png
   <figcaption>Ring Nebula (M57) from a 2020 Canon EOS 1100D session: single sharpest raw frame (left, score 50.0) vs. the final 19-frame C++20 stack evolved autonomously by Carbon without ever viewing an image (middle, score 109.53), and a cavity stretch revealing the central white dwarf (right).</figcaption>
 </figure>
 
-**TL;DR:** Back in 2020, I captured 62 raw `.CR2` exposures of the Ring Nebula (M57), the Andromeda Galaxy (M31), and dark calibration frames on a Canon EOS 1100D, and wrote a Python stacking prototype that never quite worked. Six years later, I handed those same raw files to **Carbon**—not with a vague *"build me a better stacker"* prompt, but inside a strictly quarantined, **anti-Goodhart hill-climbing harness**: an immutable blind referee (`chmod 444`), adversarial torture tests, fresh red-team auditors on every commit, and human stop gates between phases. Over 10 atomic iterations in C++20, the engine climbed from `106.02` to **`109.53`** on M57, generalized zero-shot (`+3.44`) to M31, and surfaced a genuine **aha moment**: algorithmic hill-climbing is *non-commutative*—a calibration step that failed twice early on (`-0.79`) unlocked a clean `+0.37` breakthrough once an orthogonal temporal filter landed later.
+**TL;DR:** I rebuilt my 2020 Python astrophotography stacker into a C++20 engine by running **Carbon** inside a blind, anti-Goodhart hill-climbing harness—an immutable referee (`chmod 444`), fresh red-team auditors on every commit, and human stop gates between phases. Over 10 atomic iterations it climbed from `106.02` to `109.53` on the Ring Nebula, generalized zero-shot (`+3.44`) to Andromeda, and uncovered a non-commutative ordering "aha" moment along the way.
+
+📄 [**Read the full technical paper (PDF) →**](/pdfs/2026-11-24-astro-stacker-paper.pdf)
 
 ---
 
@@ -80,7 +82,7 @@ Carbon built `scripts/evaluate.py` (1,121 lines, pure Python stdlib + NumPy) anc
 
 $$
 \begin{aligned}
-\text{Score} = 50 &+ 25\log_2\left(\frac{\sigma_{\text{bg}}^{\text{ref}}}{\sigma_{\text{bg}}^{\text{stack}}}\right) + 35\log_2\left(\frac{\text{FWHM}\_{\text{eff}}^{\text{ref}}}{\text{FWHM}\_{\text{eff}}^{\text{stack}}}\right) \cr
+\text{Score} = 50 &+ 25\log_2\left(\frac{\sigma_{\text{bg}}^{\text{ref}}}{\sigma_{\text{bg}}^{\text{stack}}}\right) + 35\log_2\left(\frac{\text{FWHM}_{\text{eff}}^{\text{ref}}}{\text{FWHM}_{\text{eff}}^{\text{stack}}}\right) \cr
 &+ 10\log_2\left(\frac{N_\star^{\text{stack}}}{N_\star^{\text{ref}}}\right) + 15\big(e_{\text{ref}} - e_{\text{stack}}\big) - 40\big(1 - \rho_{\text{ext}}\big)
 \end{aligned}
 $$
