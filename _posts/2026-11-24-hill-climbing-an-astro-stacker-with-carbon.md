@@ -40,7 +40,7 @@ Even the very first C++20 baseline (`Iter 0`) already looked dramatically better
 
 1. **True 14-bit linear raw reading** directly via [LibRaw](https://github.com/LibRaw/LibRaw), automatically rejecting corrupted `.CR2` bitstreams.
 2. **Clean master-dark subtraction** without clipping negative noise values to zero.
-3. **Sharp linear demosaicing** (Malvar-He-Cutler `5×5`) instead of blurry consumer gamma-stretched JPEGs.
+3. **Sharp linear demosaicing** ([Malvar-He-Cutler](https://www.ipol.im/pub/art/2011/g_mhcd/) `5×5`) instead of blurry consumer gamma-stretched JPEGs.
 4. **Star-based alignment** (finding actual bright stars instead of correlating empty sky), followed by simple integer shift-and-add averaging.
 
 That clean baseline got us ~90% of the way there. Next, we refined it one technique at a time.
