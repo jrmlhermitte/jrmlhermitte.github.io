@@ -70,8 +70,8 @@ in[2.4] = 0.02(10) - 0.14(12) + 0.72(80) + 0.46(100) - 0.08(15) + 0.02(11) = 101
 By contrast, simple **bilinear** interpolation only averages the two closest pixels (`0.60(80) + 0.40(100) = 88.0`), squashing the star peak from `101` down to `88`. Extending that `6`-neighbor weighted sum to a `6×6` patch in 2D works no matter how large the shift is (even 50+ pixels), because we jump by the whole-pixel shift first and only use the `6×6` grid for the fractional remainder between `0` and `1`. What actually matters is that the `6×6` window captures the local point spread function (PSF) cleanly, keeping stars crisp and giving our biggest single refinement jump (`+1.34`).
 
 <figure>
-  <img src="/images/2026-11-25-astro-stacker-lanczos3-explainer.png" alt="Two-panel diagram: left panel shows integer rounding introducing a 0.4 pixel shift error compared to a smooth sub-pixel Gaussian fit at x=4.40; right panel compares the 6-neighbor windowed-sinc Lanczos-3 resampling kernel against the blurry bilinear triangle kernel">
-  <figcaption>Left: fitting a smooth Gaussian recovers the exact sub-pixel star center (4.40 instead of rounding to 4). Right: Lanczos-3 uses a 6-neighbor windowed sinc kernel (tapering smoothly to zero at ±3 pixels), preserving star sharpness at fractional shifts where bilinear averaging blurs.</figcaption>
+  <img src="/images/2026-11-25-astro-stacker-lanczos3-explainer.png" alt="Two-panel diagram: left panel shows an 11x11 2D pixel grid of a star PSF with the 6x6 Lanczos-3 window capturing the star spread around a fractional target (+0.40, +0.35 px) compared to a tiny 2x2 bilinear box; right panel shows the 1D windowed-sinc Lanczos-3 weight curve at +0.40 px shift">
+  <figcaption>Left: 2D pixel grid around a star PSF. After jumping by the whole-pixel shift, the 6×6 Lanczos-3 grid comfortably spans the star's spread around the fractional target (yellow crosshair), unlike a 2×2 bilinear box. Right: the 6-neighbor windowed sinc weights at a +0.40 px shift.</figcaption>
 </figure>
 
 ### 2. Handling Rotation with Star-Triangle Matching (`Iter 4`)
