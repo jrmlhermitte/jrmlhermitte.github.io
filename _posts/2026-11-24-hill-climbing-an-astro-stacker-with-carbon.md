@@ -74,6 +74,16 @@ $$
 | **It 10** | Stencil-isolated partial-row salvage of `IMG_6089.CR2` (`2,468` clean rows) | **KEPT** | **`+49.25`** | `109.53` | `10.92` | `0.1095` | **`351`** | **`0`** |
 | **Flat F2** | Alternating sky-model dust-mote flat solver (`motes_iter`) | **KEPT** | **`+49.31`** | `109.58` | `10.86` | **`0.1092`** | `342` | **`0`** |
 
+<figure>
+  <img src="/images/2026-11-25-astro-stacker-m57-4stage-zoom.jpg" alt="2x2 zoomed progression grid of the Ring Nebula (M57) across 4 stages showing star tightening and the dark dust-mote donut right below the nebula disappearing in the synthetic flat-field stack">
+  <figcaption>Zoomed 4-stage progression on M57: notice the dark dust-mote donut just below the Ring Nebula in panels 1–3 vanishing cleanly in panel 4 once the synthetic flat is applied.</figcaption>
+</figure>
+
+<figure>
+  <img src="/images/2026-11-25-astro-stacker-m57-4stage-progression.jpg" alt="2x2 full-field progression grid of ring_set (M57) showing unaligned star trails and 32% vignetting in panel 1 progressing to a flat, 7x smoother sky in panel 4">
+  <figcaption>Full-field 4-stage progression on <code>ring_set</code> (M57): radial vignetting drops from 32.0% to -1.5% and quiet-sky scatter becomes 7.0× flatter.</figcaption>
+</figure>
+
 ---
 
 ## The "Aha" Moment: Hill-Climbing Is Non-Commutative
