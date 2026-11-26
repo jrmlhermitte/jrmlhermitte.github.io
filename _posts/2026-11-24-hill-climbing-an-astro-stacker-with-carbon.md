@@ -1,130 +1,155 @@
 ---
 layout: single
-title: "Hill-Climbing a C++20 Astro Stacker Blindfolded with Carbon"
-description: "How I used a locked blind referee, isolated red-team auditors, and four human-gated phases to autonomously evolve a C++20 astrophotography stacker—and the non-commutative 'aha' moment we discovered along the way."
+title: "Evolving My 2020 Astro Stacker: From Simple Shifts to a C++20 Engine with Carbon"
+description: "How I evolved a simple 2020 Python image-shift script into a fast C++20 astrophotography stacker using Carbon—handling rotation, temperature drift, Winsorized clipping, and a blind synthetic flat field."
 image: /images/2026-11-24-astro-stacker-m57-comparison.png
 ---
 
 <figure>
   <img src="/images/2026-11-24-astro-stacker-m57-comparison.png" alt="Three-panel comparison of the Ring Nebula M57: single raw frame on the left, final 19-frame C++20 stack in the middle, and high-contrast central cavity stretch showing the white dwarf on the right">
-  <figcaption>Ring Nebula (M57, Canon EOS 1100D): single sharpest raw frame (score 50.0) vs. final 19-frame C++20 stack evolved blind by Carbon (score 109.53) vs. central cavity stretch showing the white dwarf.</figcaption>
+  <figcaption>Ring Nebula (M57, Canon EOS 1100D): single raw frame (left), final 19-frame C++20 stack (middle), and a cavity stretch revealing the central white dwarf (right).</figcaption>
 </figure>
 
-**TL;DR:** I rebuilt my 2020 Python astrophotography stacker into a C++20 engine by hill-climbing with **Carbon** inside a blind, anti-Goodhart harness—a locked referee (`chmod 444`), fresh red-team auditors on every commit, and human stop gates. Relative to a dark-subtracted unaligned mean baseline (`0.00`), 10 core iterations plus a synthetic flat-field pass gained **`+49.31`** on M57, generalized zero-shot (**`+53.38`**) to Andromeda, and cut radial vignetting from `32.1%` to `1.0%`.
+**TL;DR:** Back in 2020 I wrote a simple Python script to stack raw telescope photos of the Ring Nebula (M57) and Andromeda (M31) by shifting images to minimize their difference. Here is how I evolved that idea with **Carbon** into a fast C++20 stacker—explaining each technique along the way, from star-triangle rotation matching and Winsorized clipping to a blind synthetic flat field.
 
-📄 [**Read the full technical paper (PDF) →**](/pdfs/2026-11-24-astro-stacker-paper.pdf)
-
----
-
-## The Technique: Blind Anti-Goodhart Hill-Climbing
-
-Astrophotography is easy to accidentally game: a subtle blur lowers sky noise, dark-floor clipping hides noise, and eyeballing JPEGs hides photometric distortion. To force real algorithmic progress, I put Carbon inside five strict rules across **4 human-gated phases** (*Forensics → Blind Referee → C++20 Hill-Climb → Synthesis*):
-
-- **Image Quarantine:** Zero pixels ever enter the LLM context—all reasoning uses compact JSON telemetry.
-- **Forensics First (Phase 1):** Audited `legacy_2020/` (why full-frame cross-correlation $C_{\mathbf{k}}$ locks onto zero lag) and raw `.CR2` headers—catching 5 corrupted bitstreams (including a silent `LibRaw` underflow), a zenith EXIF `flip = 5` rotation trap, and a `34 °C → 18 °C` cooling curve.
-- **Locked Blind Referee (Phase 2):** Built a pure-NumPy evaluator (`scripts/evaluate.py`, anchored at `50.0` on a single frame) with 9 hard anti-cheat gates, verified it across **28/28 adversarial torture tests**, and locked it read-only (`chmod 444`).
-- **Atomic Commits + Fresh Red-Team Auditor (Phase 3):** One hypothesis per step. Every winning diff is audited by a fresh subagent (`AUDIT_PASS` required); regressions are immediately `git checkout`-reverted while keeping postmortem logs.
-- **Strict Holdout:** Optimize only on M57 (`ring_set`); test zero-shot with zero tuning on Andromeda (`andromeda_set`).
-
-```mermaid!
-flowchart LR
-    RAW["Canon .CR2\n(ring_set + darks)"] --> CPP["C++20 Stacker\n(1 atomic change)"]
-    CPP --> EVAL["Locked Referee\nevaluate.py (444)"]
-    EVAL --> MET["JSON Telemetry\nScore + Gates 0–5"]
-    CPP -. "git diff" .-> AUD["Fresh Isolated\nRed-Team Auditor"]
-    MET --> AUD
-    AUD --> DEC{"Score > Best &\nAUDIT_PASS?"}
-    DEC -- "Yes" --> COMMIT["git commit"]
-    DEC -- "No" --> REVERT["git revert +\nlog postmortem"]
-```
-
-The locked composite objective weights sharpness (`35/octave`) heavier than noise (`25/octave`) so blurring always loses points even before hard gates fire:
-
-$$
-\begin{aligned}
-\text{Score} = 50 &+ 25\log_2\left(\frac{\sigma_{\text{bg}}^{\text{ref}}}{\sigma_{\text{bg}}^{\text{stack}}}\right) + 35\log_2\left(\frac{\text{FWHM}_{\text{eff}}^{\text{ref}}}{\text{FWHM}_{\text{eff}}^{\text{stack}}}\right) \cr
-&+ 10\log_2\left(\frac{N_\star^{\text{stack}}}{N_\star^{\text{ref}}}\right) + 15\big(e_{\text{ref}} - e_{\text{stack}}\big) - 40\big(1 - \rho_{\text{ext}}\big)
-\end{aligned}
-$$
+🖼️ [**Skip straight to the final images →**](#final-results) &nbsp;|&nbsp; 📄 [**Read the full technical paper (PDF) →**](/pdfs/2026-11-24-astro-stacker-paper.pdf)
 
 ---
 
-## The Hill-Climb: Plot & Score Table
+## Where I Started: The 2020 Python Prototype
+
+In 2020, I took 62 raw `.CR2` exposures on a Canon EOS 1100D—21 of the Ring Nebula (M57), 21 of the Andromeda Galaxy (M31), and 20 capped dark frames—and tried to write my own stacker in Python.
+
+The original idea was simple: subtract the average dark frame, then slide pairs of images over each other and measure their **normalized absolute difference** (and full-frame cross-correlation). Wherever that difference hit a minimum was where I expected the frames to line up.
+
+In practice, that simple approach ran into several conceptual problems:
+
+- **No rotation:** Over a 10-minute session, slight polar misalignment slowly rotates the sky across the sensor (on Andromeda, corner stars rotate by ~2.5 pixels). Pure `(x, y)` shifts can't fix that. *(And yes—the new C++20 stacker does account for rotation!)*
+- **No flat field (vignetting & dust motes):** Telescope optics darken the corners by ~32% and sensor dust casts dark donut shadows. Because those patterns stay fixed on the camera, whole-image comparison strongly prefers *zero shift* `(0, 0)` instead of following the drifting stars.
+- **Temperature drift:** The camera cooled outdoors from `34 °C` at the start of the session down to `18 °C` by the time I took the dark frames. Because silicon dark current roughly doubles every `6 °C`, subtracting a cooler master dark left hundreds of bright "warm pixels" behind.
+- **Empty sky dominates whole-image matching:** Stars occupy less than `0.2%` of the 12-megapixel sensor. Correlating the whole image mostly correlates sky noise, vignetting, and leftover dark-frame error.
+- **Real-world file & mount quirks:** The mount's worm gear reversed drift direction mid-session, 5 of the `.CR2` files had corrupted bitstreams, and pointing near zenith tripped the camera's gravity sensor (`EXIF flip = 5`), rotating M57 by `90°` relative to the darks.
+
+---
+
+## Step 1: A Clean C++20 Baseline (And How We Iterated)
+
+Rather than tuning parameters by eye, I used **Carbon** to hill-climb a fresh C++20 rewrite against a **locked blind referee** (`scripts/evaluate.py`, `chmod 444`) and an independent red-team auditor on every commit. The referee scores sharpness, background noise, star count, star roundness, and diffuse-nebula preservation—never showing the model a single pixel, and reverting any change that hurts the score.
+
+Even the very first C++20 baseline (`Iter 0`) already looked dramatically better than an unaligned average (`+45.7` points on M57, `+48.9` on M31) because it fixed the fundamentals at a high level:
+
+1. **True 14-bit linear raw reading** directly via `LibRaw` (ignoring the `EXIF flip = 5` rotation trap and rejecting corrupted `.CR2` bitstreams).
+2. **Clean master-dark subtraction** without clipping negative noise values to zero.
+3. **Sharp linear demosaicing** (Malvar–He–Cutler `5×5`) instead of blurry consumer gamma-stretched JPEGs.
+4. **Star-based alignment**—finding actual bright stars instead of correlating empty sky—followed by simple integer shift-and-add averaging.
+
+That clean baseline got us ~90% of the way there. Next, we refined it one technique at a time.
+
+---
+
+## Step 2: Refining the Stacker, Technique by Technique
+
+### 1. Sub-Pixel Alignment & Lanczos-3 Resampling (`Iter 3`)
+Rounding every shift to the nearest whole pixel introduces up to `±0.5 px` of jitter per frame, softening star cores. We upgraded star detection with an internal `64×64` background mesh (*used only for finding stars, never subtracted from the image*), fitted smooth **2D Gaussian centers** to sub-pixel precision, and shifted each frame by exact fractional pixels using **2D Lanczos-3 resampling**—which preserves sharpness without the blurry "wash" of bilinear interpolation. That single step gave our biggest refinement jump (`+1.34`).
+
+### 2. Handling Rotation with Star-Triangle Matching (`Iter 4`)
+To fix field rotation as well as drift, we replaced simple `(x, y)` shifts with **Valdes star-triangle geometric hashing**. The idea is simple: pick bright stars and form triangles out of them. The *ratios* of a triangle's side lengths `(L1/L2, L0/L2)` stay identical no matter how much the frame shifts, rotates, or zooms. Matching those triangles across frames solves the exact 4-DOF similarity transform `(dx, dy, rotation, scale)` for all 21 frames in **33 milliseconds**.
 
 <figure>
-  <img src="/images/2026-11-24-astro-stacker-hill-climb.png" alt="Two-panel chart: top panel shows M57 score gain above the unaligned dark-subtracted mean baseline (60.28 = 0.0) across iterations 0 to 10 plus flat-field dust-mote iteration F2; bottom panel shows the M31 synthetic flat-field progression across radial vignetting drop, quiet-sky standard deviation, and sensor dust-mote correlation">
-  <figcaption><strong>Top:</strong> M57 score gain above the unaligned dark-subtracted mean baseline (<code>60.28 → 0.0</code>) across 10 core iterations (7 kept, 4 reverted) + flat-field dust-mote solver (F2: <code>+49.31</code>). <strong>Bottom:</strong> M31 synthetic flat-field diagnostics—vignetting drops from 32.1% to 1.0% and sensor dust-mote correlation drops 15×.</figcaption>
+  <img src="/images/2026-11-25-astro-stacker-triangles-explainer.png" alt="Diagram showing a reference star field and a drifted, rotated star field with a highlighted triangle A-B-C whose side-length ratios L1/L2 and L0/L2 stay identical to solve dx, dy, rotation, and scale">
+  <figcaption>Star-triangle matching: because a triangle's side-length ratios are invariant to shift and rotation, matching star triangles recovers both drift and field rotation cleanly.</figcaption>
 </figure>
 
-### Core Evolution (`ring_set`, M57) + Flat-Field Pass
+*(We also tested a 6-DOF full affine transform in `Iter 5`, which overfit off-axis coma and hurt corner sharpness—so it was automatically reverted.)*
 
-| Step | Atomic Hypothesis | Verdict | $\Delta$ vs. Base | Raw Score | FWHM (px) | Sky RMS | Stars | Warm Imp. |
-| :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Base** | **Unaligned dark-subtracted mean** (18 clean frames, no registration) | Baseline | **`0.00`** | `60.28` | `15.99` | `0.1234` | `82` | — |
-| **It 0** | C++20 baseline: 14-bit gate, mean dark, MHC `5×5`, int shift+add | **KEPT** | **`+45.74`** | `106.02` | `11.18` | `0.1149` | `316` | `11` |
-| **It 1** | OB pedestal + Winsorized dark + thermal scale + cross-color CFA repair | REVERTED | `+45.03` | `105.31` | `11.21` | `0.1147` | `318` | `0` |
-| **It 2** | Same sensor calibration + same-color (`r=2` vs `18`) CFA repair | REVERTED | `+44.95` | `105.23` | `11.21` | `0.1147` | `320` | `0` |
-| **It 3** | Detection-only `64×64` SEP mesh + 2D LM centroids + Lanczos-3 warp | **KEPT** | **`+47.08`** | `107.36` | `11.12` | `0.1106` | `343` | `24` |
-| **It 4** | Chiral Valdes triangle hashing + RANSAC/IRLS 4-DOF Similarity | **KEPT** | **`+47.42`** | `107.70` | `11.17` | `0.1102` | `345` | `26` |
-| **It 5** | 6-DOF Full Affine IRLS (overfit off-axis coma on 10-min track) | REVERTED | `+47.10` | `107.37` | `11.10` | `0.1101` | `337` | `25` |
-| **It 6** | Flux scaling + 1st-deg differential sky plane + PSF/SNR frame weights | **KEPT** | **`+48.36`** | `108.64` | `10.89` | `0.1123` | `348` | `32` |
-| **It 7** | Temporal per-pixel **Winsorized Sigma Clipping** ($\kappa=2.8$) | **KEPT** | **`+48.55`** | `108.82` | `10.91` | `0.1119` | `347` | **`0`** |
-| **It 8** | **Retry pure OB pedestal + Winsorized dark + thermal scale** (no CFA interp) | **KEPT** | **`+48.92`** | `109.19` | **`10.85`** | `0.1119` | `347` | **`0`** |
-| **It 9** | Directional Hamilton–Adams demosaicing vs. linear MHC `5×5` | REVERTED | `+47.97` | `108.24` | `10.92` | `0.1131` | `345` | `0` |
-| **It 10** | Stencil-isolated partial-row salvage of `IMG_6089.CR2` (`2,468` clean rows) | **KEPT** | **`+49.25`** | `109.53` | `10.92` | `0.1095` | **`351`** | **`0`** |
-| **Flat F2** | Alternating sky-model dust-mote flat solver (`motes_iter`) | **KEPT** | **`+49.31`** | `109.58` | `10.86` | **`0.1092`** | `342` | **`0`** |
+### 3. Differential Sky-Plane Equalization & Smart Frame Weighting (`Iter 6`)
+Sky brightness changes slightly from frame to frame as targets rise or set. To equalize frames *without* accidentally erasing Andromeda's huge glowing disk, we fit a simple tilted plane to the **difference** between each aligned frame and the reference frame—so the galaxy itself cancels out identically. We also weighted sharper frames higher than mount-drift frames, making the combined stack sharper than the median single exposure (`+0.94`).
+
+### 4. Winsorized Sigma Clipping (`Iter 7`)
+Even after aligning stars, temperature drift left behind bright **warm pixels** (and occasional cosmic rays) that trace faint red/blue streaks across the stack when you take a plain average.
+
+**What does "Winsorized" mean?** Look at a single pixel across 18 aligned exposures: 17 frames cluster around the true sky value (`~200 ADU`), while 1 frame has a warm-pixel spike (`515 ADU`).
+- A **plain mean** gets pulled up by the spike.
+- A **pure median** ignores the spike, but throws away statistical efficiency (~25% noisier).
+- **Winsorized sigma clipping** computes the robust center and spread (median & MAD), sets a `±2.8σ` fence, and **clamps** any outlier back to the fence before averaging.
+
+<figure>
+  <img src="/images/2026-11-25-astro-stacker-winsorized-explainer.png" alt="Plot of a single pixel across 18 aligned frames where 17 frames cluster around 200 ADU and frame 12 spikes to 515 ADU, showing Winsorized sigma clipping clamping the spike down to the +2.8 sigma fence at 234 ADU so the average stays clean">
+  <figcaption>Winsorized sigma clipping on a single pixel across 18 frames: clamping the Frame 12 warm-pixel spike to the ±2.8σ fence keeps the mean clean without losing the noise-reduction benefit of averaging.</figcaption>
+</figure>
+
+On M57, warm-pixel artifacts dropped from **`32 → 0`**; on M31, all **`477` warm-pixel streaks vanished**—with zero spatial blurring.
+
+### 5. The "Aha" Moment: Sensor Calibration *After* Temporal Clipping (`Iter 8`)
+Early on (`Iter 1` and `Iter 2`), we tried adding physical sensor calibration—subtracting the camera's shielded optical-black border per row, building a Winsorized master dark, and scaling the dark frame for temperature drift. Surprisingly, **both attempts hurt the score (`-0.71` / `-0.79`) and were reverted!**
+
+Why? Before `Iter 7` added temporal clipping, unrepaired stationary warm pixels in clustered frames had formed tiny fake pinpoint "stars" in the corners, artificially making `Iter 0`'s corners look sharper than they were. Once `Iter 7` removed those warm pixels cleanly along the time axis, re-applying pure sensor-level calibration in `Iter 8` immediately jumped **`+0.37`** and hit the sharpest star FWHM of the entire run. **The order of operations mattered.**
+
+### 6. Partial-Row Bitstream Salvage (`Iter 10`)
+One M57 exposure (`IMG_6089.CR2`) had a bitstream glitch only in its bottom 4 strips. Scanning rows top-down let us safely salvage its clean top `2,468` rows (keeping a 10-row safety margin away from the glitch), boosting us from 18 to **19 integrated frames** (`+0.33`).
+
+---
+
+## Step 3: Estimating a Blind Synthetic Flat Field
+
+Everything above solved alignment, rotation, temperature drift, and noise—but because I never shot physical **flat frames** in 2020, both stacks still had the telescope's **`32%` radial vignetting bowl** and dark **sensor dust donuts**.
+
+You can't easily estimate a flat directly from Andromeda because the galaxy fills the whole frame. Instead, we ran a follow-up flat-field pass (`flat_field.cpp`) that:
+1. Estimates the optical transmission strictly from the sparse **Ring Nebula (`ring_set`)** frames, where M57 is tiny and stars drift across the sensor.
+2. Separates the flat into two components: a smooth per-channel **radial vignetting curve** plus a **Wiener-regularized dust-mote map** (band-passed to `10–180 px` so it catches dust donuts without amplifying pixel noise).
+3. Divides that *same* session flat blindly out of **Andromeda (`andromeda_set`)**.
+
+The result: radial vignetting collapsed from **`32.1% → 1.0%`** on M31 (`32.0% → -1.5%` on M57), quiet-sky scatter became **4.4× to 7.0× flatter**, and cross-dataset sensor dust-mote correlation dropped **15×** (`0.348 → 0.023`).
+
+---
+
+## Putting It All Together: Plot & Summary Table
+
+To measure true end-to-end gain, the chart and tables below use the **unaligned dark-subtracted mean** as `0.00` (raw score `60.28` on M57, `62.57` on M31) and plot how much each technique improved above it:
+
+<figure>
+  <img src="/images/2026-11-24-astro-stacker-hill-climb.png" alt="Two-panel chart: top panel shows M57 score gain above the unaligned dark-subtracted mean baseline across iterations 0 to 10 plus flat-field dust-mote iteration F2; bottom panel shows M31 flat-field diagnostics">
+  <figcaption><strong>Top:</strong> M57 score gain above the unaligned dark-subtracted mean baseline (<code>60.28 → 0.0</code>). <strong>Bottom:</strong> M31 flat-field diagnostics showing vignetting drop, sky uniformity, and dust-mote removal.</figcaption>
+</figure>
+
+| Stage / Technique | What It Does | M57 $\Delta$ vs. Base | M31 $\Delta$ vs. Base | Key Impact |
+| :--- | :--- | :---: | :---: | :--- |
+| **Unaligned Mean (Base)** | Dark-subtracted average, no alignment | `0.00` (`60.28`) | `0.00` (`62.57`) | Star trails (`FWHM 16.0 / 13.5 px`) |
+| **It 0: C++20 Baseline** | 14-bit raw, MHC `5×5`, star shift+add | `+45.74` | `+48.86` | Stars snap sharp; `316 / 249` stars |
+| **It 3: Sub-Pixel Lanczos-3** | Gaussian star centers + fractional shift | `+47.08` | — | `+27` faint stars, sharper cores |
+| **It 4: Valdes 4-DOF Rotation** | Star-triangle matching (`dx, dy, dθ, s`) | `+47.42` | — | Fixes `2.5 px` corner rotation (`33 ms`) |
+| **It 6: Sky Plane + PSF Weights** | Differential sky plane + sharpness weights | `+48.36` | — | Beats single-frame median FWHM |
+| **It 7: Winsorized Clipping** | Clamps temporal outliers to `±2.8σ` fence | `+48.55` | — | Warm-pixel streaks `32 → 0` (`477 → 0` M31) |
+| **It 8: OB + Thermal Dark** | Row bias + Winsorized dark + temp scaling | `+48.92` | — | **Aha moment:** `+0.37` *after* It 7 |
+| **It 10: Partial-Row Salvage** | Recovers clean top `2,468` rows of bad `.CR2` | `+49.25` | `+52.31` | `19` frames, `351` stars, `3.95×` less noise |
+| **Flat F2: Dust-Mote Solver** | Iterative sky-model dust-mote flat | **`+49.31`** | **`+53.38`** | Highest locked-referee score (`109.58 / 115.95`) |
+| **Flat F6: Full Session Flat** | Blind radial vignetting + Wiener motes | *flat sky*\* | *flat sky*\* | Vignetting `32% → 1%`, **15×** less dust corr |
+
+*\*The locked referee compares against an unflattened single frame, so removing the `32%` vignetting bowl is evaluated with a dedicated flat-field diagnostic (`evaluate_flat_motes.py`).*
+
+---
+
+## Final Results {#final-results}
+
+Here is the full 4-stage visual progression—from **(1) unaligned average** → **(2) Iter-0 baseline** → **(3) best pre-flat stack** → **(4) final synthetic flat-field stack**—on both targets:
+
+### Ring Nebula (M57) — Zoomed View
+Notice the dark dust-mote donut right below the Ring Nebula in panels 1–3 disappearing cleanly in panel 4:
 
 <figure>
   <img src="/images/2026-11-25-astro-stacker-m57-4stage-zoom.jpg" alt="2x2 zoomed progression grid of the Ring Nebula (M57) across 4 stages showing star tightening and the dark dust-mote donut right below the nebula disappearing in the synthetic flat-field stack">
-  <figcaption>Zoomed 4-stage progression on M57: notice the dark dust-mote donut just below the Ring Nebula in panels 1–3 vanishing cleanly in panel 4 once the synthetic flat is applied.</figcaption>
 </figure>
+
+### Ring Nebula (M57) — Full Field
+Radial vignetting drops from `32.0%` to `-1.5%`, and the background sky becomes `7.0×` flatter:
 
 <figure>
   <img src="/images/2026-11-25-astro-stacker-m57-4stage-progression.jpg" alt="2x2 full-field progression grid of ring_set (M57) showing unaligned star trails and 32% vignetting in panel 1 progressing to a flat, 7x smoother sky in panel 4">
-  <figcaption>Full-field 4-stage progression on <code>ring_set</code> (M57): radial vignetting drops from 32.0% to -1.5% and quiet-sky scatter becomes 7.0× flatter.</figcaption>
 </figure>
 
----
-
-## The "Aha" Moment: Hill-Climbing Is Non-Commutative
-
-In **Iterations 1 & 2**, physical sensor calibration (optical-black pedestal + Winsorized master dark + thermal scaling + spatial CFA warm-pixel repair) **regressed the score twice** (`-0.71`, `-0.79`).
-
-Keeping postmortems on reverted runs exposed *why*:
-1. Cross-color CFA repair (`It 1`) shaved bright Green peaks of wide comatic corner stars.
-2. Even with same-color repair (`It 2`), `It 0` had worm-gear turnaround frames clustered within `2–4 px`, smearing stationary warm pixels into tiny `~4 px` fake "stars" that artificially made `It 0`'s corners *look* sharper.
-
-Once **Iteration 7** cleared warm pixels orthogonally along the **time** axis (`32 → 0` with zero spatial filtering), re-introducing pure sensor calibration in **Iteration 8** immediately jumped **`+0.37`** and hit the sharpest FWHM of the run. **A reverted hypothesis isn't dead—sometimes Step A only works after Step B clears the artifact masking it.**
-
----
-
-## Zero-Shot Holdout & Synthetic Flat Field on Andromeda (M31)
-
-Running the final binary **unmodified** on `andromeda_set` matched the training gain within 1.9% (`+3.44` vs. `+3.51`), eliminated all `477` thermal warm-pixel impulses (`34 °C → 21 °C` cooling gap), and registered all 21 frames in **`33 ms`**.
-
-Because I never shot physical flat frames in 2020, I then ran a 6-iteration synthetic flat-field pass (`flat_field.cpp`): estimating radial vignetting + a Wiener-regularized dust-mote map **strictly from `ring_set`** and applying it blindly to M31 so Andromeda's disk couldn't bias the flat.
+### Andromeda Galaxy (M31) — Zero-Shot Holdout + Blind Flat
+Processed with zero retuning, then flattened using the synthetic flat estimated solely from M57—bringing out M31's elliptical disk, dark dust lanes, and companion galaxy M32 in the lower right:
 
 <figure>
   <img src="/images/2026-11-25-astro-stacker-m31-4stage-progression.jpg" alt="2x2 progression grid of Andromeda (M31) across four stages: 1. Blind unaligned average showing star trails, 2. Iter-0 integer shift-and-add baseline with residual warm-pixel streaks, 3. Best pre-flat 4-DOF Lanczos-3 plus Winsorized stack (score 114.88), and 4. Final synthetic flat-field stack removing the 32% vignetting bowl and dust motes">
-  <figcaption>Andromeda (M31) 4-stage progression: (1) unaligned average, (2) Iter-0 integer baseline, (3) best pre-flat stack (score 114.88), and (4) blind synthetic session flat from <code>ring_set</code> (vignetting 32.1% → 1.0%, dust motes removed).</figcaption>
 </figure>
-
-| Stage on `andromeda_set` (M31 Holdout) | $\Delta$ vs. Base | Raw Score | FWHM (px) | Sky RMS | Stars | Warm Imp. | Vignetting | Sky Std | Mote Corr |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Unaligned dark-subtracted mean** (21 frames) | **`0.00`** | `62.57` | `13.53` | `0.1206` | `70` | — | `~32%` | — | — |
-| `iter-0-baseline` (Unmodified) | `+48.86` | `111.44` | `8.36` | `0.1005` | `249` | `477` | `~32%` | — | — |
-| **Pre-Flat Best (`It 10`, zero tuning)** | **`+52.31`** | `114.88` | `8.20` | `0.0967` | `264` | **`0`** | `32.1%` | `8.71%` | `0.348` |
-| **Flat F2 (Dust Motes Only, `motes_iter`)** | **`+53.38`** | `115.95` | **`8.14`** | **`0.0946`** | `264` | **`0`** | `32.5%` | `8.76%` | `0.211` |
-| **Flat F6 (Full Blind Session Flat, Wiener)** | *unflattened ref*\* | — | `8.24` | `0.1040` | **`266`** | **`0`** | **`1.0%`** | **`2.00%`** | **`0.023`** |
-
-*\*Gate 4 of the locked referee compares against the unflattened single-frame `ref_andromeda.npy`, so removing the `32%` vignetting bowl triggers its extended-flux diff gate—which is why full flat-fielding was evaluated with a dedicated diagnostic referee (`evaluate_flat_motes.py`).*
-
----
-
-## Five Takeaways
-
-1. **Torture-test the referee before optimizing**—28 adversarial probes caught 4 evaluator bugs before any C++ existed.
-2. **Lock the referee (`chmod 444`) and isolate the auditor**—fresh red-team contexts keep Goodhart's Law honest.
-3. **One atomic change per step**—bundling hides why a score moved.
-4. **Keep reverted postmortems**—non-commutative interactions only become visible when you remember *why* an earlier idea failed.
-5. **Stay in the loop at phase gates**—human guardrails at phase boundaries beat micromanaging lines of code.
