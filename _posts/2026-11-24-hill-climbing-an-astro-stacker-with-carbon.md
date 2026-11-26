@@ -57,7 +57,9 @@ That clean baseline already got us ~90% of the way there. Next, we refined each 
 ## Step 2: Refining the Stacker, Technique by Technique
 
 ### 1. Sub-Pixel Alignment & Lanczos-3 Resampling (`Iter 3`)
-In the baseline, we measured star centers with a simple center-of-mass and rounded each frame's shift to the nearest whole pixel, introducing up to `±0.5 px` of jitter per frame and softening star cores. Here we upgraded Step 1 to fit smooth **2D Gaussian centers** to sub-pixel precision, and upgraded Step 3 to shift each frame's pixels by exact fractional amounts using **2D Lanczos-3 resampling**, which preserves sharpness without the blurry "wash" of bilinear interpolation. That single step gave our biggest refinement jump (`+1.34`).
+In the baseline, we measured star centers with a simple center-of-mass and rounded each frame's shift to the nearest whole pixel, introducing up to `±0.5 px` of jitter per frame and softening star cores. Here we upgraded Step 1 to fit smooth **2D Gaussian centers** to the ~60 brightest stars purely to measure the exact fractional shift (for example, `dx = +10.40 px, dy = -3.72 px`).
+
+We don't fit Gaussians to the other 12.25 million pixels (the nebula, galaxy dust lanes, faint stars, and sky). Instead, to actually shift the whole image by `-10.40` pixels, pixel `(100, 200)` in the aligned output needs Frame 2's brightness at `(110.40, 196.28)`, a spot *between* integer pixels. **2D Lanczos-3 resampling** (Step 3) interpolates that exact brightness from the surrounding `6×6` pixel grid for every pixel in the image, preserving sharpness without the blurry "wash" of bilinear averaging. That single step gave our biggest refinement jump (`+1.34`).
 
 <figure>
   <img src="/images/2026-11-25-astro-stacker-lanczos3-explainer.png" alt="Two-panel diagram: left panel shows integer rounding introducing a 0.4 pixel shift error compared to a smooth sub-pixel Gaussian fit at x=4.40; right panel compares the 6-neighbor windowed-sinc Lanczos-3 resampling kernel against the blurry bilinear triangle kernel">
