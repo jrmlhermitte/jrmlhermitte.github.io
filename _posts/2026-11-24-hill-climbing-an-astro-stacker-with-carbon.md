@@ -211,6 +211,8 @@ You can't easily estimate a flat directly from Andromeda because the galaxy fill
 
 The result: radial vignetting collapsed from **`32.1% → 1.0%`** on M31 (`32.0% → -1.5%` on M57), quiet-sky scatter became **4.4× to 7.0× flatter**, and cross-dataset sensor dust-mote correlation dropped **15×** (`0.348 → 0.023`).
 
+One interesting wrinkle with the scorer: our original read-only scoring script checked extended flux ($$\rho_{\text{ext}}$$) by comparing `64×64` blocks of the stack against the **unflattened** raw reference frame. Because that raw reference still had the curved `32%` vignetting bowl, flattening the sky made it stop matching the curved reference and tripped the nebula-erasure check! To evaluate flat-fielding properly without unlocking the original scorer, we refined the evaluation for this stage with a dedicated flat-field diagnostic script (`evaluate_flat_motes.py`) that directly tracks radial vignetting drop, sky flatness, and cross-dataset dust-mote correlation.
+
 ---
 
 ## Putting It All Together: Plot & Summary Table
