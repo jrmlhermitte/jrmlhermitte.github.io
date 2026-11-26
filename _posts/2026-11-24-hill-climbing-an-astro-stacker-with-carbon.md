@@ -24,6 +24,11 @@ In 2020, I took 62 raw `.CR2` exposures on a Canon EOS 1100D (21 of the Ring Neb
 
 The original idea was simple: subtract the average dark frame, then slide pairs of images over each other and measure their **normalized absolute difference** (and full-frame cross-correlation). Wherever that difference hit a minimum was where I expected the frames to line up.
 
+<figure>
+  <img src="/images/2026-11-26-astro-stacker-2020-shift-diff.png" alt="Two-panel diagram: left panel shows two vignetted exposures with sparse stars shifted by +14 px; right panel plots whole-image difference vs shift dx, showing a deep false minimum at dx = 0 caused by fixed vignetting and dark residuals drowning out the tiny star dip at +14 px">
+  <figcaption>Why whole-image shift-and-difference struggled: 99.8% of the frame is vignetted sky and dark-frame residuals locked to the camera, creating a deep false minimum at zero shift (dx = 0) that drowns out the tiny dip from the actual stars.</figcaption>
+</figure>
+
 In practice, that simple approach ran into several conceptual problems:
 
 - **No rotation:** Over a 10-minute session, slight polar misalignment slowly rotates the sky across the sensor (on Andromeda, corner stars rotate by ~2.5 pixels). Pure `(x, y)` shifts can't fix that. *(And yes, the new C++ stacker does account for rotation!)*
@@ -53,6 +58,11 @@ In astronomy, the standard way to align deep-sky frames is **star-based registra
 1. **Find the stars:** Convert each calibrated frame to grayscale luminance, estimate the local sky brightness and noise on a coarse grid (used only for detection, never subtracted from the final image), and pick out connected bright blobs rising `5σ` above the local background (filtering out single-pixel spikes and saturated star cores). We keep the top ~60 brightest stars and record their `(x, y)` centers.
 2. **Compute the shift (and later, rotation):** Match each frame's star `(x, y)` coordinates to the reference frame's star coordinates to solve the exact offset between the two exposures.
 3. **Resample and combine:** Shift (or rotate) each frame's pixels onto the reference grid and stack them together.
+
+<figure>
+  <img src="/images/2026-11-26-astro-stacker-star-alignment-pipeline.png" alt="Three-panel diagram showing standard star-based alignment: 1. Detect top ~60 bright stars and record their (x, y) centers while ignoring empty sky; 2. Match star coordinates between Reference and Frame i to solve shift and rotation; 3. Warp all frames onto the Reference grid and stack them into a crisp, low-noise image">
+  <figcaption>The 3-step star-based alignment pipeline: extract the top ~60 bright star centers, match their (x, y) coordinates to solve the shift and rotation, then resample and stack the frames.</figcaption>
+</figure>
 
 That clean baseline already got us ~90% of the way there. Next, we refined each stage one technique at a time.
 
