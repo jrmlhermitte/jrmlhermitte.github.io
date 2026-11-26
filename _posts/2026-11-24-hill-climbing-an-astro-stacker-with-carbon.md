@@ -34,7 +34,7 @@ In practice, that simple approach ran into several conceptual problems:
 
 ## Step 1: A Clean C++20 Baseline (And How We Iterated)
 
-Rather than tuning parameters by eye, I used **Carbon** to hill-climb a fresh C++20 rewrite against a **locked blind referee** (`scripts/evaluate.py`, `chmod 444`) and an independent red-team auditor on every commit. The referee scores sharpness, background noise, star count, star roundness, and diffuse-nebula preservation, never showing the model a single pixel and reverting any change that hurts the score.
+Rather than tuning parameters by eye, I used **Carbon** to hill-climb a fresh C++20 rewrite against a **read-only scoring script** and a separate reviewer agent on every commit. The scoring script measures sharpness, background noise, star count, star roundness, and diffuse-nebula preservation, never showing the model a single pixel and reverting any change that hurts the score.
 
 Even the very first C++20 baseline (`Iter 0`) already looked dramatically better than an unaligned average (`+45.7` points on M57, `+48.9` on M31) because it fixed the fundamentals at a high level:
 
