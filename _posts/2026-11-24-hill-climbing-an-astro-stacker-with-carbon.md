@@ -54,13 +54,14 @@ Before writing any C++, we locked a standalone scoring script read-only so the o
 $$
 \begin{aligned}
 \text{Score} = 50 &+ 25\log_2\left(\frac{\sigma_{\text{bg}}^{\text{ref}}}{\sigma_{\text{bg}}^{\text{stack}}}\right) + 35\log_2\left(\frac{\text{FWHM}_{\text{eff}}^{\text{ref}}}{\text{FWHM}_{\text{eff}}^{\text{stack}}}\right) \cr
-&+ 10\log_2\left(\frac{N_\star^{\text{stack}}}{N_\star^{\text{ref}}}\right) + 15\big(e_{\text{ref}} - e_{\text{stack}}\big) - 40\big(1 - \rho_{\text{ext}}\big)
+&+ 10\log_2\left(\frac{N_\star^{\text{stack}}}{N_\star^{\text{ref}}}\right) + 15\big(e_{\text{ref}} - e_{\text{stack}}\big) - 40\big(1 - \rho_{\text{ext}}\big) \cr
+&- \infty \cdot F_{\text{cheat}}(\text{img})
 \end{aligned}
 $$
 
 <figure>
-  <img src="/images/2026-11-26-astro-stacker-score-formula.png" alt="Color-coded 5-card breakdown of the Composite Score formula: 1. Sky Noise (+25 per octave), 2. Star Sharpness (+35 per octave, blending center and outer corners), 3. Star Count (+10 per octave), 4. Star Roundness (+15), and 5. Diffuse Flux Preservation (-40 penalty)">
-  <figcaption>Each term in the composite score rewards a distinct physical property, anchored at 50.0 on a single raw frame.</figcaption>
+  <img src="/images/2026-11-26-astro-stacker-score-formula.png" alt="Near-square 3x2 color-coded breakdown of the Composite Score formula: 1. Sky Noise (+25 per octave), 2. Star Sharpness (+35 per octave), 3. Star Count (+10 per octave), 4. Star Roundness (+15), 5. Diffuse Flux Preservation (-40 penalty), and 6. Anti-Cheat (-infinity times F_cheat(img))">
+  <figcaption>Each term in the composite score rewards a distinct physical property, anchored at 50.0 on a single raw frame, with an anti-cheat indicator that forces -∞ on any violation.</figcaption>
 </figure>
 
 In plain terms, each box measures one thing:
@@ -70,8 +71,7 @@ In plain terms, each box measures one thing:
 - **Detected star count ($$N_\star$$):** Counts how many genuine stars rise cleanly above the noise floor (`+10` points every time you double the number of visible stars).
 - **Star roundness ($$e$$):** Eccentricity measures how stretched or trailed stars are (`0` is a perfect circle). Lower eccentricity earns up to `+15` points, rewarding tighter tracking and alignment.
 - **Diffuse nebula & galaxy preservation ($$\rho_{\text{ext}}$$):** We mask out the stars, average the remaining pixels into coarse `16×16` and `64×64` blocks, and measure how closely that coarse brightness map correlates with the raw reference (`1.0` means extended structures like the Ring Nebula and Andromeda's disk are completely preserved; `0.0` means erased). Any background-subtraction trick that erases real nebula light gets hit with a heavy `-40` penalty.
-
-On top of that formula, the scorer enforces built-in **anti-cheat checks** that immediately disqualify (`score = -inf`) any output with clipped dark pixels, dropped frames, or **spatial blurring** (measuring whether adjacent sky pixels became artificially correlated with each other, which happens if you blur the image or use bilinear averaging).
+- **Anti-cheat indicator ($$F_{\text{cheat}}(\text{img}) \in \{0, 1\}$$):** Equals `0` when the image passes all physical integrity checks, and `1` (immediately forcing `Score = -∞`) if it clips dark pixels, drops frames, or introduces **spatial blurring** (measuring whether adjacent sky pixels became artificially correlated with each other, which happens if you blur the image or use bilinear averaging).
 
 ### The Critic Agent (A Fresh LLM)
 Every time a change beat the best score, we spawned a **brand-new LLM instance** that had not written the code to review the `git diff` and metrics with this adversarial prompt:
