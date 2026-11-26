@@ -58,7 +58,18 @@ $$
 \end{aligned}
 $$
 
-It rewards lower background sky noise ($\sigma_{\text{bg}}$), sharper stars ($\text{FWHM}_{\text{eff}}$, the Full Width at Half Maximum of a star's brightness profile at half its peak, tracked both across the whole frame and specifically in the **outer corners of the image** where field rotation swings stars the farthest), more detected stars ($N_\star$), rounder stars (lower eccentricity $e$), and preserving diffuse nebula/galaxy brightness ($\rho_{\text{ext}}$). Notice that sharpness (`35` per octave) outweighs noise (`25` per octave), so blurring the image always loses points.
+<figure>
+  <img src="/images/2026-11-26-astro-stacker-score-formula.png" alt="Color-coded 5-card breakdown of the Composite Score formula: 1. Sky Noise (+25 per octave), 2. Star Sharpness (+35 per octave, blending center and outer corners), 3. Star Count (+10 per octave), 4. Star Roundness (+15), and 5. Diffuse Flux Preservation (-40 penalty)">
+  <figcaption>Each term in the composite score rewards a distinct physical property, anchored at 50.0 on a single raw frame.</figcaption>
+</figure>
+
+In plain terms, each box measures one thing:
+
+- **Background sky noise ($$\sigma_{\text{bg}}$$):** Measures how grainy the empty sky is. Every time stacking cuts sky noise in half, the score jumps `+25` points.
+- **Star sharpness ($$\text{FWHM}_{\text{eff}}$$):** FWHM (Full Width at Half Maximum) is how wide a star is in pixels at half its peak brightness (smaller means tighter and sharper). It blends the whole-frame median (`65%`) with the **outer corners of the image** (`35%`, where field rotation swings stars the farthest). Because sharpness is weighted `+35` per halving (heavier than noise's `+25`), simply blurring the image always loses points.
+- **Detected star count ($$N_\star$$):** Counts how many genuine stars rise cleanly above the noise floor (`+10` points every time you double the number of visible stars).
+- **Star roundness ($$e$$):** Eccentricity measures how stretched or trailed stars are (`0` is a perfect circle). Lower eccentricity earns up to `+15` points, rewarding tighter tracking and alignment.
+- **Diffuse nebula & galaxy preservation ($$\rho_{\text{ext}}$$):** Compares the extended glowing regions (the Ring Nebula or Andromeda's disk) against the raw reference. Any background-subtraction trick that erases real nebula light gets hit with a heavy `-40` penalty.
 
 ### The Critic Agent (A Fresh LLM)
 Every time a change beat the best score, we spawned a **brand-new LLM instance** that had not written the code to review the `git diff` and metrics with this adversarial prompt:
