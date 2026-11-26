@@ -133,7 +133,12 @@ Once `Iter 7` added Winsorized sigma clipping across the stack, those smeared ho
 </figure>
 
 ### 6. Partial-Row Bitstream Salvage (`Iter 10`)
-One M57 exposure (`IMG_6089.CR2`) had a bitstream glitch only in its bottom 4 strips. Scanning rows top-down let us safely salvage its clean top `2,468` rows (keeping a 10-row safety margin away from the glitch), boosting us from 18 to **19 integrated frames** (`+0.33`).
+One M57 exposure (`IMG_6089.CR2`) had a bitstream glitch only in its bottom 4 strips. Scanning rows top-down let us safely salvage its clean top `2,468` rows (keeping a 10-row safety margin away from the glitch so our `6×6` Lanczos-3 stencil never touches corrupted pixels), boosting us from 18 to **19 integrated frames** (`+0.33`).
+
+<figure>
+  <img src="/images/2026-11-26-astro-stacker-bitstream-salvage.png" alt="Diagram showing IMG_6089.CR2 with its clean top 2,468 rows salvaged (86.4%), a 10-row amber safety buffer, and the corrupted bottom rows discarded, producing 19-frame coverage across the top 86% of the final stack and seamlessly renormalized 18-frame coverage across the bottom 14%">
+  <figcaption>Partial-row bitstream salvage on IMG_6089.CR2: keeping a 10-row safety margin above the corrupted bottom strips lets us salvage 86.4% of the exposure cleanly, increasing coverage to 19 frames across most of the image.</figcaption>
+</figure>
 
 ---
 
