@@ -78,6 +78,8 @@ Every time a change beat the best score, we spawned a **brand-new LLM instance**
 
 Only changes that beat the score **and** passed the Critic LLM were committed; anything else was immediately reverted with `git checkout`.
 
+In this particular run, the developer agent never tried to cheat (all 7 kept commits passed `AUDIT_PASS`). Even so, keeping an independent Critic in the loop is important: autonomous optimizers routinely discover unintended loopholes in proxy metrics, a well-documented failure mode known as **specification gaming** or **reward hacking** (see [DeepMind's overview of specification gaming](https://deepmind.google/discover/blog/specification-gaming-the-flip-side-of-ai-ingenuity/) and [Skalse et al., NeurIPS 2022](https://arxiv.org/abs/2209.13085)). A fresh Critic reviewing the actual code diff catches shortcuts that a numeric score alone can miss.
+
 ---
 
 ## Step 1: A Clean C++ Baseline
