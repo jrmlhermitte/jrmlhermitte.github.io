@@ -1,16 +1,16 @@
 ---
 layout: single
-title: "Evolving My 2020 Astro Stacker: From Simple Shifts to a C++20 Engine with Carbon"
-description: "How I evolved a simple 2020 Python image-shift script into a fast C++20 astrophotography stacker using Carbon, handling rotation, temperature drift, Winsorized clipping, and a blind synthetic flat field."
+title: "Evolving My 2020 Astro Stacker: From Simple Shifts to a C++ Engine with Carbon"
+description: "How I evolved a simple 2020 Python image-shift script into a fast C++ astrophotography stacker using Carbon, handling rotation, temperature drift, Winsorized clipping, and a blind synthetic flat field."
 image: /images/2026-11-24-astro-stacker-m57-comparison.png
 ---
 
 <figure>
-  <img src="/images/2026-11-24-astro-stacker-m57-comparison.png" alt="Three-panel comparison of the Ring Nebula M57: single raw frame on the left, final 19-frame C++20 stack in the middle, and high-contrast central cavity stretch showing the white dwarf on the right">
-  <figcaption>Ring Nebula (M57, Canon EOS 1100D): single raw frame (left), final 19-frame C++20 stack (middle), and a cavity stretch revealing the central white dwarf (right).</figcaption>
+  <img src="/images/2026-11-24-astro-stacker-m57-comparison.png" alt="Three-panel comparison of the Ring Nebula M57: single raw frame on the left, final 19-frame C++ stack in the middle, and high-contrast central cavity stretch showing the white dwarf on the right">
+  <figcaption>Ring Nebula (M57, Canon EOS 1100D): single raw frame (left), final 19-frame C++ stack (middle), and a cavity stretch revealing the central white dwarf (right).</figcaption>
 </figure>
 
-**TL;DR:** Back in 2020 I wrote a simple Python script to stack raw telescope photos of the Ring Nebula (M57) and Andromeda (M31) by shifting images to minimize their difference. Here is how I evolved that idea with **Carbon** into a fast C++20 stacker, explaining each technique along the way, from star-triangle rotation matching and Winsorized clipping to a blind synthetic flat field.
+**TL;DR:** Back in 2020 I wrote a simple Python script to stack raw telescope photos of the Ring Nebula (M57) and Andromeda (M31) by shifting images to minimize their difference. Here is how I evolved that idea with **Carbon** into a fast C++ stacker, explaining each technique along the way, from star-triangle rotation matching and Winsorized clipping to a blind synthetic flat field.
 
 🖼️ [**Skip straight to the final images →**](#final-results) &nbsp;|&nbsp; 📄 [**Read the full technical paper (PDF) →**](/pdfs/2026-11-24-astro-stacker-paper.pdf)
 
@@ -24,7 +24,7 @@ The original idea was simple: subtract the average dark frame, then slide pairs 
 
 In practice, that simple approach ran into several conceptual problems:
 
-- **No rotation:** Over a 10-minute session, slight polar misalignment slowly rotates the sky across the sensor (on Andromeda, corner stars rotate by ~2.5 pixels). Pure `(x, y)` shifts can't fix that. *(And yes, the new C++20 stacker does account for rotation!)*
+- **No rotation:** Over a 10-minute session, slight polar misalignment slowly rotates the sky across the sensor (on Andromeda, corner stars rotate by ~2.5 pixels). Pure `(x, y)` shifts can't fix that. *(And yes, the new C++ stacker does account for rotation!)*
 - **No flat field (vignetting & dust motes):** Telescope optics darken the corners by ~32% and sensor dust casts dark donut shadows. Because those patterns stay fixed on the camera, whole-image comparison strongly prefers *zero shift* `(0, 0)` instead of following the drifting stars.
 - **Temperature drift:** The camera cooled outdoors from `34 °C` at the start of the session down to `18 °C` by the time I took the dark frames. Because silicon dark current roughly doubles every `6 °C`, subtracting a cooler master dark left hundreds of bright "warm pixels" behind.
 - **Empty sky dominates whole-image matching:** Stars occupy less than `0.2%` of the 12-megapixel sensor. Correlating the whole image mostly correlates sky noise, vignetting, and leftover dark-frame error.
@@ -32,11 +32,11 @@ In practice, that simple approach ran into several conceptual problems:
 
 ---
 
-## Step 1: A Clean C++20 Baseline (And How We Iterated)
+## Step 1: A Clean C++ Baseline (And How We Iterated)
 
-Rather than tuning parameters by eye, I used **Carbon** to hill-climb a fresh C++20 rewrite against a **read-only scoring script** and a separate reviewer agent on every commit. The scoring script measures star sharpness, background noise, star count, star roundness, and diffuse-nebula preservation, never showing the model a single pixel and reverting any change that hurts the score. Sharpness is measured by **FWHM** (Full Width at Half Maximum, the width of a star's brightness profile at half its peak; smaller means sharper), tracked both across the whole frame and specifically in the **outer corners of the image** (where field rotation swings stars the farthest and telescope optics are naturally wider).
+Rather than tuning parameters by eye, I used **Carbon** to hill-climb a fresh C++ rewrite against a **read-only scoring script** and a separate reviewer agent on every commit. The scoring script measures star sharpness, background noise, star count, star roundness, and diffuse-nebula preservation, never showing the model a single pixel and reverting any change that hurts the score. Sharpness is measured by **FWHM** (Full Width at Half Maximum, the width of a star's brightness profile at half its peak; smaller means sharper), tracked both across the whole frame and specifically in the **outer corners of the image** (where field rotation swings stars the farthest and telescope optics are naturally wider).
 
-Even the very first C++20 baseline (`Iter 0`) already looked dramatically better than an unaligned average (`+45.7` points on M57, `+48.9` on M31) because it fixed the fundamentals at a high level:
+Even the very first C++ baseline (`Iter 0`) already looked dramatically better than an unaligned average (`+45.7` points on M57, `+48.9` on M31) because it fixed the fundamentals at a high level:
 
 1. **True 14-bit linear raw reading** directly via [LibRaw](https://github.com/LibRaw/LibRaw), automatically rejecting corrupted `.CR2` bitstreams.
 2. **Clean master-dark subtraction** without clipping negative noise values to zero.
@@ -46,7 +46,7 @@ Even the very first C++20 baseline (`Iter 0`) already looked dramatically better
 ### How Star-Based Alignment Works
 My original whole-image shift-and-difference idea was actually the unconventional approach. I had hoped comparing every pixel would give a cleaner signal, but on deep-sky photos where stars occupy less than `0.2%` of the sensor, whole-image matching gets drowned out by sky noise and vignetting.
 
-In astronomy, the standard way to align deep-sky frames is **star-based registration** (the same general idea used by tools like PixInsight, Siril, and DeepSkyStacker). Instead of sliding whole images across each other, the C++20 stacker aligns every exposure in three clean steps:
+In astronomy, the standard way to align deep-sky frames is **star-based registration** (the same general idea used by tools like PixInsight, Siril, and DeepSkyStacker). Instead of sliding whole images across each other, the C++ stacker aligns every exposure in three clean steps:
 
 1. **Find the stars:** Convert each calibrated frame to grayscale luminance, estimate the local sky brightness and noise on a coarse grid (used only for detection, never subtracted from the final image), and pick out connected bright blobs rising `5σ` above the local background (filtering out single-pixel spikes and saturated star cores). We keep the top ~60 brightest stars and record their `(x, y)` centers.
 2. **Compute the shift (and later, rotation):** Match each frame's star `(x, y)` coordinates to the reference frame's star coordinates to solve the exact offset between the two exposures.
@@ -152,7 +152,7 @@ The result: radial vignetting collapsed from **`32.1% → 1.0%`** on M31 (`32.0%
 
 ## Putting It All Together: Plot & Summary Table
 
-To measure true end-to-end gain, the chart and tables below use the **unaligned dark-subtracted mean** as `0.00` (raw score `60.28` on M57, `62.57` on M31) and plot how much each technique improved above it. Even with every stage enabled, the parallel C++20/OpenMP engine processes an entire session of ~40 raw `.CR2` files end-to-end in roughly **70 to 90 seconds** (compared to several minutes in the original 2020 Python prototype):
+To measure true end-to-end gain, the chart and tables below use the **unaligned dark-subtracted mean** as `0.00` (raw score `60.28` on M57, `62.57` on M31) and plot how much each technique improved above it. Even with every stage enabled, the parallel C++/OpenMP engine processes an entire session of ~40 raw `.CR2` files end-to-end in roughly **70 to 90 seconds** (compared to several minutes in the original 2020 Python prototype):
 
 <figure>
   <img src="/images/2026-11-24-astro-stacker-hill-climb.png" alt="Two-panel chart: top panel shows M57 score gain above the unaligned dark-subtracted mean baseline across iterations 0 to 10 plus flat-field dust-mote iteration F2; bottom panel shows M31 flat-field diagnostics">
@@ -162,7 +162,7 @@ To measure true end-to-end gain, the chart and tables below use the **unaligned 
 | Stage / Technique | What It Does | M57 $\Delta$ vs. Base | M31 $\Delta$ vs. Base | Key Impact |
 | :--- | :--- | :---: | :---: | :--- |
 | **Unaligned Mean (Base)** | Dark-subtracted average, no alignment | `0.00` (`60.28`) | `0.00` (`62.57`) | Star trails (`FWHM 16.0 / 13.5 px`) |
-| **It 0: C++20 Baseline** | 14-bit raw, MHC `5×5`, star shift+add | `+45.74` | `+48.86` | Stars snap sharp; `316 / 249` stars |
+| **It 0: C++ Baseline** | 14-bit raw, MHC `5×5`, star shift+add | `+45.74` | `+48.86` | Stars snap sharp; `316 / 249` stars |
 | **It 3: Sub-Pixel Lanczos-3** | Gaussian star centers + fractional shift | `+47.08` | - | `+27` faint stars, sharper cores |
 | **It 4: Valdes 4-DOF Rotation** | Star-triangle matching (`dx, dy, dθ, s`) | `+47.42` | - | Fixes `2.5 px` corner rotation |
 | **It 6: Sky Plane + PSF Weights** | Differential sky plane + sharpness weights | `+48.36` | - | Beats single-frame median FWHM |
