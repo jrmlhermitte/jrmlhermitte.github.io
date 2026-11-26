@@ -58,7 +58,7 @@ Rounding every shift to the nearest whole pixel introduces up to `±0.5 px` of j
 </figure>
 
 ### 2. Handling Rotation with Star-Triangle Matching (`Iter 4`)
-To fix field rotation as well as drift, we replaced simple `(x, y)` shifts with **Valdes star-triangle geometric hashing**. The idea is simple: pick bright stars and form triangles out of them. The *ratios* of a triangle's side lengths `(L1/L2, L0/L2)` stay identical no matter how much the frame shifts, rotates, or zooms. Matching those triangles across frames solves the exact 4-DOF similarity transform `(dx, dy, rotation, scale)` for all 21 frames in **33 milliseconds**.
+To fix field rotation as well as drift, we replaced simple `(x, y)` shifts with **Valdes star-triangle geometric hashing**. The idea is simple: pick bright stars and form triangles out of them. The *ratios* of a triangle's side lengths `(L1/L2, L0/L2)` stay identical no matter how much the frame shifts, rotates, or zooms. Matching those triangles across frames solves the exact 4-DOF similarity transform `(dx, dy, rotation, scale)`.
 
 <figure>
   <img src="/images/2026-11-25-astro-stacker-triangles-explainer.png" alt="Diagram showing a reference star field and a drifted, rotated star field with a highlighted triangle A-B-C whose side-length ratios L1/L2 and L0/L2 stay identical to solve dx, dy, rotation, and scale">
@@ -110,7 +110,7 @@ The result: radial vignetting collapsed from **`32.1% → 1.0%`** on M31 (`32.0%
 
 ## Putting It All Together: Plot & Summary Table
 
-To measure true end-to-end gain, the chart and tables below use the **unaligned dark-subtracted mean** as `0.00` (raw score `60.28` on M57, `62.57` on M31) and plot how much each technique improved above it:
+To measure true end-to-end gain, the chart and tables below use the **unaligned dark-subtracted mean** as `0.00` (raw score `60.28` on M57, `62.57` on M31) and plot how much each technique improved above it. Even with every stage enabled, the parallel C++20/OpenMP engine processes an entire session of ~40 raw `.CR2` files end-to-end in roughly **70 to 90 seconds** (compared to several minutes in the original 2020 Python prototype):
 
 <figure>
   <img src="/images/2026-11-24-astro-stacker-hill-climb.png" alt="Two-panel chart: top panel shows M57 score gain above the unaligned dark-subtracted mean baseline across iterations 0 to 10 plus flat-field dust-mote iteration F2; bottom panel shows M31 flat-field diagnostics">
@@ -122,7 +122,7 @@ To measure true end-to-end gain, the chart and tables below use the **unaligned 
 | **Unaligned Mean (Base)** | Dark-subtracted average, no alignment | `0.00` (`60.28`) | `0.00` (`62.57`) | Star trails (`FWHM 16.0 / 13.5 px`) |
 | **It 0: C++20 Baseline** | 14-bit raw, MHC `5×5`, star shift+add | `+45.74` | `+48.86` | Stars snap sharp; `316 / 249` stars |
 | **It 3: Sub-Pixel Lanczos-3** | Gaussian star centers + fractional shift | `+47.08` | - | `+27` faint stars, sharper cores |
-| **It 4: Valdes 4-DOF Rotation** | Star-triangle matching (`dx, dy, dθ, s`) | `+47.42` | - | Fixes `2.5 px` corner rotation (`33 ms`) |
+| **It 4: Valdes 4-DOF Rotation** | Star-triangle matching (`dx, dy, dθ, s`) | `+47.42` | - | Fixes `2.5 px` corner rotation |
 | **It 6: Sky Plane + PSF Weights** | Differential sky plane + sharpness weights | `+48.36` | - | Beats single-frame median FWHM |
 | **It 7: Winsorized Clipping** | Clamps temporal outliers to `±2.8σ` fence | `+48.55` | - | Warm-pixel streaks `32 → 0` (`477 → 0` M31) |
 | **It 8: OB + Thermal Dark** | Row bias + Winsorized dark + temp scaling | `+48.92` | - | **Aha moment:** `+0.37` *after* It 7 |
