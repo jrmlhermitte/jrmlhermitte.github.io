@@ -53,8 +53,8 @@ That clean baseline got us ~90% of the way there. Next, we refined it one techni
 Rounding every shift to the nearest whole pixel introduces up to `±0.5 px` of jitter per frame, softening star cores. We upgraded star detection with an internal `64×64` background mesh (*used only for finding stars, never subtracted from the image*), fitted smooth **2D Gaussian centers** to sub-pixel precision, and shifted each frame by exact fractional pixels using **2D Lanczos-3 resampling**, which preserves sharpness without the blurry "wash" of bilinear interpolation. That single step gave our biggest refinement jump (`+1.34`).
 
 <figure>
-  <img src="/images/2026-11-25-astro-stacker-lanczos3-explainer.png" alt="Two-panel diagram: left panel shows integer rounding introducing a 0.4 pixel shift error compared to a smooth sub-pixel Gaussian fit at x=4.40; right panel compares the 6-neighbor Lanczos-3 resampling kernel with negative side lobes against the blurry bilinear triangle kernel">
-  <figcaption>Left: fitting a smooth Gaussian recovers the exact sub-pixel star center (4.40 instead of rounding to 4). Right: Lanczos-3 uses 6 neighbors with slight negative side lobes to shift images by fractional pixels while keeping star cores crisp.</figcaption>
+  <img src="/images/2026-11-25-astro-stacker-lanczos3-explainer.png" alt="Two-panel diagram: left panel shows integer rounding introducing a 0.4 pixel shift error compared to a smooth sub-pixel Gaussian fit at x=4.40; right panel compares the 6-neighbor windowed-sinc Lanczos-3 resampling kernel against the blurry bilinear triangle kernel">
+  <figcaption>Left: fitting a smooth Gaussian recovers the exact sub-pixel star center (4.40 instead of rounding to 4). Right: Lanczos-3 uses a 6-neighbor windowed sinc kernel (tapering smoothly to zero at ±3 pixels), preserving star sharpness at fractional shifts where bilinear averaging blurs.</figcaption>
 </figure>
 
 ### 2. Handling Rotation with Star-Triangle Matching (`Iter 4`)
