@@ -1,7 +1,7 @@
 ---
 layout: single
-title: "Evolving My 2020 Astro Stacker: From Simple Shifts to a C++ Engine with Carbon"
-description: "How I evolved a simple 2020 Python image-shift script into a fast C++ astrophotography stacker using Carbon, handling rotation, temperature drift, Winsorized clipping, and a blind synthetic flat field."
+title: "Evolving My 2020 Astro Stacker: From Simple Shifts to a C++ Engine with Gemini Carbon"
+description: "How I evolved a simple 2020 Python image-shift script into a fast C++ astrophotography stacker using Gemini Carbon, handling rotation, temperature drift, Winsorized clipping, and a blind synthetic flat field."
 image: /images/2026-11-24-astro-stacker-m57-comparison.png
 ---
 
@@ -10,7 +10,7 @@ image: /images/2026-11-24-astro-stacker-m57-comparison.png
   <figcaption>Ring Nebula (M57, Canon EOS 1100D): single raw frame (left), final 19-frame C++ stack (middle), and a cavity stretch revealing the central white dwarf (right).</figcaption>
 </figure>
 
-**TL;DR:** I migrated my slow 2020 Python astro stacker to fast C++ and used **Carbon** to iteratively refine the algorithm. Automated hill-climbing added sharp techniques (rotation, Lanczos-3, Winsorized clipping), though visually the stack stayed fairly close to the clean baseline. The real leap required my own input: stepping outside the AI's loop to suggest a **synthetic flat field**, which removed the vignetting and dust donuts.
+**TL;DR:** I migrated my slow 2020 Python astro stacker to fast C++ and used **Gemini Carbon** to iteratively refine the algorithm. Automated hill-climbing added sharp techniques (rotation, Lanczos-3, Winsorized clipping), though visually the stack stayed fairly close to the clean baseline. The real leap required my own input: stepping outside the AI's loop to suggest a **synthetic flat field**, which removed the vignetting and dust donuts.
 
 > *Note: This post was co-authored with heavy human input and refinement using Gemini 4 Neon (Medium).*
 
@@ -41,7 +41,7 @@ In practice, that 2020 approach still ran into several conceptual problems:
 
 ## How the Hill-Climbing Loop Works
 
-Rather than tuning parameters by eye, I set up a simple automated loop with **Carbon** so the stacker could improve itself one small, verifiable step at a time (while keeping Andromeda as an untouched holdout set):
+Rather than tuning parameters by eye, I set up a simple automated loop with **Gemini Carbon** so the stacker could improve itself one small, verifiable step at a time (while keeping Andromeda as an untouched holdout set):
 
 <figure>
   <img src="/images/2026-11-26-astro-stacker-loop-simple.png" alt="Simple 4-box flowchart of the autonomous hill-climbing loop: 1. Developer Agent proposes 1 small C++ change, 2. Read-Only Scorer scores the output stack without showing pixels to the AI, 3. Critic Agent (fresh LLM) audits the git diff assuming metric gaming, 4. Commit if higher score and PASS otherwise git revert, looping back to step 1">
@@ -270,7 +270,7 @@ So why was building a custom stacker with AI still worth it? Look at the bottom 
 That brings together the two real lessons of this project:
 
 1. **AI excels at building tailored, deterministic, and auditable algorithms on the fly** for the exact quirks of the data in front of you (missing flats, a partially glitched raw file, a silent decoder bug), even when it is hard to beat mature industry software on general-purpose techniques.
-2. **Automated hill-climbing still optimizes inside the box you give it.** Carbon introduced genuinely solid refinements (Lanczos-3, star-triangle rotation, Winsorized clipping), yet the pre-flat stack looked broadly similar to the clean baseline. The biggest visual breakthrough only happened when I stepped in with domain intuition and suggested estimating a synthetic flat field. Human direction plus AI execution is still what unlocks the best results.
+2. **Automated hill-climbing still optimizes inside the box you give it.** Gemini Carbon introduced genuinely solid refinements (Lanczos-3, star-triangle rotation, Winsorized clipping), yet the pre-flat stack looked broadly similar to the clean baseline. The biggest visual breakthrough only happened when I stepped in with domain intuition and suggested estimating a synthetic flat field. Human direction plus AI execution is still what unlocks the best results.
 
 ---
 
@@ -287,9 +287,9 @@ For anyone curious about the AI compute cost of running a multi-phase hill-climb
 A portion of those tokens went into compiling the 15-page LaTeX paper and generating visual plates, though the bulk was spent on the core algorithm evolution, torture-testing, and red-team audits. Notice also that spawning fresh subagents kept audit context tiny (~`15M` cumulative input across all 19 subagents combined, compared to ~`246M` on the long-running main threads).
 
 **Which subscription plan fits a run like this?**
-- **Google AI Pro (`$19.99/mo`)** includes both **Gemini 4 Carbon** and **Gemini 4 Neon** in Antigravity, using a rolling **5-hour refresh window** under a **weekly cap**.
-- Running the full ~1,100-turn hill-climb in a single sitting on Carbon would easily hit the **5-hour limit** multiple times and likely exceed a single **weekly cap** on AI Pro. On AI Pro, you would want to pace it across several 5-hour windows (or split phases into fresh conversations so the main context does not snowball to ~600k tokens). If you want to run a heavy multi-day sprint uninterrupted, **Google AI Ultra** (5× to 20× the quota) gives much more breathing room.
-- **Carbon vs. Neon:** Although I ran these experiments with **Gemini 4 Carbon**, **Gemini 4 Neon** has since launched and is faster, lighter on quota, and an even better fit for iterative agentic coding loops like this one.
+- [**Google AI Pro (`$19.99/mo`)**](https://one.google.com/about/google-ai-plans/) includes both **Gemini Carbon** and **Gemini Neon** in Antigravity, using a rolling **5-hour refresh window** under a **weekly cap**.
+- Running the full ~1,100-turn hill-climb in a single sitting on Gemini Carbon would easily hit the **5-hour limit** multiple times and likely exceed a single **weekly cap** on AI Pro. On AI Pro, you would want to pace it across several 5-hour windows (or split phases into fresh conversations so the main context does not snowball to ~600k tokens). If you want to run a heavy multi-day sprint uninterrupted, [**Google AI Ultra**](https://one.google.com/about/google-ai-plans/) (5× to 20× the quota) gives much more breathing room.
+- **Gemini Carbon vs. Gemini Neon:** Although I ran these experiments with **Gemini Carbon**, **Gemini Neon** has since launched and is faster, lighter on quota, and an even better fit for iterative agentic coding loops like this one.
 
 ---
 
