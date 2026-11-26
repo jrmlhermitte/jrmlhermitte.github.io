@@ -12,6 +12,8 @@ image: /images/2026-11-24-astro-stacker-m57-comparison.png
 
 **TL;DR:** Back in 2020 I wrote a simple Python script to stack raw telescope photos of the Ring Nebula (M57) and Andromeda (M31) by shifting images to minimize their difference. Here is how I evolved that idea with **Carbon** into a fast C++ stacker, explaining each technique along the way, from star-triangle rotation matching and Winsorized clipping to a blind synthetic flat field.
 
+> *Note: This post was co-authored with heavy human input and refinement using Gemini 4 Neon (Medium).*
+
 🖼️ [**Skip straight to the final images →**](#final-results) &nbsp;|&nbsp; 📄 [**Read the full technical paper (PDF) →**](/pdfs/2026-11-24-astro-stacker-paper.pdf)
 
 ---
@@ -208,6 +210,25 @@ So why was building a custom stacker with AI still worth it? Look at the bottom 
 - **Right-sized complexity:** Testing against the real data proved that simpler 4-DOF rotation and linear Malvar-He-Cutler beat heavier 6-DOF affine warps and directional demosaicing on this specific 10-minute track.
 
 That is the real lesson here: **AI can shine not because its core techniques beat industry standards, but because it lets you build tailored, deterministic, and fully auditable algorithms on the fly for the exact quirks of the problem in front of you.**
+
+---
+
+## Token Budget & What Plan You Would Need
+
+For anyone curious about the AI compute cost of running a multi-phase hill-climb like this, here is an estimate from the full transcripts across both main sessions and all 19 spawned subagents (~4 characters per token; cumulative input tokens include repeated prompt-cached history):
+
+| Session | Threads | LLM Turns | Generated Tokens (output + thinking + tool calls) | Cumulative Input Tokens (mostly cached) |
+| :--- | :---: | :---: | :---: | :---: |
+| **Core Hill-Climb + Paper** | 1 main + 13 subagents | `1,128` | `~1.17M` | `~245M` |
+| **Synthetic Flat-Field + Grids** | 1 main + 6 subagents | `333` | `~268k` | `~16M` |
+| **Total** | **2 main + 19 subagents** | **`1,461`** | **`~1.44M`** | **`~261M`** |
+
+A portion of those tokens went into compiling the 15-page LaTeX paper and generating visual plates, though the bulk was spent on the core algorithm evolution, torture-testing, and red-team audits. Notice also that spawning fresh subagents kept audit context tiny (~`15M` cumulative input across all 19 subagents combined, compared to ~`246M` on the long-running main threads).
+
+**Which subscription plan fits a run like this?**
+- **Google AI Pro (`$19.99/mo`)** includes both **Gemini 4 Carbon** and **Gemini 4 Neon** in Antigravity, using a rolling **5-hour refresh window** under a **weekly cap**.
+- Running the full ~1,100-turn hill-climb in a single sitting on Carbon would easily hit the **5-hour limit** multiple times and likely exceed a single **weekly cap** on AI Pro. On AI Pro, you would want to pace it across several 5-hour windows (or split phases into fresh conversations so the main context does not snowball to ~600k tokens). If you want to run a heavy multi-day sprint uninterrupted, **Google AI Ultra** (5× to 20× the quota) gives much more breathing room.
+- **Carbon vs. Neon:** Although I ran these experiments with **Gemini 4 Carbon**, **Gemini 4 Neon** has since launched and is faster, lighter on quota, and an even better fit for iterative agentic coding loops like this one.
 
 ---
 
