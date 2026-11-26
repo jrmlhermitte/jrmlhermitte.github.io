@@ -90,9 +90,13 @@ Even after aligning stars, temperature drift left behind bright **warm pixels** 
 On M57, warm-pixel artifacts dropped from **`32 → 0`**; on M31, all **`477` warm-pixel streaks vanished**, with zero spatial blurring.
 
 ### 5. The "Aha" Moment: Sensor Calibration *After* Temporal Clipping (`Iter 8`)
-Early on (`Iter 1` and `Iter 2`), we tried adding physical sensor calibration: subtracting the camera's shielded optical-black border per row, building a Winsorized master dark, and scaling the dark frame for temperature drift. Surprisingly, **both attempts hurt the score (`-0.71` / `-0.79`) and were reverted!**
+A camera sensor actually has a narrow strip of pixels along its left edge (`58` columns wide on the Canon 1100D) that is physically covered by an opaque shield so **no light ever hits it**. Because it sits in total darkness, this **optical-black border** measures the camera's pure electronic baseline ("pedestal," around `2048 ADU`), which drifts slightly from row to row and frame to frame.
 
-Why? Before `Iter 7` added temporal clipping, unrepaired stationary warm pixels in clustered frames had formed tiny fake pinpoint "stars" in the corners, artificially making `Iter 0`'s corners look sharper than they were. Once `Iter 7` removed those warm pixels cleanly along the time axis, re-applying pure sensor-level calibration in `Iter 8` immediately jumped **`+0.37`** and hit the sharpest star FWHM of the entire run. **The order of operations mattered.**
+Early on (`Iter 1` and `Iter 2`), we tried upgrading our dark calibration using three physical improvements: subtracting each row's optical-black border median, building a Winsorized master dark, and scaling the dark frame to compensate for temperature drift (plus trying to patch warm pixels in each frame). Surprisingly, **both attempts hurt the score (`-0.71` and `-0.79`) and were reverted!**
+
+Why would better sensor calibration make the score worse? Looking at the failed logs revealed a subtle trap: in `Iter 0` (before we had Winsorized clipping across frames), five exposures barely drifted (`2` to `4` pixels), so leftover warm pixels in the **active image corners** piled up into tiny, ultra-sharp `~4 px` fake "stars." Those fake pinpoint blobs made `Iter 0`'s corners look artificially sharper than the real optical stars. Cleaning them up exposed the true, wider corner stars, which looked like a drop in sharpness.
+
+Once `Iter 7` added Winsorized sigma clipping across the stack, those warm-pixel blobs were already gone cleanly along the time axis. Re-applying pure sensor calibration in `Iter 8` (optical-black row pedestal + Winsorized master dark + temperature dark scaling, with no single-frame pixel patching) immediately jumped **`+0.37`** and hit the sharpest star FWHM of the entire run. **The order of operations mattered.**
 
 ### 6. Partial-Row Bitstream Salvage (`Iter 10`)
 One M57 exposure (`IMG_6089.CR2`) had a bitstream glitch only in its bottom 4 strips. Scanning rows top-down let us safely salvage its clean top `2,468` rows (keeping a 10-row safety margin away from the glitch), boosting us from 18 to **19 integrated frames** (`+0.33`).
