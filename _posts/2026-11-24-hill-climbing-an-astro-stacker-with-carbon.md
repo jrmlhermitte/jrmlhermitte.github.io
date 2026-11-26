@@ -28,7 +28,7 @@ In practice, that simple approach ran into several conceptual problems:
 - **No flat field (vignetting & dust motes):** Telescope optics darken the corners by ~32% and sensor dust casts dark donut shadows. Because those patterns stay fixed on the camera, whole-image comparison strongly prefers *zero shift* `(0, 0)` instead of following the drifting stars.
 - **Temperature drift:** The camera cooled outdoors from `34 °C` at the start of the session down to `18 °C` by the time I took the dark frames. Because silicon dark current roughly doubles every `6 °C`, subtracting a cooler master dark left hundreds of bright "warm pixels" behind.
 - **Empty sky dominates whole-image matching:** Stars occupy less than `0.2%` of the 12-megapixel sensor. Correlating the whole image mostly correlates sky noise, vignetting, and leftover dark-frame error.
-- **Real-world file & mount quirks:** The mount's worm gear reversed drift direction mid-session, 5 of the `.CR2` files had corrupted bitstreams, and pointing near zenith tripped the camera's gravity sensor (`EXIF flip = 5`), rotating M57 by `90°` relative to the darks.
+- **Real-world file & mount quirks:** The mount's worm gear reversed drift direction mid-session, and 5 of the `.CR2` files had corrupted bitstreams.
 
 ---
 
@@ -38,7 +38,7 @@ Rather than tuning parameters by eye, I used **Carbon** to hill-climb a fresh C+
 
 Even the very first C++20 baseline (`Iter 0`) already looked dramatically better than an unaligned average (`+45.7` points on M57, `+48.9` on M31) because it fixed the fundamentals at a high level:
 
-1. **True 14-bit linear raw reading** directly via `LibRaw` (ignoring the `EXIF flip = 5` rotation trap and rejecting corrupted `.CR2` bitstreams).
+1. **True 14-bit linear raw reading** directly via `LibRaw`, automatically rejecting corrupted `.CR2` bitstreams.
 2. **Clean master-dark subtraction** without clipping negative noise values to zero.
 3. **Sharp linear demosaicing** (Malvar–He–Cutler `5×5`) instead of blurry consumer gamma-stretched JPEGs.
 4. **Star-based alignment**—finding actual bright stars instead of correlating empty sky—followed by simple integer shift-and-add averaging.
