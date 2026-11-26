@@ -288,37 +288,27 @@ A portion of those tokens went into compiling the 15-page LaTeX paper and genera
 
 ## Final Results {#final-results}
 
-### Before vs. After: 2020 Best-Effort ROI + Bilinear vs. Final C++ + Synthetic Flat
-To test how far the older 2020 technique could get on its own, we ran a best-effort reproduction using naive mean dark subtraction, a manual star-ROI shift-difference search, and bilinear interpolation (no rotation, no Lanczos-3, no Winsorized clipping, no flat field).
+Each 2×2 grid below walks through the exact same four stages: **(1) naive unaligned average** → **(2) my 2020 method (manual star-ROI shift + bilinear)** → **(3) evolved C++ stacker (pre-flat)** → **(4) evolved C++ stacker + blind synthetic flat field**.
 
-It actually aligned the stars reasonably well, **and** it gave a neat experimental validation of our anti-cheat scorer: bilinear interpolation blurred neighboring sky pixels together so heavily (`rho_1px = 0.55` vs. `0.26` reference) that the scorer's spatial-smoothing gate immediately disqualified it (`score = -inf`), while leaving `164` diagonal RGB warm-pixel streaks on Andromeda, softer stars (`8.43 px` vs. `8.14–8.24 px`), `32%` vignetting, and dark dust donuts:
-
-<figure>
-  <img src="/images/2026-11-26-astro-stacker-2020-vs-final.jpg" alt="Side-by-side comparison of the 2020 best-effort manual ROI shift plus bilinear stack (left) against the final C++ engine plus blind synthetic flat (right) for both Andromeda M31 (top) and zoomed Ring Nebula M57 (bottom)">
-  <figcaption>Direct comparison: 2020 best-effort ROI shift + bilinear (left, disqualified by Gate 2a for bilinear smoothing and showing 164 RGB warm-pixel streaks, 32% vignetting, and dust donuts) vs. our final C++ engine + blind synthetic flat (right).</figcaption>
-</figure>
-
-### Full 4-Stage Progression
-
-Here is the full 4-stage visual progression, from **(1) unaligned average** → **(2) Iter-0 baseline** → **(3) best pre-flat stack** → **(4) final synthetic flat-field stack**, on both targets:
+*(As a bonus validation of our scorer: the 2020 ROI + bilinear stack actually aligned the stars reasonably well, but bilinear averaging blurred neighboring sky pixels together so heavily that `rho_1px` jumped from `0.26` to `0.55`, triggering the scorer's built-in **Gate 2a** anti-smoothing check (`score = -inf`) while leaving `164` RGB warm-pixel streaks on Andromeda, softer stars, `32%` vignetting, and dark dust donuts.)*
 
 ### Ring Nebula (M57): Zoomed View
 Notice the dark dust-mote donut right below the Ring Nebula in panels 1 to 3 disappearing cleanly in panel 4:
 
 <figure>
-  <img src="/images/2026-11-25-astro-stacker-m57-4stage-zoom.jpg" alt="2x2 zoomed progression grid of the Ring Nebula (M57) across 4 stages showing star tightening and the dark dust-mote donut right below the nebula disappearing in the synthetic flat-field stack">
+  <img src="/images/2026-11-25-astro-stacker-m57-4stage-zoom.jpg" alt="2x2 zoomed progression grid of the Ring Nebula (M57) across 4 stages: 1. Naive unaligned average, 2. 2020 manual ROI shift plus bilinear, 3. Evolved C++ pre-flat stack, and 4. Evolved C++ plus blind synthetic flat removing the dark dust-mote donut below the nebula">
 </figure>
 
 ### Ring Nebula (M57): Full Field
 Radial vignetting drops from `32.0%` to `-1.5%`, and the background sky becomes `7.0×` flatter:
 
 <figure>
-  <img src="/images/2026-11-25-astro-stacker-m57-4stage-progression.jpg" alt="2x2 full-field progression grid of ring_set (M57) showing unaligned star trails and 32% vignetting in panel 1 progressing to a flat, 7x smoother sky in panel 4">
+  <img src="/images/2026-11-25-astro-stacker-m57-4stage-progression.jpg" alt="2x2 full-field progression grid of ring_set (M57) across 4 stages: 1. Naive unaligned average, 2. 2020 manual ROI shift plus bilinear, 3. Evolved C++ pre-flat stack, and 4. Evolved C++ plus blind synthetic flat">
 </figure>
 
 ### Andromeda Galaxy (M31): Zero-Shot Holdout + Blind Flat
-Processed with zero retuning, then flattened using the synthetic flat estimated solely from M57, bringing out M31's elliptical disk, dark dust lanes, and companion galaxy M32 in the lower right:
+Processed with zero retuning, then flattened using the synthetic flat estimated solely from M57, removing all 164 RGB warm-pixel streaks from panel 2 and bringing out M31's elliptical disk, dark dust lanes, and companion galaxy M32 in the lower right:
 
 <figure>
-  <img src="/images/2026-11-25-astro-stacker-m31-4stage-progression.jpg" alt="2x2 progression grid of Andromeda (M31) across four stages: 1. Blind unaligned average showing star trails, 2. Iter-0 integer shift-and-add baseline with residual warm-pixel streaks, 3. Best pre-flat 4-DOF Lanczos-3 plus Winsorized stack (score 114.88), and 4. Final synthetic flat-field stack removing the 32% vignetting bowl and dust motes">
+  <img src="/images/2026-11-25-astro-stacker-m31-4stage-progression.jpg" alt="2x2 progression grid of Andromeda (M31) across four stages: 1. Naive unaligned average showing star trails, 2. 2020 manual ROI shift plus bilinear showing 164 RGB warm-pixel streaks and 32% vignetting, 3. Evolved C++ pre-flat stack (4-DOF Lanczos-3 plus Winsorized, score 114.88), and 4. Final synthetic flat-field stack removing the 32% vignetting bowl and dust motes">
 </figure>
