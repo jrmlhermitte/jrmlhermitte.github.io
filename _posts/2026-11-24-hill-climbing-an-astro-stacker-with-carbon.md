@@ -68,7 +68,11 @@ To fix field rotation as well as drift, we replaced simple `(x, y)` shifts with 
 *(We also tested a 6-DOF full affine transform in `Iter 5`, which overfit off-axis coma and hurt corner sharpness, so it was automatically reverted.)*
 
 ### 3. Differential Sky-Plane Equalization & Smart Frame Weighting (`Iter 6`)
-Sky brightness changes slightly from frame to frame as targets rise or set. To equalize frames *without* accidentally erasing Andromeda's huge glowing disk, we fit a simple tilted plane to the **difference** between each aligned frame and the reference frame so the galaxy itself cancels out identically. We also weighted sharper frames higher than mount-drift frames, making the combined stack sharper than the median single exposure (`+0.94`).
+As a target moves across the sky, light pollution and skyglow shift slightly from one exposure to the next (one frame may be slightly brighter overall, or brighter on one side). If you tried to estimate and subtract the background directly from each frame, it's easy to mistake Andromeda's huge glowing disk for "bright sky" and accidentally erase part of the galaxy.
+
+The trick is to **subtract the aligned reference frame first**: because both aligned frames contain the exact same galaxy in the exact same pixels, taking `Frame - Reference` cancels out Andromeda and the stars completely, leaving *only* the change in skyglow between the two shots. We split that difference image into coarse `96×96` patches, take the median of each patch, and fit a simple flat tilted sheet (`a + bx + cy`) across them. Subtracting that sheet brings every frame to the same sky level without ever touching the galaxy.
+
+Finally, instead of giving every exposure equal weight, we weight sharper, cleaner frames higher than frames blurred by mount drift, making the combined stack sharper than the median single exposure (`+0.94`).
 
 ### 4. Winsorized Sigma Clipping (`Iter 7`)
 Even after aligning stars, temperature drift left behind bright **warm pixels** (and occasional cosmic rays) that trace faint red/blue streaks across the stack when you take a plain average.
