@@ -6,7 +6,7 @@
 <ul>
 <li><strong>Training Data Attribution (Data Provenance):</strong> Equation 3 scores how strongly each training sample <span class="math inline">\(\vec{x}_m\)</span> pulls an inference point <span class="math inline">\(\vec{x}\)</span> via gradient dot products, forming the basis of gradient-based attribution methods like TracIn.</li>
 <li><strong>Dataset Pruning:</strong> Training points with highly aligned gradients contribute redundant updates, enabling core-set selection without altering the final weights.</li>
-<li><strong>Memorization vs. Feature Learning:</strong> Tracking when finite steps violate the first-order Taylor approximation (where higher-order <span class="math inline">\(O(|\Delta\vec{\omega}|^2)\)</span> terms dominate near local minima) separates kernel-like interpolation from genuine feature learning.</li>
+<li><strong>Memorization vs. Feature Learning:</strong> Tracking when finite steps violate the first-order Taylor approximation (where higher-order <span class="math inline">\(O(\lVert \Delta\vec{\omega} \rVert^2)\)</span> terms dominate near local minima) separates kernel-like interpolation from genuine feature learning.</li>
 <li><strong>Test-Time Adaptation:</strong> Modeling a few finite <span class="math inline">\(\alpha_k\)</span> steps directly describes test-time training, showing how a small number of gradient updates shift an output relative to the test prompt before the linear approximation breaks down.</li>
 </ul>
 <h1 id="introduction">Introduction</h1><a href="/pdfs/gradient-descent-and-kernel-machines.pdf">(pdf version)</a>
