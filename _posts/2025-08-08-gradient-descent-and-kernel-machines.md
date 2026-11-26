@@ -1,3 +1,6 @@
+<blockquote>
+<p><em>Note: This work was written pre-AI, with no AI assistance used. I suspect modern AI could easily come up with this analysis today, in which case it probably would not be worth posting.</em></p>
+</blockquote>
 <h1 id="introduction">Introduction</h1><a href="/pdfs/gradient-descent-and-kernel-machines.pdf">(pdf version)</a>
 <p>Domingos et. al demonstrate a relation between the similarity of
 training data samples and the inference point over the history of the
