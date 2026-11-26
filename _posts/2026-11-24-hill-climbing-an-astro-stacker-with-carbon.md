@@ -10,7 +10,7 @@ image: /images/2026-11-24-astro-stacker-m57-comparison.png
   <figcaption>Ring Nebula (M57, Canon EOS 1100D): single sharpest raw frame (score 50.0) vs. final 19-frame C++20 stack evolved blind by Carbon (score 109.53) vs. central cavity stretch showing the white dwarf.</figcaption>
 </figure>
 
-**TL;DR:** I rebuilt my 2020 Python astrophotography stacker into a C++20 engine by hill-climbing with **Carbon** inside a blind, anti-Goodhart harness—a locked referee (`chmod 444`), fresh red-team auditors on every commit, and human stop gates. Over 10 core iterations plus a synthetic flat-field pass, it climbed from `106.02` to `109.58` on M57, generalized zero-shot (`111.44 → 115.95`) to Andromeda, and cut radial vignetting from `32.1%` to `1.0%`.
+**TL;DR:** I rebuilt my 2020 Python astrophotography stacker into a C++20 engine by hill-climbing with **Carbon** inside a blind, anti-Goodhart harness—a locked referee (`chmod 444`), fresh red-team auditors on every commit, and human stop gates. Relative to a dark-subtracted unaligned mean baseline (`0.00`), 10 core iterations plus a synthetic flat-field pass gained **`+49.31`** on M57, generalized zero-shot (**`+53.38`**) to Andromeda, and cut radial vignetting from `32.1%` to `1.0%`.
 
 📄 [**Read the full technical paper (PDF) →**](/pdfs/2026-11-24-astro-stacker-paper.pdf)
 
@@ -52,27 +52,27 @@ $$
 ## The Hill-Climb: Plot & Score Table
 
 <figure>
-  <img src="/images/2026-11-24-astro-stacker-hill-climb.png" alt="Two-panel chart: top panel shows the M57 referee score hill-climbing trajectory across iterations 0 to 10 plus flat-field dust-mote iteration F2; bottom panel shows the M31 synthetic flat-field progression across radial vignetting drop, quiet-sky standard deviation, and sensor dust-mote correlation">
-  <figcaption><strong>Top:</strong> M57 referee score across 10 core iterations (7 kept, 4 reverted) + flat-field dust-mote solver (F2). <strong>Bottom:</strong> M31 synthetic flat-field diagnostics—vignetting drops from 32.1% to 1.0% and sensor dust-mote correlation drops 15×.</figcaption>
+  <img src="/images/2026-11-24-astro-stacker-hill-climb.png" alt="Two-panel chart: top panel shows M57 score gain above the unaligned dark-subtracted mean baseline (60.28 = 0.0) across iterations 0 to 10 plus flat-field dust-mote iteration F2; bottom panel shows the M31 synthetic flat-field progression across radial vignetting drop, quiet-sky standard deviation, and sensor dust-mote correlation">
+  <figcaption><strong>Top:</strong> M57 score gain above the unaligned dark-subtracted mean baseline (<code>60.28 → 0.0</code>) across 10 core iterations (7 kept, 4 reverted) + flat-field dust-mote solver (F2: <code>+49.31</code>). <strong>Bottom:</strong> M31 synthetic flat-field diagnostics—vignetting drops from 32.1% to 1.0% and sensor dust-mote correlation drops 15×.</figcaption>
 </figure>
 
 ### Core Evolution (`ring_set`, M57) + Flat-Field Pass
 
-| Step | Atomic Hypothesis | Verdict | M57 Score | $\Delta$ | FWHM (px) | Sky RMS | Stars | Warm Imp. |
+| Step | Atomic Hypothesis | Verdict | $\Delta$ vs. Base | Raw Score | FWHM (px) | Sky RMS | Stars | Warm Imp. |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Ref** | Single sharpest raw frame (`IMG_6074.CR2`) | Locked | `50.00` | — | `9.34` | `0.4328` | `105` | — |
-| **It 0** | C++20 baseline: 14-bit gate, mean dark, MHC `5×5`, int shift+add | **KEPT** | **`106.02`** | `+56.02` | `11.18` | `0.1149` | `316` | `11` |
-| **It 1** | OB pedestal + Winsorized dark + thermal scale + cross-color CFA repair | REVERTED | `105.31` | `-0.71` | `11.21` | `0.1147` | `318` | `0` |
-| **It 2** | Same sensor calibration + same-color (`r=2` vs `18`) CFA repair | REVERTED | `105.23` | `-0.79` | `11.21` | `0.1147` | `320` | `0` |
-| **It 3** | Detection-only `64×64` SEP mesh + 2D LM centroids + Lanczos-3 warp | **KEPT** | **`107.36`** | **`+1.34`** | `11.12` | `0.1106` | `343` | `24` |
-| **It 4** | Chiral Valdes triangle hashing + RANSAC/IRLS 4-DOF Similarity | **KEPT** | **`107.70`** | `+0.34` | `11.17` | `0.1102` | `345` | `26` |
-| **It 5** | 6-DOF Full Affine IRLS (overfit off-axis coma on 10-min track) | REVERTED | `107.37` | `-0.32` | `11.10` | `0.1101` | `337` | `25` |
-| **It 6** | Flux scaling + 1st-deg differential sky plane + PSF/SNR frame weights | **KEPT** | **`108.64`** | **`+0.94`** | `10.89` | `0.1123` | `348` | `32` |
-| **It 7** | Temporal per-pixel **Winsorized Sigma Clipping** ($\kappa=2.8$) | **KEPT** | **`108.82`** | `+0.18` | `10.91` | `0.1119` | `347` | **`0`** |
-| **It 8** | **Retry pure OB pedestal + Winsorized dark + thermal scale** (no CFA interp) | **KEPT** | **`109.19`** | **`+0.37`** | **`10.85`** | `0.1119` | `347` | **`0`** |
-| **It 9** | Directional Hamilton–Adams demosaicing vs. linear MHC `5×5` | REVERTED | `108.24` | `-0.95` | `10.92` | `0.1131` | `345` | `0` |
-| **It 10** | Stencil-isolated partial-row salvage of `IMG_6089.CR2` (`2,468` clean rows) | **KEPT** | **`109.53`** | `+0.33` | `10.92` | **`0.1095`** | **`351`** | **`0`** |
-| **Flat F2** | Alternating sky-model dust-mote flat solver (`motes_iter`) | **KEPT** | **`109.58`** | `+0.06` | `10.86` | **`0.1092`** | `342` | **`0`** |
+| **Base** | **Unaligned dark-subtracted mean** (18 clean frames, no registration) | Baseline | **`0.00`** | `60.28` | `15.99` | `0.1234` | `82` | — |
+| **It 0** | C++20 baseline: 14-bit gate, mean dark, MHC `5×5`, int shift+add | **KEPT** | **`+45.74`** | `106.02` | `11.18` | `0.1149` | `316` | `11` |
+| **It 1** | OB pedestal + Winsorized dark + thermal scale + cross-color CFA repair | REVERTED | `+45.03` | `105.31` | `11.21` | `0.1147` | `318` | `0` |
+| **It 2** | Same sensor calibration + same-color (`r=2` vs `18`) CFA repair | REVERTED | `+44.95` | `105.23` | `11.21` | `0.1147` | `320` | `0` |
+| **It 3** | Detection-only `64×64` SEP mesh + 2D LM centroids + Lanczos-3 warp | **KEPT** | **`+47.08`** | `107.36` | `11.12` | `0.1106` | `343` | `24` |
+| **It 4** | Chiral Valdes triangle hashing + RANSAC/IRLS 4-DOF Similarity | **KEPT** | **`+47.42`** | `107.70` | `11.17` | `0.1102` | `345` | `26` |
+| **It 5** | 6-DOF Full Affine IRLS (overfit off-axis coma on 10-min track) | REVERTED | `+47.10` | `107.37` | `11.10` | `0.1101` | `337` | `25` |
+| **It 6** | Flux scaling + 1st-deg differential sky plane + PSF/SNR frame weights | **KEPT** | **`+48.36`** | `108.64` | `10.89` | `0.1123` | `348` | `32` |
+| **It 7** | Temporal per-pixel **Winsorized Sigma Clipping** ($\kappa=2.8$) | **KEPT** | **`+48.55`** | `108.82` | `10.91` | `0.1119` | `347` | **`0`** |
+| **It 8** | **Retry pure OB pedestal + Winsorized dark + thermal scale** (no CFA interp) | **KEPT** | **`+48.92`** | `109.19` | **`10.85`** | `0.1119` | `347` | **`0`** |
+| **It 9** | Directional Hamilton–Adams demosaicing vs. linear MHC `5×5` | REVERTED | `+47.97` | `108.24` | `10.92` | `0.1131` | `345` | `0` |
+| **It 10** | Stencil-isolated partial-row salvage of `IMG_6089.CR2` (`2,468` clean rows) | **KEPT** | **`+49.25`** | `109.53` | `10.92` | `0.1095` | **`351`** | **`0`** |
+| **Flat F2** | Alternating sky-model dust-mote flat solver (`motes_iter`) | **KEPT** | **`+49.31`** | `109.58` | `10.86` | **`0.1092`** | `342` | **`0`** |
 
 ---
 
@@ -99,13 +99,13 @@ Because I never shot physical flat frames in 2020, I then ran a 6-iteration synt
   <figcaption>Andromeda (M31) 4-stage progression: (1) unaligned average, (2) Iter-0 integer baseline, (3) best pre-flat stack (score 114.88), and (4) blind synthetic session flat from <code>ring_set</code> (vignetting 32.1% → 1.0%, dust motes removed).</figcaption>
 </figure>
 
-| Stage on `andromeda_set` (M31 Holdout) | Referee Score | FWHM (px) | Sky RMS | Stars | Warm Imp. | Vignetting Drop | Quiet-Sky Std | Mote Corr ($r$) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| Single Raw Frame (`IMG_6044.CR2`) | `50.00` | `7.75` | `0.4528` | `107` | — | `~32%` | — | — |
-| `iter-0-baseline` (Unmodified) | `111.44` | `8.36` | `0.1005` | `249` | `477` | `~32%` | — | — |
-| **Pre-Flat Best (`It 10`, zero tuning)** | **`114.88`** | **`8.20`** | **`0.0967`** | `264` | **`0`** | `32.1%` | `8.71%` | `0.348` |
-| **Flat F2 (Dust Motes Only, `motes_iter`)** | **`115.95`** | **`8.14`** | **`0.0946`** | `264` | **`0`** | `32.5%` | `8.76%` | `0.211` |
-| **Flat F6 (Full Blind Session Flat, Wiener)** | *unflattened ref*\* | `8.24` | `0.1040` | **`266`** | **`0`** | **`1.0%`** | **`2.00%`** | **`0.023`** |
+| Stage on `andromeda_set` (M31 Holdout) | $\Delta$ vs. Base | Raw Score | FWHM (px) | Sky RMS | Stars | Warm Imp. | Vignetting | Sky Std | Mote Corr |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Unaligned dark-subtracted mean** (21 frames) | **`0.00`** | `62.57` | `13.53` | `0.1206` | `70` | — | `~32%` | — | — |
+| `iter-0-baseline` (Unmodified) | `+48.86` | `111.44` | `8.36` | `0.1005` | `249` | `477` | `~32%` | — | — |
+| **Pre-Flat Best (`It 10`, zero tuning)** | **`+52.31`** | `114.88` | `8.20` | `0.0967` | `264` | **`0`** | `32.1%` | `8.71%` | `0.348` |
+| **Flat F2 (Dust Motes Only, `motes_iter`)** | **`+53.38`** | `115.95` | **`8.14`** | **`0.0946`** | `264` | **`0`** | `32.5%` | `8.76%` | `0.211` |
+| **Flat F6 (Full Blind Session Flat, Wiener)** | *unflattened ref*\* | — | `8.24` | `0.1040` | **`266`** | **`0`** | **`1.0%`** | **`2.00%`** | **`0.023`** |
 
 *\*Gate 4 of the locked referee compares against the unflattened single-frame `ref_andromeda.npy`, so removing the `32%` vignetting bowl triggers its extended-flux diff gate—which is why full flat-fielding was evaluated with a dedicated diagnostic referee (`evaluate_flat_motes.py`).*
 
