@@ -1,16 +1,17 @@
 <blockquote>
-<p><em>Note: This work was written pre-AI, with no AI assistance used. I suspect modern AI could easily come up with this analysis today, in which case it probably would not be worth posting.</em></p>
+<p><em>Note: The original proof and analysis below were written pre-AI with no AI assistance (only the introductory framing was later refined). I suspect modern AI could easily come up with this analysis today, in which case it probably would not be worth posting.</em></p>
 </blockquote>
+<h1 id="why-this-matters">Why This Matters</h1>
+<p>Domingos et al. (2020) <span class="citation" data-cites="domingos2020modellearnedgradientdescent"><a href="#ref-domingos2020modellearnedgradientdescent">[1]</a></span> proved the path-kernel equivalence for continuous, infinitesimal gradient flows, whereas real-world models train via finite, discrete steps (<span class="math inline">\(\alpha_{n+1}\)</span>). The discrete derivation below mathematically validates applying continuous-time path-kernel theory to real discrete training loops (such as PyTorch or JAX), provided the loss surface remains locally smooth (i.e., the first-order Taylor approximation holds). This unlocks several practical applications:</p>
+<ul>
+<li><strong>Training Data Attribution (Data Provenance):</strong> Equation 3 scores how strongly each training sample <span class="math inline">\(\vec{x}_m\)</span> pulls an inference point <span class="math inline">\(\vec{x}\)</span> via gradient dot products, forming the basis of gradient-based attribution methods like TracIn.</li>
+<li><strong>Dataset Pruning:</strong> Training points with highly aligned gradients contribute redundant updates, enabling core-set selection without altering the final weights.</li>
+<li><strong>Memorization vs. Feature Learning:</strong> Tracking when finite steps violate the first-order Taylor approximation (where higher-order <span class="math inline">\(O(\lVert \Delta\vec{\omega} \rVert^2)\)</span> terms dominate near local minima) separates kernel-like interpolation from genuine feature learning.</li>
+<li><strong>Test-Time Adaptation:</strong> Modeling a few finite <span class="math inline">\(\alpha_k\)</span> steps directly describes test-time training, showing how a small number of gradient updates shift an output relative to the test prompt before the linear approximation breaks down.</li>
+</ul>
 <h1 id="introduction">Introduction</h1><a href="/pdfs/gradient-descent-and-kernel-machines.pdf">(pdf version)</a>
-<p>Domingos et. al demonstrate a relation between the similarity of
-training data samples and the inference point over the history of the
-changes of parameters for any model learned by gradient descent<span
-class="citation"
-data-cites="domingos2020modellearnedgradientdescent"><a href="#ref-domingos2020modellearnedgradientdescent">[1]</a></span>.</p>
-<p>Assuming a model <span class="math inline">\(f(x; \omega)\)</span>,
-parametrized by weights <span class="math inline">\(\omega\)</span> and
-taking input <span class="math inline">\(x\)</span>, they arrive at the
-following interesting result:</p>
+<p>Domingos et al. <span class="citation" data-cites="domingos2020modellearnedgradientdescent"><a href="#ref-domingos2020modellearnedgradientdescent">[1]</a></span> demonstrated that any model learned by gradient descent is approximately equivalent to a kernel machine, expressing predictions through the similarity between training samples and the inference point accumulated over the parameter trajectory.</p>
+<p>For a model <span class="math inline">\(f(x; \omega)\)</span> parameterized by weights <span class="math inline">\(\omega\)</span> taking input <span class="math inline">\(x\)</span>, taking the continuous, infinitesimal learning-rate limit (<span class="math inline">\(\epsilon \rightarrow 0\)</span>) yields:</p>
 <p><span class="math display">\[\lim_{\epsilon \rightarrow 0} y = y_0 -
 \int_{c(t)}\sum\limits_{i=1}^{m}L&#39;(y_i^*, y_i)
     \vec{\nabla}_\omega f(\vec{x}; \vec{\omega}(t)) \cdot
@@ -24,27 +25,10 @@ following interesting result:</p>
 from <span class="citation"
 data-cites="domingos2020modellearnedgradientdescent"><a href="#ref-domingos2020modellearnedgradientdescent">[1]</a></span>.</figcaption>
 </figure>
-<p>What this suggests is that no matter where our model starts (<span
-class="math inline">\(y_0\)</span>), the movement towards the trained
-model can be approximated as a sum of terms weighted by the similarity
-between the gradient of the inference point <span
-class="math inline">\(\vec{x}\)</span> and the training data point. This
-suggests that for a smooth enough parameter space, that the strongest
-contributing terms in the sum are the ones where the vector <span
-class="math inline">\(\vec{x}\)</span> is closest. Intuitively, this is
-because some correlation of gradients for neighboring points can be
-assumed but no correlation (i.e. random) for other points.</p>
+<p>Regardless of initialization (<span class="math inline">\(y_0\)</span>), the evolution toward the trained model can be viewed as a weighted sum over training samples, weighted by the dot-product similarity between the gradient at the inference point <span class="math inline">\(\vec{x}\)</span> and each training point <span class="math inline">\(\vec{x}_i\)</span>. In a sufficiently smooth parameter space, neighboring points exhibit correlated gradients and dominate the sum, whereas distant points contribute largely uncorrelated (nearly random) terms.</p>
 <h1 id="the-open-question">The Open Question</h1>
-<p>The current scheme uses gradient flows <span class="citation"
-data-cites="ambrosioGradientFlowsMetric2008"><a href="#ref-ambrosioGradientFlowsMetric2008">[2]</a></span>
-and requires that the learning rate <span
-class="math inline">\(\epsilon\)</span> be very small. During training,
-it remains an open question whether this approximation holds. In
-particular, it assumes the system is not in a local minimum. Being in a
-local minimum would require jumping over a max (and reach a point where
-<span class="math inline">\(\epsilon=0\)</span>).</p>
-<p>They mention<span class="citation"
-data-cites="domingos2020modellearnedgradientdescent"><a href="#ref-domingos2020modellearnedgradientdescent">[1]</a></span>:</p>
+<p>Because Equation (1) relies on continuous gradient flows <span class="citation" data-cites="ambrosioGradientFlowsMetric2008"><a href="#ref-ambrosioGradientFlowsMetric2008">[2]</a></span>, it requires an infinitesimally small learning rate <span class="math inline">\(\epsilon \rightarrow 0\)</span>. In practice, however, neural networks train via finite, discrete update steps <span class="math inline">\(\alpha_{n+1}\)</span>, and optimization trajectories routinely encounter non-convex geometry such as local minima or saddle points (where the gradient vanishes and escaping requires moving across curvature that a purely infinitesimal flow cannot jump).</p>
+<p>Domingos et al. explicitly highlight this gap <span class="citation" data-cites="domingos2020modellearnedgradientdescent"><a href="#ref-domingos2020modellearnedgradientdescent">[1]</a></span>:</p>
 <blockquote>
 <p>This is standard in the analysis of gradient descent, and is also
 generally a good approximation in practice, since the learning rate has
@@ -56,13 +40,8 @@ Nevertheless, it remains an open question to what extent models learned
 by gradient descent can still be approximated by kernel machines outside
 of this regime.</p>
 </blockquote>
-<p>Intuitively this makes a bit of sense. Practically, we observe this
-with basic LLMs where when giving a very simple prompt asking to solve a
-math specific question with the prefix “You are an MIT student” leads to
-a higher likelihood of a better answer than without.</p>
-<p>This document aims to discuss what happens outside of this regime.
-How is this approximation affected? To what extent does it still
-hold?</p>
+<p>Intuitively, kernel-like similarity still shows up in modern models: for example, prepending a simple context cue such as “You are an MIT student” to a math prompt often shifts an LLM toward stronger answers by pulling the inference point closer to higher-quality regions of its training distribution.</p>
+<p>The remainder of this post derives a discrete-step version of Equation (1) for finite learning rates <span class="math inline">\(\alpha_{n+1}\)</span>. This establishes the exact condition under which continuous-time path-kernel theory carries over to practical discrete training (local smoothness, where the first-order Taylor approximation holds) and pinpoints where higher-order curvature terms cause the kernel analogy to break down.</p>
 <h1 id="discrete-proof">Discrete Proof</h1>
 <p>Before discussing the limits, a discrete version of the original
 proof <span class="citation"
@@ -109,7 +88,7 @@ series, centered at <span class="math inline">\(\vec{\omega}_n\)</span>:
     \right ) + O(|\omega|^2)\]</span></p>
 <p>The key step here is assuming that the function can be approximated
 by a hyperplane. This allows ignoring the <span
-class="math inline">\(O(|\omega|^2)\)</span> terms.</p>
+class="math inline">\(O(\lvert\omega\rvert^2)\)</span> terms.</p>
 <p>If this holds, the delta can be written as:</p>
 <p><span class="math display">\[\begin{aligned}
     \Delta f &amp; = &amp; f(\vec{x}; \vec{\omega}_{n+1}) - f(\vec{x};
@@ -209,7 +188,7 @@ href="https://nbviewer.org/github/Janko-dev/path_kernel_machine/blob/main/path_k
 notebook</a> demonstrates this empirically. By tweaking the paths and
 ensuring the system is in a local minimum, it is possible to observe
 agreement or discrepancy, and how big the <span
-class="math inline">\(O(|\omega|^2)\)</span> terms are.</p>
+class="math inline">\(O(\lvert\omega\rvert^2)\)</span> terms are.</p>
 <h1 id="citation">Citation</h1>
 <pre><code>@misc{jlhermitte2025kernelmachine,
   title={Gradient Descent And Kernel Machines},
