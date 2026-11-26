@@ -59,7 +59,13 @@ That clean baseline already got us ~90% of the way there. Next, we refined each 
 ### 1. Sub-Pixel Alignment & Lanczos-3 Resampling (`Iter 3`)
 In the baseline, we measured star centers with a simple center-of-mass and rounded each frame's shift to the nearest whole pixel, introducing up to `±0.5 px` of jitter per frame and softening star cores. Here we upgraded Step 1 to fit smooth **2D Gaussian centers** to the ~60 brightest stars purely to measure the exact fractional shift (for example, `dx = +10.40 px, dy = -3.72 px`).
 
-We don't fit Gaussians to the other 12.25 million pixels (the nebula, galaxy dust lanes, faint stars, and sky). Instead, to actually shift the whole image by `-10.40` pixels, pixel `(100, 200)` in the aligned output needs Frame 2's brightness at `(110.40, 196.28)`, a spot *between* integer pixels. **2D Lanczos-3 resampling** (Step 3) interpolates that exact brightness from the surrounding `6×6` pixel grid for every pixel in the image, preserving sharpness without the blurry "wash" of bilinear averaging. That single step gave our biggest refinement jump (`+1.34`).
+To actually shift all 12.25 million pixels by a fractional amount like `0.4` pixels, we have to **interpolate** between grid points (an image array has no index `2.4`). **Lanczos-3 resampling** (Step 3) does this with a fixed weighted average of the 6 nearest neighbors rather than any curve fitting. For example, on a 1D slice of pixels `[10, 12, 80, 100, 15, 11]`, interpolating at `x = 2.4` multiplies each neighbor by its fixed Lanczos-3 weight and sums them up:
+
+```
+in[2.4] = 0.02(10) - 0.14(12) + 0.72(80) + 0.46(100) - 0.08(15) + 0.02(11) = 101.1
+```
+
+By contrast, simple **bilinear** interpolation only averages the two closest pixels (`0.60(80) + 0.40(100) = 88.0`), squashing the star peak from `101` down to `88`. Extending that `6`-neighbor weighted sum to a `6×6` patch in 2D keeps stars crisp and gave our biggest single refinement jump (`+1.34`).
 
 <figure>
   <img src="/images/2026-11-25-astro-stacker-lanczos3-explainer.png" alt="Two-panel diagram: left panel shows integer rounding introducing a 0.4 pixel shift error compared to a smooth sub-pixel Gaussian fit at x=4.40; right panel compares the 6-neighbor windowed-sinc Lanczos-3 resampling kernel against the blurry bilinear triangle kernel">
