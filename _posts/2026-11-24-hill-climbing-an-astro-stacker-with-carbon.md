@@ -67,7 +67,7 @@ To actually shift all 12.25 million pixels by a fractional amount like `0.4` pix
 in[2.4] = 0.02(10) - 0.14(12) + 0.72(80) + 0.46(100) - 0.08(15) + 0.02(11) = 101.1
 ```
 
-By contrast, simple **bilinear** interpolation only averages the two closest pixels (`0.60(80) + 0.40(100) = 88.0`), squashing the star peak from `101` down to `88`. Extending that `6`-neighbor weighted sum to a `6×6` patch in 2D keeps stars crisp and gave our biggest single refinement jump (`+1.34`).
+By contrast, simple **bilinear** interpolation only averages the two closest pixels (`0.60(80) + 0.40(100) = 88.0`), squashing the star peak from `101` down to `88`. Extending that `6`-neighbor weighted sum to a `6×6` patch in 2D works no matter how large the shift is (even 50+ pixels), because we jump by the whole-pixel shift first and only use the `6×6` grid for the fractional remainder between `0` and `1`. What actually matters is that the `6×6` window captures the local point spread function (PSF) cleanly, keeping stars crisp and giving our biggest single refinement jump (`+1.34`).
 
 <figure>
   <img src="/images/2026-11-25-astro-stacker-lanczos3-explainer.png" alt="Two-panel diagram: left panel shows integer rounding introducing a 0.4 pixel shift error compared to a smooth sub-pixel Gaussian fit at x=4.40; right panel compares the 6-neighbor windowed-sinc Lanczos-3 resampling kernel against the blurry bilinear triangle kernel">
