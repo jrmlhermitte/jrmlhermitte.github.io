@@ -38,7 +38,7 @@ Rather than tuning parameters by eye, I used **Carbon** to hill-climb a fresh C+
 
 Even the very first C++20 baseline (`Iter 0`) already looked dramatically better than an unaligned average (`+45.7` points on M57, `+48.9` on M31) because it fixed the fundamentals at a high level:
 
-1. **True 14-bit linear raw reading** directly via `LibRaw`, automatically rejecting corrupted `.CR2` bitstreams.
+1. **True 14-bit linear raw reading** directly via [LibRaw](https://github.com/LibRaw/LibRaw), automatically rejecting corrupted `.CR2` bitstreams.
 2. **Clean master-dark subtraction** without clipping negative noise values to zero.
 3. **Sharp linear demosaicing** (Malvar-He-Cutler `5×5`) instead of blurry consumer gamma-stretched JPEGs.
 4. **Star-based alignment** (finding actual bright stars instead of correlating empty sky), followed by simple integer shift-and-add averaging.
