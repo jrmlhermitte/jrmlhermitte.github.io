@@ -151,6 +151,11 @@ You can't easily estimate a flat directly from Andromeda because the galaxy fill
 2. Separates the flat into two components: a smooth per-channel **radial vignetting curve** plus a **Wiener-regularized dust-mote map** (band-passed to `10–180 px` so it catches dust donuts without amplifying pixel noise).
 3. Divides that *same* session flat blindly out of **Andromeda (`andromeda_set`)**.
 
+<figure>
+  <img src="/images/2026-11-26-astro-stacker-flat-field-explainer.png" alt="Four-panel diagram of the blind synthetic flat field: 1. Smooth radial vignetting dropping from 1.00 at center to 0.68 at corners, multiplied by 2. Wiener-regularized dust-mote map isolating dark circular dust donuts, equals 3. Combined session flat V(x) estimated from M57, which is divided out of M31 in panel 4 to produce a flat sky with Andromeda's disk preserved">
+  <figcaption>The blind synthetic flat field decomposes optical illumination into smooth radial vignetting multiplied by a band-passed Wiener dust-mote map, estimated from M57 and divided out of M31.</figcaption>
+</figure>
+
 The result: radial vignetting collapsed from **`32.1% → 1.0%`** on M31 (`32.0% → -1.5%` on M57), quiet-sky scatter became **4.4× to 7.0× flatter**, and cross-dataset sensor dust-mote correlation dropped **15×** (`0.348 → 0.023`).
 
 ---
