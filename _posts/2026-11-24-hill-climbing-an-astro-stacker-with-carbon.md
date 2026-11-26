@@ -41,16 +41,23 @@ Even the very first C++20 baseline (`Iter 0`) already looked dramatically better
 1. **True 14-bit linear raw reading** directly via [LibRaw](https://github.com/LibRaw/LibRaw), automatically rejecting corrupted `.CR2` bitstreams.
 2. **Clean master-dark subtraction** without clipping negative noise values to zero.
 3. **Sharp linear demosaicing** ([Malvar-He-Cutler](https://www.ipol.im/pub/art/2011/g_mhcd/) `5×5`) instead of blurry consumer gamma-stretched JPEGs.
-4. **Star-based alignment** (finding actual bright stars instead of correlating empty sky), followed by simple integer shift-and-add averaging.
+4. **Star-based alignment** instead of whole-image correlation, followed by simple shift-and-add averaging.
 
-That clean baseline got us ~90% of the way there. Next, we refined it one technique at a time.
+### How Star-Based Alignment Works
+Instead of sliding whole images across each other and computing pixel-by-pixel differences, the C++20 stacker aligns every exposure in three clean steps:
+
+1. **Find the stars:** Convert each calibrated frame to grayscale luminance, estimate the local sky brightness and noise on a coarse grid (used only for detection, never subtracted from the final image), and pick out connected bright blobs rising `5σ` above the local background (filtering out single-pixel spikes and saturated star cores). We keep the top ~60 brightest stars and record their `(x, y)` centers.
+2. **Compute the shift (and later, rotation):** Match each frame's star `(x, y)` coordinates to the reference frame's star coordinates to solve the exact offset between the two exposures.
+3. **Resample and combine:** Shift (or rotate) each frame's pixels onto the reference grid and stack them together.
+
+That clean baseline already got us ~90% of the way there. Next, we refined each stage one technique at a time.
 
 ---
 
 ## Step 2: Refining the Stacker, Technique by Technique
 
 ### 1. Sub-Pixel Alignment & Lanczos-3 Resampling (`Iter 3`)
-Rounding every shift to the nearest whole pixel introduces up to `±0.5 px` of jitter per frame, softening star cores. We upgraded star detection with an internal `64×64` background mesh (*used only for finding stars, never subtracted from the image*), fitted smooth **2D Gaussian centers** to sub-pixel precision, and shifted each frame by exact fractional pixels using **2D Lanczos-3 resampling**, which preserves sharpness without the blurry "wash" of bilinear interpolation. That single step gave our biggest refinement jump (`+1.34`).
+In the baseline, we measured star centers with a simple center-of-mass and rounded each frame's shift to the nearest whole pixel, introducing up to `±0.5 px` of jitter per frame and softening star cores. Here we upgraded Step 1 to fit smooth **2D Gaussian centers** to sub-pixel precision, and upgraded Step 3 to shift each frame's pixels by exact fractional amounts using **2D Lanczos-3 resampling**, which preserves sharpness without the blurry "wash" of bilinear interpolation. That single step gave our biggest refinement jump (`+1.34`).
 
 <figure>
   <img src="/images/2026-11-25-astro-stacker-lanczos3-explainer.png" alt="Two-panel diagram: left panel shows integer rounding introducing a 0.4 pixel shift error compared to a smooth sub-pixel Gaussian fit at x=4.40; right panel compares the 6-neighbor windowed-sinc Lanczos-3 resampling kernel against the blurry bilinear triangle kernel">
@@ -58,7 +65,7 @@ Rounding every shift to the nearest whole pixel introduces up to `±0.5 px` of j
 </figure>
 
 ### 2. Handling Rotation with Star-Triangle Matching (`Iter 4`)
-To fix field rotation as well as drift, we replaced simple `(x, y)` shifts with **Valdes star-triangle geometric hashing**. The idea is simple: pick bright stars and form triangles out of them. The *ratios* of a triangle's side lengths `(L1/L2, L0/L2)` stay identical no matter how much the frame shifts, rotates, or zooms. Matching those triangles across frames solves the exact 4-DOF similarity transform `(dx, dy, rotation, scale)`.
+Once you have ~60 star `(x, y)` coordinates in the reference frame and ~60 in a later frame, how do you know which star is which when the sky has both drifted and rotated? We upgraded Step 2 with **Valdes star-triangle geometric hashing**: pick bright stars and form triangles out of them. The *ratios* of a triangle's side lengths `(L1/L2, L0/L2)` stay identical no matter how much the frame shifts, rotates, or zooms. Matching those triangles identifies ~50 corresponding star pairs across the two frames, and a least-squares fit on those matched coordinates solves the exact 4-DOF similarity transform `(dx, dy, rotation, scale)`.
 
 <figure>
   <img src="/images/2026-11-25-astro-stacker-triangles-explainer.png" alt="Diagram showing a reference star field and a drifted, rotated star field with a highlighted triangle A-B-C whose side-length ratios L1/L2 and L0/L2 stay identical to solve dx, dy, rotation, and scale">
@@ -94,9 +101,9 @@ A camera sensor actually has a narrow strip of pixels along its left edge (`58` 
 
 Early on (`Iter 1` and `Iter 2`), we tried upgrading our dark calibration using three physical improvements: subtracting each row's optical-black border median, building a Winsorized master dark, and scaling the dark frame to compensate for temperature drift (plus trying to patch warm pixels in each frame). Surprisingly, **both attempts hurt the score (`-0.71` and `-0.79`) and were reverted!**
 
-Why would better sensor calibration make the score worse? Looking at the failed logs revealed a subtle trap: in `Iter 0` (before we had Winsorized clipping across frames), five exposures barely drifted (`2` to `4` pixels), so leftover warm pixels in the **active image corners** piled up into tiny, ultra-sharp `~4 px` fake "stars." Those fake pinpoint blobs made `Iter 0`'s corners look artificially sharper than the real optical stars. Cleaning them up exposed the true, wider corner stars, which looked like a drop in sharpness.
+Why would better sensor calibration make the score worse? Looking at the failed logs revealed a subtle measurement trap: in `Iter 0` (before we had Winsorized clipping across frames), five exposures barely drifted (`2` to `4` pixels), so leftover warm pixels in the **active image corners** piled up into tiny, ultra-sharp `~4 px` blobs in the final stack. Those fake pinpoint blobs didn't break alignment, but they fooled the **scoring script's corner-sharpness measurement** into thinking `Iter 0` had sharper corner stars than it really did. When `Iter 1` and `Iter 2` removed those warm pixels, the fake `~4 px` blobs vanished and the true, wider optical corner stars (`~15 px`) showed up, which looked like a drop in sharpness.
 
-Once `Iter 7` added Winsorized sigma clipping across the stack, those warm-pixel blobs were already gone cleanly along the time axis. Re-applying pure sensor calibration in `Iter 8` (optical-black row pedestal + Winsorized master dark + temperature dark scaling, with no single-frame pixel patching) immediately jumped **`+0.37`** and hit the sharpest star FWHM of the entire run. **The order of operations mattered.**
+Once `Iter 7` added Winsorized sigma clipping across the stack, those warm-pixel blobs were already gone cleanly along the time axis. Re-applying pure sensor calibration in `Iter 8` (optical-black row pedestal + Winsorized master dark + temperature dark scaling, with no single-frame pixel patching) was finally compared apples-to-apples on real stars, immediately jumping **`+0.37`** and hitting the sharpest star FWHM of the entire run. **The order of operations mattered.**
 
 ### 6. Partial-Row Bitstream Salvage (`Iter 10`)
 One M57 exposure (`IMG_6089.CR2`) had a bitstream glitch only in its bottom 4 strips. Scanning rows top-down let us safely salvage its clean top `2,468` rows (keeping a 10-row safety margin away from the glitch), boosting us from 18 to **19 integrated frames** (`+0.33`).
