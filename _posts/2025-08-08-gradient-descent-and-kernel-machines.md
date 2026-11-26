@@ -88,7 +88,7 @@ series, centered at <span class="math inline">\(\vec{\omega}_n\)</span>:
     \right ) + O(|\omega|^2)\]</span></p>
 <p>The key step here is assuming that the function can be approximated
 by a hyperplane. This allows ignoring the <span
-class="math inline">\(O(|\omega|^2)\)</span> terms.</p>
+class="math inline">\(O(\lvert\omega\rvert^2)\)</span> terms.</p>
 <p>If this holds, the delta can be written as:</p>
 <p><span class="math display">\[\begin{aligned}
     \Delta f &amp; = &amp; f(\vec{x}; \vec{\omega}_{n+1}) - f(\vec{x};
@@ -188,7 +188,7 @@ href="https://nbviewer.org/github/Janko-dev/path_kernel_machine/blob/main/path_k
 notebook</a> demonstrates this empirically. By tweaking the paths and
 ensuring the system is in a local minimum, it is possible to observe
 agreement or discrepancy, and how big the <span
-class="math inline">\(O(|\omega|^2)\)</span> terms are.</p>
+class="math inline">\(O(\lvert\omega\rvert^2)\)</span> terms are.</p>
 <h1 id="citation">Citation</h1>
 <pre><code>@misc{jlhermitte2025kernelmachine,
   title={Gradient Descent And Kernel Machines},
