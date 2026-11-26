@@ -227,6 +227,7 @@ To measure true end-to-end gain, the chart and tables below use the **unaligned 
 | Stage / Technique | What It Does | M57 $\Delta$ vs. Base | M31 $\Delta$ vs. Base | Key Impact |
 | :--- | :--- | :---: | :---: | :--- |
 | **Unaligned Mean (Base)** | Dark-subtracted average, no alignment | `0.00` (`60.28`) | `0.00` (`62.57`) | Star trails (`FWHM 16.0 / 13.5 px`) |
+| **2020 Best-Effort ROI + Bilinear** | Naive dark, manual star-ROI shift, bilinear | *Gate 2a FAIL*\* | *Gate 2a FAIL*\* | Bilinear blur (`rho_1px=0.55`), `164` M31 streaks |
 | **It 0: C++ Baseline** | 14-bit raw, MHC `5×5`, star shift+add | `+45.74` | `+48.86` | Stars snap sharp; `316 / 249` stars |
 | **It 3: Sub-Pixel Lanczos-3** | Gaussian star centers + fractional shift | `+47.08` | - | `+27` faint stars, sharper cores |
 | **It 4: Valdes 4-DOF Rotation** | Star-triangle matching (`dx, dy, dθ, s`) | `+47.42` | - | Fixes `2.5 px` corner rotation |
@@ -237,7 +238,7 @@ To measure true end-to-end gain, the chart and tables below use the **unaligned 
 | **Flat F2: Dust-Mote Solver** | Iterative sky-model dust-mote flat | **`+49.31`** | **`+53.38`** | Highest locked-referee score (`109.58 / 115.95`) |
 | **Flat F6: Full Session Flat** | Blind radial vignetting + Wiener motes | *flat sky*\* | *flat sky*\* | Vignetting `32% → 1%`, **15×** less dust corr |
 
-*\*The locked referee compares against an unflattened single frame, so removing the `32%` vignetting bowl is evaluated with a dedicated flat-field diagnostic (`evaluate_flat_motes.py`).*
+*\*The 2020 ROI + bilinear stack failed Gate 2a (`score = -inf`) because bilinear averaging acts as a low-pass blur filter, inflating 1-pixel sky correlation from `0.26` to `0.55` (artificially crushing pixel noise while softening stars to `11.28 / 8.43 px`). Meanwhile, `Flat F6` is evaluated with the refined flat-field diagnostic (`evaluate_flat_motes.py`) because the original reference frame still carries the `32%` vignetting bowl.*
 
 ---
 
@@ -286,6 +287,18 @@ A portion of those tokens went into compiling the 15-page LaTeX paper and genera
 ---
 
 ## Final Results {#final-results}
+
+### Before vs. After: 2020 Best-Effort ROI + Bilinear vs. Final C++ + Synthetic Flat
+To test how far the older 2020 technique could get on its own, we ran a best-effort reproduction using naive mean dark subtraction, a manual star-ROI shift-difference search, and bilinear interpolation (no rotation, no Lanczos-3, no Winsorized clipping, no flat field).
+
+It actually aligned the stars reasonably well, **and** it gave a neat experimental validation of our anti-cheat scorer: bilinear interpolation blurred neighboring sky pixels together so heavily (`rho_1px = 0.55` vs. `0.26` reference) that the scorer's spatial-smoothing gate immediately disqualified it (`score = -inf`), while leaving `164` diagonal RGB warm-pixel streaks on Andromeda, softer stars (`8.43 px` vs. `8.14–8.24 px`), `32%` vignetting, and dark dust donuts:
+
+<figure>
+  <img src="/images/2026-11-26-astro-stacker-2020-vs-final.jpg" alt="Side-by-side comparison of the 2020 best-effort manual ROI shift plus bilinear stack (left) against the final C++ engine plus blind synthetic flat (right) for both Andromeda M31 (top) and zoomed Ring Nebula M57 (bottom)">
+  <figcaption>Direct comparison: 2020 best-effort ROI shift + bilinear (left, disqualified by Gate 2a for bilinear smoothing and showing 164 RGB warm-pixel streaks, 32% vignetting, and dust donuts) vs. our final C++ engine + blind synthetic flat (right).</figcaption>
+</figure>
+
+### Full 4-Stage Progression
 
 Here is the full 4-stage visual progression, from **(1) unaligned average** → **(2) Iter-0 baseline** → **(3) best pre-flat stack** → **(4) final synthetic flat-field stack**, on both targets:
 
