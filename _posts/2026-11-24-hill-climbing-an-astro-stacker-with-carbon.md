@@ -186,6 +186,31 @@ To measure true end-to-end gain, the chart and tables below use the **unaligned 
 
 ---
 
+## How This Compares to Industry Software (And the Bigger Lesson)
+
+One of the most reassuring outcomes of this experiment is that **blind hill-climbing independently steered us straight to the industry standard**. Without copying PixInsight, Siril, or DeepSkyStacker, our loop converged on the exact same core algorithms mature astrophotography suites rely on for ~20-frame DSLR stacks: star-triangle geometric hashing, Lanczos-3 resampling, PSF/SNR frame weighting, Winsorized Sigma Clipping, and thermal dark scaling.
+
+| Capability | Our C++ Stacker | PixInsight / Siril / DSS |
+| :--- | :--- | :--- |
+| **Core alignment & resampling** | Valdes star triangles + 4-DOF + Lanczos-3 | Star triangles/quads + Lanczos-3/4 (plus splines/drizzle) |
+| **Outlier rejection & darks** | Winsorized Sigma Clipping + OB/thermal dark scaling | Winsorized Sigma Clipping + dark optimization |
+| **Missing flats (dust donuts)** | **Custom blind session flat** (`M57 → M31`) | Expects real flats (post-stack gradient tools miss dust donuts) |
+| **Partially corrupted `.CR2`** | **Salvages clean top 86.4%** with 10-row safety margin | Rejects or skips corrupted file |
+| **Silent decoder underflow** | **Custom 14-bit physical percentile gate** | Trusts `LibRaw` success code (silent dark-frame poisoning) |
+
+Mature suites like PixInsight and Siril still go much further on wide-field lens distortion, Bayer Drizzle, local cloud normalization, and GUI post-processing. **It is hard to beat decades of specialized industry software on general-purpose algorithms.**
+
+So why was building a custom stacker with AI still worth it? Look at the bottom three rows of the table. Off-the-shelf tools don't do those things because they require diagnosing the exact quirks of *this specific night's data*:
+
+- **No flat frames taken in 2020:** Because I happened to shoot both a sparse star field (M57) and a frame-filling galaxy (M31) in the same 36-minute session, we could build a custom multiplicative `vignetting × Wiener dust-mote` flat from M57 and transfer it blindly to M31.
+- **One file glitched only in its bottom 13%:** Instead of losing 5% of my total M57 exposure time, we wrote a top-down row scanner with a 10-row Lanczos safety margin to salvage the clean top `2,468` rows of `IMG_6089.CR2`.
+- **A silent raw-decoder bug:** One dark frame (`IMG_6096.CR2`) suffered a lossless-JPEG predictor underflow where `LibRaw` reported zero errors, which we caught with a custom physical 14-bit percentile gate (`p1 >= 1850 ADU`).
+- **Right-sized complexity:** Testing against the real data proved that simpler 4-DOF rotation and linear Malvar-He-Cutler beat heavier 6-DOF affine warps and directional demosaicing on this specific 10-minute track.
+
+That is the real lesson here: **AI can shine not because its core techniques beat industry standards, but because it lets you build tailored, deterministic, and fully auditable algorithms on the fly for the exact quirks of the problem in front of you.**
+
+---
+
 ## Final Results {#final-results}
 
 Here is the full 4-stage visual progression, from **(1) unaligned average** → **(2) Iter-0 baseline** → **(3) best pre-flat stack** → **(4) final synthetic flat-field stack**, on both targets:
