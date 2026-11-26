@@ -89,6 +89,11 @@ As a target moves across the sky, light pollution and skyglow shift slightly fro
 
 The trick is to **subtract the aligned reference frame first**: because both aligned frames contain the exact same galaxy in the exact same pixels, taking `Frame - Reference` cancels out Andromeda and the stars completely, leaving *only* the change in skyglow between the two shots. We split that difference image into coarse `96×96` patches, take the median of each patch, and fit a simple flat tilted sheet (`a + bx + cy`) across them. Subtracting that sheet brings every frame to the same sky level without ever touching the galaxy.
 
+<figure>
+  <img src="/images/2026-11-26-astro-stacker-sky-plane-explainer.png" alt="Three-panel 1D cross-section diagram: panel 1 shows aligned Frame i riding on a brighter tilted skyglow above the Reference frame; panel 2 shows Frame i minus Reference canceling the galaxy completely so a flat tilted plane can be fitted to 96x96 patch medians; panel 3 shows the equalized frame matching the Reference sky level with the galaxy disk 100% preserved">
+  <figcaption>Differential sky-plane equalization: subtracting the aligned reference frame cancels Andromeda's glowing disk completely, leaving only the tilted skyglow shift to fit and remove.</figcaption>
+</figure>
+
 Finally, instead of giving every exposure equal weight, we weight sharper, cleaner frames higher than frames blurred by mount drift, making the combined stack sharper than the median single exposure (`+0.94`).
 
 ### 4. Winsorized Sigma Clipping (`Iter 7`)
