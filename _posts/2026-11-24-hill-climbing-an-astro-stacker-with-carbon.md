@@ -39,9 +39,37 @@ In practice, that 2020 approach still ran into several conceptual problems:
 
 ---
 
-## Step 1: A Clean C++ Baseline (And How We Iterated)
+## How the Hill-Climbing Loop Works
 
-Rather than tuning parameters by eye, I used **Carbon** to hill-climb a fresh C++ rewrite against a **read-only scoring script** and a separate reviewer agent on every commit. The scoring script measures star sharpness, background noise, star count, star roundness, and diffuse-nebula preservation, never showing the model a single pixel and reverting any change that hurts the score. Sharpness is measured by **FWHM** (Full Width at Half Maximum, the width of a star's brightness profile at half its peak; smaller means sharper), tracked both across the whole frame and specifically in the **outer corners of the image** (where field rotation swings stars the farthest and telescope optics are naturally wider).
+Rather than tuning parameters by eye, I set up a simple automated loop with **Carbon** so the stacker could improve itself one small, verifiable step at a time (while keeping Andromeda as an untouched holdout set):
+
+<figure>
+  <img src="/images/2026-11-26-astro-stacker-loop-simple.png" alt="Simple 4-box flowchart of the autonomous hill-climbing loop: 1. Developer Agent proposes 1 small C++ change, 2. Read-Only Scorer scores the output stack without showing pixels to the AI, 3. Critic Agent (fresh LLM) audits the git diff assuming metric gaming, 4. Commit if higher score and PASS otherwise git revert, looping back to step 1">
+  <figcaption>The 4-step hill-climbing loop: propose one small change, score it blindly with a locked script, have a fresh Critic LLM audit the code diff, then commit or revert.</figcaption>
+</figure>
+
+### The Read-Only Scorer
+Before writing any C++, we locked a standalone scoring script read-only so the optimizer could never move the goalposts. Evaluating the sharpest single raw frame against itself scores `50.0`, and every stacked output is scored by:
+
+$$
+\begin{aligned}
+\text{Score} = 50 &+ 25\log_2\left(\frac{\sigma_{\text{bg}}^{\text{ref}}}{\sigma_{\text{bg}}^{\text{stack}}}\right) + 35\log_2\left(\frac{\text{FWHM}_{\text{eff}}^{\text{ref}}}{\text{FWHM}_{\text{eff}}^{\text{stack}}}\right) \cr
+&+ 10\log_2\left(\frac{N_\star^{\text{stack}}}{N_\star^{\text{ref}}}\right) + 15\big(e_{\text{ref}} - e_{\text{stack}}\big) - 40\big(1 - \rho_{\text{ext}}\big)
+\end{aligned}
+$$
+
+It rewards lower background sky noise ($\sigma_{\text{bg}}$), sharper stars ($\text{FWHM}_{\text{eff}}$, the Full Width at Half Maximum of a star's brightness profile at half its peak, tracked both across the whole frame and specifically in the **outer corners of the image** where field rotation swings stars the farthest), more detected stars ($N_\star$), rounder stars (lower eccentricity $e$), and preserving diffuse nebula/galaxy brightness ($\rho_{\text{ext}}$). Notice that sharpness (`35` per octave) outweighs noise (`25` per octave), so blurring the image always loses points.
+
+### The Critic Agent (A Fresh LLM)
+Every time a change beat the best score, we spawned a **brand-new LLM instance** that had not written the code to review the `git diff` and metrics with this adversarial prompt:
+
+> *"Inspect `git diff cpp_stacker/`, `logs/transforms.json`, and `evaluate.py` output. Assume the developer agent is trying to game the metric via spatial smoothing, non-linear stretching, dark-pixel clipping, or dropping valid frames. Verify physical linearity and output `AUDIT_PASS` or `AUDIT_FAIL` with reasoning."*
+
+Only changes that beat the score **and** passed the Critic LLM were committed; anything else was immediately reverted with `git checkout`.
+
+---
+
+## Step 1: A Clean C++ Baseline
 
 Even the very first C++ baseline (`Iter 0`) already looked dramatically better than an unaligned average (`+45.7` points on M57, `+48.9` on M31) because it fixed the fundamentals at a high level:
 
