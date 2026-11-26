@@ -22,19 +22,19 @@ image: /images/2026-11-24-astro-stacker-m57-comparison.png
 
 In 2020, I took 62 raw `.CR2` exposures on a Canon EOS 1100D (21 of the Ring Nebula M57, 21 of the Andromeda Galaxy M31, and 20 capped dark frames) and tried to write my own stacker in Python.
 
-The original idea was simple: subtract the average dark frame, then slide pairs of images over each other and measure their **normalized absolute difference** (and full-frame cross-correlation). Wherever that difference hit a minimum was where I expected the frames to line up.
+The original idea was simple: subtract the average dark frame, then slide pairs of images over each other and measure their **normalized absolute difference** (and cross-correlation). Wherever that difference hit a minimum was where I expected the frames to line up. Because stars occupy less than `0.2%` of the frame and empty sky noise dominates the full image, I also had to manually crop a **region of interest (ROI)** around bright stars to run those correlations on, moving closer to star-based registration, though still manual and limited to simple `(x, y)` shifts.
 
 <figure>
-  <img src="/images/2026-11-26-astro-stacker-2020-shift-diff.png" alt="Two-panel diagram: left panel shows two vignetted exposures with sparse stars shifted by +14 px; right panel plots whole-image difference vs shift dx, showing a deep false minimum at dx = 0 caused by fixed vignetting and dark residuals drowning out the tiny star dip at +14 px">
-  <figcaption>Why whole-image shift-and-difference struggled: 99.8% of the frame is vignetted sky and dark-frame residuals locked to the camera, creating a deep false minimum at zero shift (dx = 0) that drowns out the tiny dip from the actual stars.</figcaption>
+  <img src="/images/2026-11-26-astro-stacker-2020-shift-diff.png" alt="Two-panel diagram: left panel shows two vignetted exposures with sparse stars shifted by +14 px and a dashed green manual ROI crop box around one bright star; right panel compares full-frame difference (trapped in a false minimum at dx = 0 from vignetting and dark residuals) against the manual star-ROI curve (finding the true +14 px shift, though still missing rotation)">
+  <figcaption>Full-frame difference vs. manual star-ROI crop: on the full image, fixed vignetting and dark-frame residuals create a deep false minimum at dx = 0. Cropping a manual ROI around a bright star recovers the true +14 px shift, but still misses full-frame rotation and calibration.</figcaption>
 </figure>
 
-In practice, that simple approach ran into several conceptual problems:
+In practice, that 2020 approach still ran into several conceptual problems:
 
-- **No rotation:** Over a 10-minute session, slight polar misalignment slowly rotates the sky across the sensor (on Andromeda, corner stars rotate by ~2.5 pixels). Pure `(x, y)` shifts can't fix that. *(And yes, the new C++ stacker does account for rotation!)*
+- **No rotation:** Over a 10-minute session, slight polar misalignment slowly rotates the sky across the sensor (on Andromeda, corner stars rotate by ~2.5 pixels). Pure `(x, y)` shifts, even inside a cropped ROI, can't fix that. *(And yes, the new C++ stacker does account for rotation!)*
 - **No flat field (vignetting & dust motes):** Telescope optics darken the corners by ~32% and sensor dust casts dark donut shadows. Because those patterns stay fixed on the camera, whole-image comparison strongly prefers *zero shift* `(0, 0)` instead of following the drifting stars.
 - **Temperature drift:** The camera cooled outdoors from `34 °C` at the start of the session down to `18 °C` by the time I took the dark frames. Because silicon dark current roughly doubles every `6 °C`, subtracting a cooler master dark left hundreds of bright "warm pixels" behind.
-- **Empty sky dominates whole-image matching:** Stars occupy less than `0.2%` of the 12-megapixel sensor. Correlating the whole image mostly correlates sky noise, vignetting, and leftover dark-frame error. To work around that in 2020, I had to manually crop a **region of interest (ROI)** (or a few small patches around bright stars) to run correlations on. Focusing on stars was actually moving closer to the standard star-based method we ended up using, except it was still manual and missed key pieces like detecting field rotation across the full frame, sub-pixel resampling, and thermal/flat calibration.
+- **Empty sky dominates whole-image matching:** With stars covering less than `0.2%` of the 12-megapixel sensor, full-frame correlation mostly compares sky noise, vignetting, and leftover dark-frame error, forcing the manual ROI workaround above.
 - **Real-world file & mount quirks:** The mount's worm gear reversed drift direction mid-session, and 5 of the `.CR2` files had corrupted bitstreams.
 
 ---
