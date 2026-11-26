@@ -69,7 +69,9 @@ In plain terms, each box measures one thing:
 - **Star sharpness ($$\text{FWHM}_{\text{eff}}$$):** FWHM (Full Width at Half Maximum) is how wide a star is in pixels at half its peak brightness (smaller means tighter and sharper). It blends the whole-frame median (`65%`) with the **outer corners of the image** (`35%`, where field rotation swings stars the farthest). Because sharpness is weighted `+35` per halving (heavier than noise's `+25`), simply blurring the image always loses points.
 - **Detected star count ($$N_\star$$):** Counts how many genuine stars rise cleanly above the noise floor (`+10` points every time you double the number of visible stars).
 - **Star roundness ($$e$$):** Eccentricity measures how stretched or trailed stars are (`0` is a perfect circle). Lower eccentricity earns up to `+15` points, rewarding tighter tracking and alignment.
-- **Diffuse nebula & galaxy preservation ($$\rho_{\text{ext}}$$):** Compares the extended glowing regions (the Ring Nebula or Andromeda's disk) against the raw reference. Any background-subtraction trick that erases real nebula light gets hit with a heavy `-40` penalty.
+- **Diffuse nebula & galaxy preservation ($$\rho_{\text{ext}}$$):** We mask out the stars, average the remaining pixels into coarse `16×16` and `64×64` blocks, and measure how closely that coarse brightness map correlates with the raw reference (`1.0` means extended structures like the Ring Nebula and Andromeda's disk are completely preserved; `0.0` means erased). Any background-subtraction trick that erases real nebula light gets hit with a heavy `-40` penalty.
+
+On top of that formula, the scorer enforces built-in **anti-cheat checks** that immediately disqualify (`score = -inf`) any output with clipped dark pixels, dropped frames, or **spatial blurring** (measuring whether adjacent sky pixels became artificially correlated with each other, which happens if you blur the image or use bilinear averaging).
 
 ### The Critic Agent (A Fresh LLM)
 Every time a change beat the best score, we spawned a **brand-new LLM instance** that had not written the code to review the `git diff` and metrics with this adversarial prompt:
@@ -227,7 +229,7 @@ To measure true end-to-end gain, the chart and tables below use the **unaligned 
 | Stage / Technique | What It Does | M57 $\Delta$ vs. Base | M31 $\Delta$ vs. Base | Key Impact |
 | :--- | :--- | :---: | :---: | :--- |
 | **Unaligned Mean (Base)** | Dark-subtracted average, no alignment | `0.00` (`60.28`) | `0.00` (`62.57`) | Star trails (`FWHM 16.0 / 13.5 px`) |
-| **2020 Best-Effort ROI + Bilinear** | Naive dark, manual star-ROI shift, bilinear | *Gate 2a FAIL*\* | *Gate 2a FAIL*\* | Bilinear blur (`rho_1px=0.55`), `164` M31 streaks |
+| **2020 Best-Effort ROI + Bilinear** | Naive dark, manual star-ROI shift, bilinear | *anti-blur fail*\* | *anti-blur fail*\* | Bilinear blur (`0.55` neighbor corr), `164` M31 streaks |
 | **It 0: C++ Baseline** | 14-bit raw, MHC `5×5`, star shift+add | `+45.74` | `+48.86` | Stars snap sharp; `316 / 249` stars |
 | **It 3: Sub-Pixel Lanczos-3** | Gaussian star centers + fractional shift | `+47.08` | - | `+27` faint stars, sharper cores |
 | **It 4: Valdes 4-DOF Rotation** | Star-triangle matching (`dx, dy, dθ, s`) | `+47.42` | - | Fixes `2.5 px` corner rotation |
@@ -238,7 +240,7 @@ To measure true end-to-end gain, the chart and tables below use the **unaligned 
 | **Flat F2: Dust-Mote Solver** | Iterative sky-model dust-mote flat | **`+49.31`** | **`+53.38`** | Highest locked-referee score (`109.58 / 115.95`) |
 | **Flat F6: Full Session Flat** | Blind radial vignetting + Wiener motes | *flat sky*\* | *flat sky*\* | Vignetting `32% → 1%`, **15×** less dust corr |
 
-*\*The 2020 ROI + bilinear stack failed Gate 2a (`score = -inf`) because bilinear averaging acts as a low-pass blur filter, inflating 1-pixel sky correlation from `0.26` to `0.55` (artificially crushing pixel noise while softening stars to `11.28 / 8.43 px`). Meanwhile, `Flat F6` is evaluated with the refined flat-field diagnostic (`evaluate_flat_motes.py`) because the original reference frame still carries the `32%` vignetting bowl.*
+*\*The 2020 ROI + bilinear stack failed the scorer's built-in **anti-blur check** (`score = -inf`) because bilinear averaging acts as a low-pass blur filter, more than doubling adjacent sky-pixel correlation from `0.26` to `0.55` (artificially crushing pixel noise while softening stars to `11.28 / 8.43 px`). Meanwhile, `Flat F6` is evaluated with the refined flat-field diagnostic (`evaluate_flat_motes.py`) because the original reference frame still carries the `32%` vignetting bowl.*
 
 ---
 
@@ -290,7 +292,7 @@ A portion of those tokens went into compiling the 15-page LaTeX paper and genera
 
 Each 2×2 grid below walks through the exact same four stages: **(1) naive unaligned average** → **(2) my 2020 method (manual star-ROI shift + bilinear)** → **(3) evolved C++ stacker (pre-flat)** → **(4) evolved C++ stacker + blind synthetic flat field**.
 
-*(As a bonus validation of our scorer: the 2020 ROI + bilinear stack actually aligned the stars reasonably well, but bilinear averaging blurred neighboring sky pixels together so heavily that `rho_1px` jumped from `0.26` to `0.55`, triggering the scorer's built-in **Gate 2a** anti-smoothing check (`score = -inf`) while leaving `164` RGB warm-pixel streaks on Andromeda, softer stars, `32%` vignetting, and dark dust donuts.)*
+*(As a bonus validation of our scorer: the 2020 ROI + bilinear stack actually aligned the stars reasonably well, but bilinear averaging blurred neighboring sky pixels together so heavily that adjacent-pixel correlation jumped from `0.26` to `0.55`, triggering the scorer's built-in **anti-blur check** (`score = -inf`) while leaving `164` RGB warm-pixel streaks on Andromeda, softer stars, `32%` vignetting, and dark dust donuts.)*
 
 ### Ring Nebula (M57): Zoomed View
 Notice the dark dust-mote donut right below the Ring Nebula in panels 1 to 3 disappearing cleanly in panel 4:
