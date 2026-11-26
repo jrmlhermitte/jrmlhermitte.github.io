@@ -44,7 +44,9 @@ Even the very first C++20 baseline (`Iter 0`) already looked dramatically better
 4. **Star-based alignment** instead of whole-image correlation, followed by simple shift-and-add averaging.
 
 ### How Star-Based Alignment Works
-Instead of sliding whole images across each other and computing pixel-by-pixel differences, the C++20 stacker aligns every exposure in three clean steps:
+My original whole-image shift-and-difference idea was actually the unconventional approach. I had hoped comparing every pixel would give a cleaner signal, but on deep-sky photos where stars occupy less than `0.2%` of the sensor, whole-image matching gets drowned out by sky noise and vignetting.
+
+In astronomy, the standard way to align deep-sky frames is **star-based registration** (the same general idea used by tools like PixInsight, Siril, and DeepSkyStacker). Instead of sliding whole images across each other, the C++20 stacker aligns every exposure in three clean steps:
 
 1. **Find the stars:** Convert each calibrated frame to grayscale luminance, estimate the local sky brightness and noise on a coarse grid (used only for detection, never subtracted from the final image), and pick out connected bright blobs rising `5σ` above the local background (filtering out single-pixel spikes and saturated star cores). We keep the top ~60 brightest stars and record their `(x, y)` centers.
 2. **Compute the shift (and later, rotation):** Match each frame's star `(x, y)` coordinates to the reference frame's star coordinates to solve the exact offset between the two exposures.
