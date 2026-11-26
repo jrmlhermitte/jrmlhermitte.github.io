@@ -10,7 +10,7 @@ image: /images/2026-11-24-astro-stacker-m57-comparison.png
   <figcaption>Ring Nebula (M57, Canon EOS 1100D): single raw frame (left), final 19-frame C++ stack (middle), and a cavity stretch revealing the central white dwarf (right).</figcaption>
 </figure>
 
-**TL;DR:** Back in 2020 I wrote a simple Python script to stack raw telescope photos of the Ring Nebula (M57) and Andromeda (M31) by shifting images to minimize their difference. Here is how I evolved that idea with **Carbon** into a fast C++ stacker, explaining each technique along the way, from star-triangle rotation matching and Winsorized clipping to a blind synthetic flat field.
+**TL;DR:** I migrated my slow 2020 Python astro stacker to fast C++ and used **Carbon** to iteratively refine the algorithm. Automated hill-climbing added sharp techniques (rotation, Lanczos-3, Winsorized clipping), though visually the stack stayed fairly close to the clean baseline. The real leap required my own input: stepping outside the AI's loop to suggest a **synthetic flat field**, which removed the vignetting and dust donuts.
 
 > *Note: This post was co-authored with heavy human input and refinement using Gemini 4 Neon (Medium).*
 
@@ -20,7 +20,7 @@ image: /images/2026-11-24-astro-stacker-m57-comparison.png
 
 ## Where I Started: The 2020 Python Prototype
 
-In 2020, I took 62 raw `.CR2` exposures on a Canon EOS 1100D (21 of the Ring Nebula M57, 21 of the Andromeda Galaxy M31, and 20 capped dark frames) and tried to write my own stacker in Python.
+In 2020, I took 62 raw `.CR2` exposures on a Canon EOS 1100D (21 of the Ring Nebula M57, 21 of the Andromeda Galaxy M31, and 20 capped dark frames) and wrote a slow Python stacker that took minutes to run. Six years later, I wanted to migrate it to fast C++ and see how far an AI hill-climbing loop could push the image quality on its own (and where human intuition was still needed to think outside the box).
 
 The original idea was simple: subtract the average dark frame, then slide pairs of images over each other and measure their **normalized absolute difference** (and cross-correlation). Wherever that difference hit a minimum was where I expected the frames to line up. Because stars occupy less than `0.2%` of the frame and empty sky noise dominates the full image, I also had to manually crop a **region of interest (ROI)** around bright stars to run those correlations on, moving closer to star-based registration, though still manual and limited to simple `(x, y)` shifts.
 
@@ -197,9 +197,11 @@ One M57 exposure (`IMG_6089.CR2`) had a bitstream glitch only in its bottom 4 st
 
 ---
 
-## Step 3: Estimating a Blind Synthetic Flat Field
+## Step 3: Thinking Outside the Box with a Blind Synthetic Flat Field
 
-Everything above solved alignment, rotation, temperature drift, and noise, but because I never shot physical **flat frames** in 2020, both stacks still had the telescope's **`32%` radial vignetting bowl** and dark **sensor dust donuts**.
+Everything above solved alignment, rotation, temperature drift, and noise, and migrated the slow Python prototype to a fast C++ engine. Visually, though, the refined pre-flat stack still looked fairly close to our clean baseline: because I never shot physical **flat frames** in 2020, both stacks still had the telescope's **`32%` radial vignetting bowl** and dark **sensor dust donuts**.
+
+Importantly, **the AI never suggested fixing this on its own**. Locked inside its hill-climbing loop and scored against an unflattened reference, it optimized brilliantly *within* the box but never stepped outside it. Pushing the image to the next level took my own input: suggesting that we estimate a **blind synthetic flat field** (`flat_field.cpp`) directly from the night's sky frames.
 
 You can't easily estimate a flat directly from Andromeda because the galaxy fills the whole frame. Instead, we ran a follow-up flat-field pass (`flat_field.cpp`) that:
 1. Estimates the optical transmission strictly from the sparse **Ring Nebula (`ring_set`)** frames, where M57 is tiny and stars drift across the sensor.
@@ -265,7 +267,10 @@ So why was building a custom stacker with AI still worth it? Look at the bottom 
 - **A silent raw-decoder bug:** One dark frame (`IMG_6096.CR2`) suffered a lossless-JPEG predictor underflow where `LibRaw` reported zero errors, which we caught with a custom physical 14-bit percentile gate (`p1 >= 1850 ADU`).
 - **Right-sized complexity:** Testing against the real data proved that simpler 4-DOF rotation and linear Malvar-He-Cutler beat heavier 6-DOF affine warps and directional demosaicing on this specific 10-minute track.
 
-That is the real lesson here: **AI can shine not because its core techniques beat industry standards, but because it lets you build tailored, deterministic, and fully auditable algorithms on the fly for the exact quirks of the problem in front of you.**
+That brings together the two real lessons of this project:
+
+1. **AI excels at building tailored, deterministic, and auditable algorithms on the fly** for the exact quirks of the data in front of you (missing flats, a partially glitched raw file, a silent decoder bug), even when it is hard to beat mature industry software on general-purpose techniques.
+2. **Automated hill-climbing still optimizes inside the box you give it.** Carbon introduced genuinely solid refinements (Lanczos-3, star-triangle rotation, Winsorized clipping), yet the pre-flat stack looked broadly similar to the clean baseline. The biggest visual breakthrough only happened when I stepped in with domain intuition and suggested estimating a synthetic flat field. Human direction plus AI execution is still what unlocks the best results.
 
 ---
 
