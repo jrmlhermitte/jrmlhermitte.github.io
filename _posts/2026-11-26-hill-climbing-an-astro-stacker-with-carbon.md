@@ -10,7 +10,7 @@ image: /images/2026-11-24-astro-stacker-m57-comparison.png
   <figcaption>Ring Nebula (M57, Canon EOS 1100D): single raw frame (left), final 19-frame C++ stack (middle), and a cavity stretch revealing the central white dwarf (right).</figcaption>
 </figure>
 
-**TL;DR:** I migrated my slow 2020 Python astro stacker to fast C++ and used **Gemini Carbon** to iteratively refine the algorithm. Automated hill-climbing added sharp techniques (rotation, Lanczos-3, Winsorized clipping), though visually the stack stayed fairly close to the clean baseline. The real leap required my own input: stepping outside the AI's loop to suggest a **synthetic flat field**, which removed the vignetting and dust donuts.
+**TL;DR:** I migrated my slow 2020 Python astro stacker to fast C++ and used **Gemini Carbon** to iteratively refine the algorithm. Automated hill-climbing added sharp techniques (rotation, Lanczos-3, Winsorized clipping), though visually the stack stayed fairly close to the clean baseline. To get the biggest visual jump, I needed to push the model to use standard **flat-field correction** techniques (a synthetic flat field), which removed the vignetting and dust donuts.
 
 > *Note: This post was co-authored with heavy human input and refinement using Gemini 4 Neon (Medium).*
 
