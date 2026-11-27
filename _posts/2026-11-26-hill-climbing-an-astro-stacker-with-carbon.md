@@ -20,7 +20,7 @@ astro_telemetry: "OBSERVATION LOG · M57 (18h 53m +33°01′) & M31 (00h 42m +41
 
 > *Note: This post was co-authored with heavy human input and refinement using Gemini 4 Neon (Medium).*
 
-🖼️ [**Skip straight to the final images →**](#final-results) &nbsp;|&nbsp; 🧩 [**Technique appendix →**](#appendix) &nbsp;|&nbsp; 📄 [**Full technical paper (PDF) →**](/pdfs/2026-11-24-astro-stacker-paper.pdf)
+🖼️ [**Skip straight to the final images →**](#final-results) &nbsp;|&nbsp; 🧩 [**Technique appendix →**](#appendix) &nbsp;|&nbsp; 📄 [**Full technical paper (PDF) →**](/pdfs/2026-11-24-astro-stacker-paper.pdf) &nbsp;|&nbsp; 💻 [**Source code (GitHub) →**](https://github.com/jrmlhermitte/astro_stacker)
 
 ---
 
@@ -181,7 +181,7 @@ One interesting wrinkle with the scorer: our original read-only scoring script c
 
 ## Putting It All Together: Plot, Table & Bigger Lessons
 
-To measure true end-to-end gain, the chart and table below use the **unaligned dark-subtracted mean** as `0.00` (raw score `60.28` on M57, `62.57` on M31) and plot how much each technique improved above it. Even with every stage enabled, the parallel C++/OpenMP engine runs **purely on the CPU** (16 threads, no GPU required) and processes an entire session of ~40 raw `.CR2` files end-to-end in roughly **70 to 90 seconds** (compared to several minutes in the original 2020 Python prototype):
+To measure true end-to-end gain, the chart and table below use the **unaligned dark-subtracted mean** as `0.00` (raw score `60.28` on M57, `62.57` on M31) and plot how much each technique improved above it. Even with every stage enabled, the parallel [C++/OpenMP engine](https://github.com/jrmlhermitte/astro_stacker) runs **purely on the CPU** (16 threads, no GPU required) and processes an entire session of ~40 raw `.CR2` files end-to-end in roughly **70 to 90 seconds** (compared to several minutes in the original 2020 Python prototype):
 
 <figure>
   <img src="/images/2026-11-24-astro-stacker-hill-climb.png" alt="Two-panel chart: top panel shows score gain above the unaligned dark-subtracted mean baseline for both M57 (green, train) and M31 (purple, zero-shot holdout) across iterations 0 to 10 plus flat-field dust-mote iteration F2; bottom panel shows M31 flat-field diagnostics">
