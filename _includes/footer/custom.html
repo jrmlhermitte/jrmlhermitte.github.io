@@ -1,0 +1,44 @@
+{% if page.classes contains 'theme-observatory' %}
+<button type="button" class="astro-mode-toggle" id="astro-mode-toggle" aria-pressed="false" title="Toggle 660 nm astronomer red-light mode">
+  <span id="astro-mode-icon" aria-hidden="true">🔭</span>
+  <span id="astro-mode-label">Night Vision</span>
+</button>
+<script>
+  (function () {
+    var bar = document.getElementById("astro-progress-bar");
+    if (bar) {
+      var updateBar = function () {
+        var doc = document.documentElement;
+        var max = doc.scrollHeight - doc.clientHeight;
+        var pct = max > 0 ? Math.min(100, Math.max(0, (window.scrollY / max) * 100)) : 0;
+        bar.style.width = pct.toFixed(2) + "%";
+      };
+      window.addEventListener("scroll", updateBar, { passive: true });
+      window.addEventListener("resize", updateBar, { passive: true });
+      updateBar();
+    }
+
+    var btn = document.getElementById("astro-mode-toggle");
+    var icon = document.getElementById("astro-mode-icon");
+    var label = document.getElementById("astro-mode-label");
+    if (!btn) return;
+
+    var applyMode = function (redMode) {
+      document.body.classList.toggle("night-vision", redMode);
+      btn.setAttribute("aria-pressed", redMode ? "true" : "false");
+      icon.textContent = redMode ? "✨" : "🔭";
+      label.textContent = redMode ? "Deep Sky" : "Night Vision";
+    };
+
+    try {
+      if (sessionStorage.getItem("astro-night-vision") === "1") applyMode(true);
+    } catch (e) {}
+
+    btn.addEventListener("click", function () {
+      var next = !document.body.classList.contains("night-vision");
+      applyMode(next);
+      try { sessionStorage.setItem("astro-night-vision", next ? "1" : "0"); } catch (e) {}
+    });
+  })();
+</script>
+{% endif %}

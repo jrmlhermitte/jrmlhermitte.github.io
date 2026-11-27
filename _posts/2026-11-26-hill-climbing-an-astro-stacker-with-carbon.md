@@ -3,6 +3,12 @@ layout: single
 title: "Evolving My 2020 Astro Stacker: From Simple Shifts to a C++ Engine with Gemini Carbon"
 description: "How I evolved a simple 2020 Python image-shift script into a fast C++ astrophotography stacker using Gemini Carbon, handling rotation, temperature drift, Winsorized clipping, and a blind synthetic flat field."
 image: /images/2026-11-24-astro-stacker-m57-comparison.png
+classes: theme-observatory
+toc: true
+toc_sticky: true
+toc_label: "Star Chart"
+toc_icon: "star"
+astro_telemetry: "OBSERVATION LOG · M57 (18h 53m +33°01′) & M31 (00h 42m +41°16′) · CANON EOS 1100D"
 ---
 
 <figure>
