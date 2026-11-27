@@ -71,7 +71,26 @@ In plain terms, each box measures one thing:
 - **Detected star count ($$N_\star$$):** Counts how many genuine stars rise cleanly above the noise floor (`+10` points every time you double the number of visible stars).
 - **Star roundness ($$e$$):** Eccentricity measures how stretched or trailed stars are (`0` is a perfect circle). Lower eccentricity earns up to `+15` points, rewarding tighter tracking and alignment.
 - **Diffuse nebula & galaxy preservation ($$\rho_{\text{ext}}$$):** We mask out the stars, average the remaining pixels into coarse `16×16` and `64×64` blocks, and measure how closely that coarse brightness map correlates with the raw reference (`1.0` means extended structures like the Ring Nebula and Andromeda's disk are completely preserved; `0.0` means erased). Any background-subtraction trick that erases real nebula light gets hit with a heavy `-40` penalty.
-- **Anti-cheat indicator ($$F_{\text{cheat}}(\text{img}) \in \{0, 1\}$$):** Equals `0` when the image passes all physical integrity checks, and `1` (immediately forcing `Score = -∞`) if it clips dark pixels, drops frames, or introduces **spatial blurring** (measuring whether adjacent sky pixels became artificially correlated with each other, which happens if you blur the image or use bilinear averaging).
+- **Anti-cheat indicator ($$F_{\text{cheat}}(\text{img}) \in \{0, 1\}$$):** Equals `0` when the image passes all nine physical integrity gates below, and `1` (immediately forcing `Score = -∞`) on any violation.
+
+### Inside $$F_{\text{cheat}}$$: The 9 Physical Anti-Cheat Gates
+Before locking the scorer, we pre-verified it against **28/28 adversarial torture tests** (synthetic cheat stacks attempting blurring, clipping, frame dropping, gamma stretching, and forged alignment logs). Any violation of **Gates 0–5** (nine hard checks total) sets $$F_{\text{cheat}}(\text{img}) = 1$$ and immediately disqualifies the stack:
+
+<figure>
+  <img src="/images/2026-11-26-astro-stacker-gates.png" alt="Six color-coded cards summarizing the 9 physical anti-cheat gates (Gates 0 through 5) inside F_cheat(img) and whether each gate ever fired: zero gates fired across the 10 autonomous C++ hill-climbing iterations, while Gate 2a fired on the 2020 ROI+bilinear stack and Gate 4 fired on the Step 3 full synthetic flat field">
+  <figcaption>The 9 hard physical anti-cheat gates (grouped as Gates 0–5) inside the locked scorer, along with whether each gate ever fired.</figcaption>
+</figure>
+
+- **Gate 0 (Array & Channel Integrity):** Enforces the exact `(2856, 4290, 3)` finite floating-point shape, non-zero variance, and three distinct RGB channels.
+- **Gate 1 (Dark-Floor & Histogram-Tail Clipping):** Blocks clamping noisy sky pixels to zero or a constant floor (flags if `> 0.05%` of quiet sky pixels share an identical mode/floor value, or if narrow lower-tail micro-bins spike `> 0.50%`).
+- **Gates 2a & 2b (Anti-Blur & Star Sharpness Ceiling):** **Gate 2a** catches spatial smoothing by checking quiet-sky 1-pixel lag autocorrelation ($$\rho_{1\text{px}}$$) and `4×4` block-averaged RMS inflation. **Gate 2b** caps stacked star width at `≤ 1.10×` the single-exposure ensemble median FWHM.
+- **Gates 3a–3c (Frame-Drop, Weight Collapse & Poisson Bounds):** Requires at least `18` frames (`20` on M31), Kish effective sample size $$N_{\text{eff}} \ge 0.65\,N_{\min}$$, genuine sky motion (`≥ 3 px` median shift and `≥ 15 px` trajectory diagonal, preventing stationary hot-pixel stacking), and sky RMS consistent with Poisson noise scaling.
+- **Gate 4 (Multi-Scale Diffuse Flux Preservation):** Requires coarse `16×16` and `64×64` nebula/sky correlation $$\rho_{\text{ext}} \ge 0.85$$ and `64×64` structure RMS ratio `≥ 0.70`, blocking background-mesh subtraction that erases faint nebulae or galaxy halos.
+- **Gate 5 (Photometric Linearity & Symmetry):** Requires stacked star fluxes to stay linear against the reference (Pearson $$r \ge 0.96$$, relative MAD `≤ 0.15`, and bright-half vs. faint-half flux asymmetry `≤ 0.10`), blocking nonlinear gamma or `asinh` stretches.
+
+**Did any of these gates actually fire?** Across all **10 autonomous C++ hill-climbing iterations** (`Iter 0–10`, both kept and reverted), **zero gates fired**. Every C++ candidate obeyed physical linearity and noise statistics cleanly. Outside that loop, however, **two gates did fire**, and both proved illuminating:
+1. **Gate 2a (Anti-Blur) fired on the 2020 manual star-ROI + bilinear stack:** Bilinear interpolation acts as a mild low-pass blur, inflating quiet-sky 1-pixel correlation from `0.26` to `0.55` on M57 (`0.54` on M31). That artificially lowered single-pixel sky noise while softening stars, so Gate 2a immediately disqualified it (`Score = -∞`).
+2. **Gate 4 (Diffuse Flux Preservation) fired on the Step 3 full synthetic flat field:** Removing the camera's `32%` radial vignetting dome legitimately changed the large-scale sky gradient relative to the un-flattened single-frame reference, so Gate 4 flagged it as "erased diffuse structure" (while dust-mote-only flat-fielding passed all 9 gates!). That is why Step 3 switched to a dedicated flat-field diagnostic scorer.
 
 ### The Critic Agent (A Fresh LLM)
 Every time a change beat the best score, we spawned a **brand-new LLM instance** that had not written the code to review the `git diff` and metrics with this adversarial prompt:
