@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#233230"/>
+  <rect x="2.75" y="2.75" width="58.5" height="58.5" rx="13.25" fill="none" stroke="#3b5450" stroke-width="1.5"/>
+
+  <!-- Outer primary wing blade (bright mint) -->
+  <path d="M 13 48 C 12 31, 23 16, 51 12 L 44 23 L 26 27 C 20 29, 16 36, 13 48 Z" fill="#30e3ca"/>
+
+  <!-- Leading-edge crisp ice-mint highlight -->
+  <path d="M 15 38 C 17 25, 28 16, 51 12 L 47 17 C 31 20, 21 26, 15 38 Z" fill="#e6fffa"/>
+
+  <!-- Secondary feather blade (mint-teal) -->
+  <path d="M 19 49 C 22 39, 30 33, 47 29 L 41 38 L 26 42 C 22 43, 20 46, 19 49 Z" fill="#11999e"/>
+
+  <!-- Tertiary feather blade (deep teal) -->
+  <path d="M 26 51 C 30 46, 36 44, 43 42 L 38 49 C 34 51, 30 51, 26 51 Z" fill="#0e7c80"/>
+</svg>
