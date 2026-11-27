@@ -1,15 +1,16 @@
 // _sass/custom/_custom.scss
 
-
 .page__content {
   font-size: 18px;
 }
 
-// --- Typography polish for IBM Plex Sans headings ---
+// --- Typography polish for Fraunces headings & Source Sans 3 body ---
 h1, h2, h3, h4, h5, h6 {
-  font-family: "IBM Plex Sans", sans-serif;
-  font-weight: 600; // strong but not chunky
-  letter-spacing: -0.015em; // tighten large titles slightly
+  font-family: "Fraunces", Georgia, serif;
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 35, "WONK" 0;
+  font-weight: 600;
+  letter-spacing: -0.015em;
   line-height: 1.2;
   color: var(--text-color, #111);
 }
@@ -27,8 +28,8 @@ body.dark-mode h1, body.dark-mode h2 {
 }
 
 body {
-  font-family: "Inter", sans-serif;
+  font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
   letter-spacing: 0.005em;
-  line-height: 1.45;
+  line-height: 1.55;
 }

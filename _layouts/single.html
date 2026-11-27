@@ -2,6 +2,10 @@
 layout: default
 ---
 
+{% if page.classes contains 'theme-observatory' %}
+  <div class="astro-progress-bar" id="astro-progress-bar" aria-hidden="true"></div>
+{% endif %}
+
 {% if page.header.overlay_color or page.header.overlay_image or page.header.image %}
   {% include page__hero.html %}
 {% elsif page.header.video.id and page.header.video.provider %}
@@ -31,6 +35,12 @@ layout: default
     <div class="page__inner-wrap">
       {% unless page.header.overlay_color or page.header.overlay_image %}
         <header>
+          {% if page.classes contains 'theme-observatory' and page.astro_telemetry %}
+          <div class="astro-telemetry">
+            <span class="astro-telemetry__dot" aria-hidden="true"></span>
+            <span>{{ page.astro_telemetry }}</span>
+          </div>
+          {% endif %}
           {% if page.title -%}
           <h1 id="page-title" class="page__title" itemprop="headline">
             <a href="{{ page.url | absolute_url }}" itemprop="url">{{ page.title | markdownify | remove: "<p>" | remove: "</p>" }}</a>
